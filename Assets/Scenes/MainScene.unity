@@ -515,6 +515,10 @@ PrefabInstance:
       value: Level A
       objectReference: {fileID: 0}
     - target: {fileID: 1209539686732796716, guid: c126d90fa1fe4ac4abcc6e249c724bf0, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1209539686732796716, guid: c126d90fa1fe4ac4abcc6e249c724bf0, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 2147483647
       objectReference: {fileID: 0}
@@ -1207,11 +1211,11 @@ MonoBehaviour:
   m_OverrideTileSize: 0
   m_TileSize: 256
   m_OverrideVoxelSize: 0
-  m_VoxelSize: 0.16666667
+  m_VoxelSize: 0.083333336
   m_MinRegionArea: 2
   m_NavMeshData: {fileID: 0}
   m_BuildHeightMesh: 0
---- !u!1001 &3525024545964114036
+--- !u!1001 &3511256544912181443
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -1219,49 +1223,49 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 8908144281958671067, guid: 6361b6ba9ffb4d14faff6d8a9140fe3f, type: 3}
-      propertyPath: m_Name
-      value: unitychan
-      objectReference: {fileID: 0}
-    - target: {fileID: 8908144281958842107, guid: 6361b6ba9ffb4d14faff6d8a9140fe3f, type: 3}
+    - target: {fileID: 2859664479336051363, guid: 6361b6ba9ffb4d14faff6d8a9140fe3f, type: 3}
       propertyPath: m_LocalPosition.x
       value: -9.8
       objectReference: {fileID: 0}
-    - target: {fileID: 8908144281958842107, guid: 6361b6ba9ffb4d14faff6d8a9140fe3f, type: 3}
+    - target: {fileID: 2859664479336051363, guid: 6361b6ba9ffb4d14faff6d8a9140fe3f, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.8
+      value: 0.5
       objectReference: {fileID: 0}
-    - target: {fileID: 8908144281958842107, guid: 6361b6ba9ffb4d14faff6d8a9140fe3f, type: 3}
+    - target: {fileID: 2859664479336051363, guid: 6361b6ba9ffb4d14faff6d8a9140fe3f, type: 3}
       propertyPath: m_LocalPosition.z
       value: -3.2
       objectReference: {fileID: 0}
-    - target: {fileID: 8908144281958842107, guid: 6361b6ba9ffb4d14faff6d8a9140fe3f, type: 3}
+    - target: {fileID: 2859664479336051363, guid: 6361b6ba9ffb4d14faff6d8a9140fe3f, type: 3}
       propertyPath: m_LocalRotation.w
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 8908144281958842107, guid: 6361b6ba9ffb4d14faff6d8a9140fe3f, type: 3}
+    - target: {fileID: 2859664479336051363, guid: 6361b6ba9ffb4d14faff6d8a9140fe3f, type: 3}
       propertyPath: m_LocalRotation.x
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 8908144281958842107, guid: 6361b6ba9ffb4d14faff6d8a9140fe3f, type: 3}
+    - target: {fileID: 2859664479336051363, guid: 6361b6ba9ffb4d14faff6d8a9140fe3f, type: 3}
       propertyPath: m_LocalRotation.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 8908144281958842107, guid: 6361b6ba9ffb4d14faff6d8a9140fe3f, type: 3}
+    - target: {fileID: 2859664479336051363, guid: 6361b6ba9ffb4d14faff6d8a9140fe3f, type: 3}
       propertyPath: m_LocalRotation.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 8908144281958842107, guid: 6361b6ba9ffb4d14faff6d8a9140fe3f, type: 3}
+    - target: {fileID: 2859664479336051363, guid: 6361b6ba9ffb4d14faff6d8a9140fe3f, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 8908144281958842107, guid: 6361b6ba9ffb4d14faff6d8a9140fe3f, type: 3}
+    - target: {fileID: 2859664479336051363, guid: 6361b6ba9ffb4d14faff6d8a9140fe3f, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 8908144281958842107, guid: 6361b6ba9ffb4d14faff6d8a9140fe3f, type: 3}
+    - target: {fileID: 2859664479336051363, guid: 6361b6ba9ffb4d14faff6d8a9140fe3f, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2859664479336476291, guid: 6361b6ba9ffb4d14faff6d8a9140fe3f, type: 3}
+      propertyPath: m_Name
+      value: unitychan
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1275,5 +1279,5 @@ SceneRoots:
   - {fileID: 330585546}
   - {fileID: 410087041}
   - {fileID: 832575519}
-  - {fileID: 3525024545964114036}
   - {fileID: 1392474965}
+  - {fileID: 3511256544912181443}

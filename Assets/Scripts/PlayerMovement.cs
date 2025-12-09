@@ -1,4 +1,3 @@
-using Unity.IO.LowLevel.Unsafe;
 using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
@@ -6,14 +5,15 @@ public class PlayerMovement : MonoBehaviour
     public float animSpeed = 1.5f;
 
     public float forwardSpeed = 7.0f;
-    public float backwardSpeed = 2.0f;
-    public float rotateSpeed = 2.0f;
+    public float rotateSpeed = 20.0f;
     public float jumpPower = 3.0f;
 
     public bool useCurves = true;
     public float useCurvesHeight = 0.5f;
 
     private Vector3 velocity;
+    Quaternion rotation = Quaternion.identity;
+
     private float orgColHight;
     private Vector3 orgVectColCenter;
 
@@ -23,7 +23,7 @@ public class PlayerMovement : MonoBehaviour
     private CapsuleCollider col;
 
     static int idleState = Animator.StringToHash("Base Layer.Idle");
-    static int locoState = Animator.StringToHash("Base Layer.Locomotion");
+    static int locoState = Animator.StringToHash("Base Layer.RUN");
     static int jumpState = Animator.StringToHash("Base Layer.Jump");
     static int restState = Animator.StringToHash("Base Layer.Rest");
 
@@ -40,40 +40,35 @@ public class PlayerMovement : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        float h = Input.GetAxis("Horizontal");              
-        float v = Input.GetAxis("Vertical");
+        float horizontal = Input.GetAxis("Horizontal");
+        float vertical = Input.GetAxis("Vertical");
 
-        InitAnim(h, v);
+        InitAnim(horizontal, vertical);
 
-        currentBaseState = anim.GetCurrentAnimatorStateInfo(0); 
-     
+        currentBaseState = anim.GetCurrentAnimatorStateInfo(0);
+
         rb.useGravity = true;
 
-        SetVelocity(v);
-        HandleJump();
-        ApplyMovement(h);
+        CalculateMoveAndRotate(horizontal, vertical);
+        //HandleJump();
         HandleStateSpecificLogic();
     }
 
     void InitAnim(float h, float v)
     {
-        anim.SetFloat("Speed", v);
-        anim.SetFloat("Direction", h);
         anim.speed = animSpeed;
+
+        float speed = new Vector2(h, v).magnitude;
+        anim.SetBool("IsWalking", speed > 0.01f);
     }
 
-    void SetVelocity(float v)
+    void CalculateMoveAndRotate(float h, float v)
     {
-        velocity = new Vector3(0, 0, v);
-        velocity = transform.TransformDirection(velocity);
-        if (v > 0.1)
-        {
-            velocity *= forwardSpeed;
-        }
-        else if (v < -0.1)
-        {
-            velocity *= backwardSpeed;
-        }
+        velocity.Set(h, 0f, v);
+        velocity.Normalize();
+
+        Vector3 desiredForward = Vector3.RotateTowards(transform.forward, velocity, rotateSpeed * Time.deltaTime, 0f);
+        rotation = Quaternion.LookRotation(desiredForward);
     }
 
     void HandleJump()
@@ -82,7 +77,6 @@ public class PlayerMovement : MonoBehaviour
         {
             if (currentBaseState.fullPathHash == locoState)
             {
-
                 if (!anim.IsInTransition(0))
                 {
                     rb.AddForce(Vector3.up * jumpPower, ForceMode.VelocityChange);
@@ -92,10 +86,10 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    void ApplyMovement(float h)
+    void OnAnimatorMove()
     {
-        transform.localPosition += velocity * Time.fixedDeltaTime;
-        transform.Rotate(0, h * rotateSpeed, 0);
+        rb.MovePosition(rb.position + velocity * anim.deltaPosition.magnitude * forwardSpeed);
+        rb.MoveRotation(rotation);
     }
 
     void HandleStateSpecificLogic()

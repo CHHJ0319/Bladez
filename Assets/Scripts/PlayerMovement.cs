@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -84,6 +85,20 @@ public class PlayerMovement : MonoBehaviour
                 }
             }
         }
+    }
+
+    void OnAttack(InputValue value)
+    {
+        if (value.isPressed)
+        {
+            Fire();
+        }
+    }
+
+    void Fire()
+    {
+        anim.SetTrigger("Shot");
+        Debug.Log("공격! (Player Input 컴포넌트 사용)");
     }
 
     void OnAnimatorMove()

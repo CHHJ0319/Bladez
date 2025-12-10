@@ -7,7 +7,7 @@ public class PlayerMovement : MonoBehaviour
 
     public float forwardSpeed = 7.0f;
     public float rotateSpeed = 20.0f;
-    public float jumpPower = 3.0f;
+    public float slidingSpeed = 3.0f;
 
     public bool useCurves = true;
     public float useCurvesHeight = 0.5f;
@@ -26,6 +26,7 @@ public class PlayerMovement : MonoBehaviour
     static int idleState = Animator.StringToHash("Base Layer.Idle");
     static int locoState = Animator.StringToHash("Base Layer.RUN");
     static int jumpState = Animator.StringToHash("Base Layer.Jump");
+    static int SlidingState = Animator.StringToHash("Base Layer.Sliding");
     static int restState = Animator.StringToHash("Base Layer.Rest");
 
     void Start()
@@ -49,18 +50,18 @@ public class PlayerMovement : MonoBehaviour
         rb.useGravity = true;
 
         CalculateMoveAndRotate(horizontal, vertical);
-        Jump();
         HandleStateSpecificLogic();
     }
 
     void OnAnimatorMove()
     {
 
-        if (currentBaseState.fullPathHash == locoState)
+        if (currentBaseState.fullPathHash == locoState || currentBaseState.fullPathHash == SlidingState)
         {
             rb.MovePosition(rb.position + velocity * anim.deltaPosition.magnitude * forwardSpeed);
             rb.MoveRotation(rotation);
         }
+
         else if (currentBaseState.fullPathHash == jumpState)
         {
             Vector3 desiredMove = velocity * anim.deltaPosition.magnitude;
@@ -70,9 +71,11 @@ public class PlayerMovement : MonoBehaviour
             rb.MoveRotation(rotation);
         }
 
-
-
-
+        else if (currentBaseState.fullPathHash == SlidingState)
+        {
+            rb.MovePosition(rb.position + velocity * anim.deltaPosition.magnitude * slidingSpeed);
+            rb.MoveRotation(rotation);
+        }
     }
 
     void OnAttack(InputValue value)
@@ -80,6 +83,28 @@ public class PlayerMovement : MonoBehaviour
         if (value.isPressed)
         {
             Fire();
+        }
+    }
+
+    void OnJump(InputValue value)
+    {
+        if (currentBaseState.fullPathHash == locoState)
+        {
+            if (!anim.IsInTransition(0))
+            {
+                anim.SetBool("Jump", true);
+            }
+        }
+    }
+
+    void OnSliding(InputValue value)
+    {
+        if (currentBaseState.fullPathHash == locoState)
+        {
+            if (!anim.IsInTransition(0))
+            {
+                anim.SetBool("Sliding", true);
+            }
         }
     }
 
@@ -98,20 +123,6 @@ public class PlayerMovement : MonoBehaviour
 
         Vector3 desiredForward = Vector3.RotateTowards(transform.forward, velocity, rotateSpeed * Time.deltaTime, 0f);
         rotation = Quaternion.LookRotation(desiredForward);
-    }
-
-    void Jump()
-    {
-        if (Input.GetButtonDown("Jump"))
-        {
-            if (currentBaseState.fullPathHash == locoState)
-            {
-                if (!anim.IsInTransition(0))
-                {
-                    anim.SetBool("Jump", true);
-                }
-            }
-        }
     }
 
     void Fire()
@@ -159,6 +170,14 @@ public class PlayerMovement : MonoBehaviour
                     }
                 }
                 anim.SetBool("Jump", false);
+            }
+        }
+
+        else if (currentBaseState.fullPathHash == SlidingState)
+        {
+            if (!anim.IsInTransition(0))
+            {
+                anim.SetBool("Sliding", false);
             }
         }
 

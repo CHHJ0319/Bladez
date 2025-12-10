@@ -38,7 +38,6 @@ public class PlayerMovement : MonoBehaviour
         orgVectColCenter = col.center;
     }
 
-    // Update is called once per frame
     void FixedUpdate()
     {
         float horizontal = Input.GetAxis("Horizontal");
@@ -47,12 +46,41 @@ public class PlayerMovement : MonoBehaviour
         InitAnim(horizontal, vertical);
 
         currentBaseState = anim.GetCurrentAnimatorStateInfo(0);
-
         rb.useGravity = true;
 
         CalculateMoveAndRotate(horizontal, vertical);
-        //HandleJump();
+        Jump();
         HandleStateSpecificLogic();
+    }
+
+    void OnAnimatorMove()
+    {
+
+        if (currentBaseState.fullPathHash == locoState)
+        {
+            rb.MovePosition(rb.position + velocity * anim.deltaPosition.magnitude * forwardSpeed);
+            rb.MoveRotation(rotation);
+        }
+        else if (currentBaseState.fullPathHash == jumpState)
+        {
+            Vector3 desiredMove = velocity * anim.deltaPosition.magnitude;
+            float yMovement = anim.deltaPosition.y;
+            Vector3 moveDelta = desiredMove + Vector3.up * yMovement;
+            rb.MovePosition(rb.position + moveDelta);
+            rb.MoveRotation(rotation);
+        }
+
+
+
+
+    }
+
+    void OnAttack(InputValue value)
+    {
+        if (value.isPressed)
+        {
+            Fire();
+        }
     }
 
     void InitAnim(float h, float v)
@@ -72,7 +100,7 @@ public class PlayerMovement : MonoBehaviour
         rotation = Quaternion.LookRotation(desiredForward);
     }
 
-    void HandleJump()
+    void Jump()
     {
         if (Input.GetButtonDown("Jump"))
         {
@@ -80,18 +108,9 @@ public class PlayerMovement : MonoBehaviour
             {
                 if (!anim.IsInTransition(0))
                 {
-                    rb.AddForce(Vector3.up * jumpPower, ForceMode.VelocityChange);
                     anim.SetBool("Jump", true);
                 }
             }
-        }
-    }
-
-    void OnAttack(InputValue value)
-    {
-        if (value.isPressed)
-        {
-            Fire();
         }
     }
 
@@ -99,12 +118,6 @@ public class PlayerMovement : MonoBehaviour
     {
         anim.SetTrigger("Shot");
         Debug.Log("공격! (Player Input 컴포넌트 사용)");
-    }
-
-    void OnAnimatorMove()
-    {
-        rb.MovePosition(rb.position + velocity * anim.deltaPosition.magnitude * forwardSpeed);
-        rb.MoveRotation(rotation);
     }
 
     void HandleStateSpecificLogic()
@@ -119,7 +132,6 @@ public class PlayerMovement : MonoBehaviour
 
         else if (currentBaseState.fullPathHash == jumpState)
         {
-            //cameraObject.SendMessage("setCameraPositionJumpView");
             if (!anim.IsInTransition(0))
             {
                 if (useCurves)
@@ -142,8 +154,7 @@ public class PlayerMovement : MonoBehaviour
                         }
                         else
                         {
-
-                            resetCollider();
+                            //resetCollider();
                         }
                     }
                 }

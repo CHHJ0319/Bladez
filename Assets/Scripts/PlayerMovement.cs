@@ -12,11 +12,16 @@ public class PlayerMovement : MonoBehaviour
     public bool useCurves = true;
     public float useCurvesHeight = 0.5f;
 
+    public Weapon equipWeapon;
+
     private Vector3 velocity;
     Quaternion rotation = Quaternion.identity;
 
     private float orgColHight;
     private Vector3 orgVectColCenter;
+
+    private bool isFireReady;
+    private float fireDelay;
 
     private Rigidbody rb;
     private Animator anim;
@@ -27,7 +32,6 @@ public class PlayerMovement : MonoBehaviour
     static int locoState = Animator.StringToHash("Base Layer.RUN");
     static int jumpState = Animator.StringToHash("Base Layer.Jump");
     static int SlidingState = Animator.StringToHash("Base Layer.Sliding");
-    static int restState = Animator.StringToHash("Base Layer.Rest");
 
     void Start()
     {
@@ -55,7 +59,6 @@ public class PlayerMovement : MonoBehaviour
 
     void OnAnimatorMove()
     {
-
         if (currentBaseState.fullPathHash == locoState || currentBaseState.fullPathHash == SlidingState)
         {
             rb.MovePosition(rb.position + velocity * anim.deltaPosition.magnitude * forwardSpeed);
@@ -80,7 +83,13 @@ public class PlayerMovement : MonoBehaviour
 
     void OnAttack(InputValue value)
     {
-        if (value.isPressed)
+        if (equipWeapon == null) 
+            return;
+
+        fireDelay += Time.deltaTime;
+        isFireReady = equipWeapon.rate < fireDelay;
+
+        if (isFireReady && value.isPressed && currentBaseState.fullPathHash != jumpState && currentBaseState.fullPathHash != SlidingState)
         {
             Fire();
         }
@@ -127,8 +136,9 @@ public class PlayerMovement : MonoBehaviour
 
     void Fire()
     {
+        equipWeapon.Use();
         anim.SetTrigger("Shot");
-        Debug.Log("공격! (Player Input 컴포넌트 사용)");
+        fireDelay = 0;
     }
 
     void HandleStateSpecificLogic()
@@ -186,20 +196,6 @@ public class PlayerMovement : MonoBehaviour
             if (useCurves)
             {
                 resetCollider();
-            }
-
-            if (Input.GetButtonDown("Jump"))
-            {
-                anim.SetBool("Rest", true);
-            }
-        }
-
-        else if (currentBaseState.fullPathHash == restState)
-        {
-
-            if (!anim.IsInTransition(0))
-            {
-                anim.SetBool("Rest", false);
             }
         }
     }

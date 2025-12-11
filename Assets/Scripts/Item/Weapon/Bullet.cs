@@ -6,7 +6,7 @@ public class Bullet : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.collider.gameObject.tag == "Environment")
+        if (collision.collider.gameObject.tag == "Environment" || collision.collider.gameObject.tag == "Enemy")
         {
             Destroy(gameObject);
         }

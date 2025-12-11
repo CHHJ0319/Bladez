@@ -24,13 +24,14 @@ public class PlayerMovement : MonoBehaviour
 
     private bool isFireReady;
     private float fireDelay;
-    private bool isReloading;
 
     private Rigidbody rb;
     private Animator anim;
     private AnimatorStateInfo currentBaseState;
     private AnimatorStateInfo currentUpperBodyState;
     private CapsuleCollider col;
+    private float capsuleRadius;
+    private int collisionLayerMask;
 
     static int idleState = Animator.StringToHash("Base Layer.Idle");
     static int locoState = Animator.StringToHash("Base Layer.RUN");
@@ -47,10 +48,15 @@ public class PlayerMovement : MonoBehaviour
         col = GetComponent<CapsuleCollider>();
         orgColHight = col.height;
         orgVectColCenter = col.center;
+        capsuleRadius = col.radius;
+
+        collisionLayerMask = LayerMask.GetMask("Wall");
     }
 
     void FixedUpdate()
     {
+        FreezeRotation();
+
         float horizontal = Input.GetAxis("Horizontal");
         float vertical = Input.GetAxis("Vertical");
 
@@ -69,16 +75,38 @@ public class PlayerMovement : MonoBehaviour
 
     void OnAnimatorMove()
     {
-        if(currentUpperBodyState.fullPathHash == ReloadingState)
+        if (currentUpperBodyState.fullPathHash == ReloadingState)
         {
-
         }
         else if (currentBaseState.fullPathHash == locoState || currentBaseState.fullPathHash == SlidingState)
         {
-            rb.MovePosition(rb.position + velocity * anim.deltaPosition.magnitude * forwardSpeed);
+            float speedFactor = (currentBaseState.fullPathHash == SlidingState) ? slidingSpeed : forwardSpeed;
+            Vector3 deltaMovement = velocity * anim.deltaPosition.magnitude * speedFactor;
+
+            float moveDistance = deltaMovement.magnitude;
+            Vector3 moveDirection = deltaMovement.normalized;
+
+            RaycastHit hit;
+
+            Vector3 sphereOrigin = rb.position + Vector3.up * col.center.y;
+
+            if (Physics.SphereCast(sphereOrigin, capsuleRadius, moveDirection, out hit, moveDistance, collisionLayerMask))
+            {
+                float safeDistance = hit.distance - 0.001f;
+
+                if (safeDistance > 0)
+                {
+                    deltaMovement = moveDirection * safeDistance;
+                }
+                else
+                {
+                    deltaMovement = Vector3.zero;
+                }
+            }
+
+            rb.MovePosition(rb.position + deltaMovement);
             rb.MoveRotation(rotation);
         }
-
         else if (currentBaseState.fullPathHash == jumpState)
         {
             Vector3 desiredMove = velocity * anim.deltaPosition.magnitude;
@@ -87,7 +115,6 @@ public class PlayerMovement : MonoBehaviour
             rb.MovePosition(rb.position + moveDelta);
             rb.MoveRotation(rotation);
         }
-
     }
 
     void OnAttack(InputValue value)
@@ -181,6 +208,11 @@ public class PlayerMovement : MonoBehaviour
         equipWeapon.Use();
         anim.SetTrigger("Shot");
         fireDelay = 0;
+    }
+
+    void FreezeRotation()
+    {
+        rb.angularVelocity = Vector3.zero;
     }
 
     void HandleStateSpecificLogic()

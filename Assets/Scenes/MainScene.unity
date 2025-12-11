@@ -5987,17 +5987,13 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7709425636442413561, guid: 02c8101b02cb81e4fa6b4a8ac1163016, type: 3}
-      propertyPath: rate
-      value: 0.02
+      propertyPath: maxAmmo
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 7709425636442413561, guid: 02c8101b02cb81e4fa6b4a8ac1163016, type: 3}
       propertyPath: bulletPos
       value: 
       objectReference: {fileID: 783722234}
-    - target: {fileID: 7709425636442413561, guid: 02c8101b02cb81e4fa6b4a8ac1163016, type: 3}
-      propertyPath: bulletSpeed
-      value: 30
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -6263,6 +6259,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 503242739705778537, guid: 6361b6ba9ffb4d14faff6d8a9140fe3f, type: 3}
+      propertyPath: ammo
+      value: 100
+      objectReference: {fileID: 0}
     - target: {fileID: 503242739705778537, guid: 6361b6ba9ffb4d14faff6d8a9140fe3f, type: 3}
       propertyPath: equipWeapon
       value: 

@@ -79,9 +79,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   type: 1
   damage: 0
-  rate: 0.15
+  rate: 0.02
   meleeArea: {fileID: 0}
   trailEffect: {fileID: 0}
-  bullet: {fileID: 5875859848797400472, guid: da0e0eeed1d06954aba7528c9847e155, type: 3}
+  maxAmmo: 0
+  curAmmo: 0
+  bullet: {fileID: 5001147802406583216, guid: b68f323f5a26b60439e442432ed7a7e2, type: 3}
   bulletPos: {fileID: 0}
+  bulletSpeed: 30
   shotEffect: {fileID: 6381470947425931970, guid: e1f9fcfd512226e44870ba45a7a18244, type: 3}

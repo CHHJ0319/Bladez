@@ -9,6 +9,8 @@ public class PlayerMovement : MonoBehaviour
     public float rotateSpeed = 20.0f;
     public float slidingSpeed = 3.0f;
 
+    public int ammo;
+
     public bool useCurves = true;
     public float useCurvesHeight = 0.5f;
 
@@ -22,16 +24,20 @@ public class PlayerMovement : MonoBehaviour
 
     private bool isFireReady;
     private float fireDelay;
+    private bool isReloading;
 
     private Rigidbody rb;
     private Animator anim;
     private AnimatorStateInfo currentBaseState;
+    private AnimatorStateInfo currentUpperBodyState;
     private CapsuleCollider col;
 
     static int idleState = Animator.StringToHash("Base Layer.Idle");
     static int locoState = Animator.StringToHash("Base Layer.RUN");
     static int jumpState = Animator.StringToHash("Base Layer.Jump");
     static int SlidingState = Animator.StringToHash("Base Layer.Sliding");
+
+    static int ReloadingState = Animator.StringToHash("UpperBody.Reloading");
 
     void Start()
     {
@@ -48,18 +54,26 @@ public class PlayerMovement : MonoBehaviour
         float horizontal = Input.GetAxis("Horizontal");
         float vertical = Input.GetAxis("Vertical");
 
+    
         InitAnim(horizontal, vertical);
 
         currentBaseState = anim.GetCurrentAnimatorStateInfo(0);
+        currentUpperBodyState = anim.GetCurrentAnimatorStateInfo(2);
         rb.useGravity = true;
 
+        
         CalculateMoveAndRotate(horizontal, vertical);
+        
         HandleStateSpecificLogic();
     }
 
     void OnAnimatorMove()
     {
-        if (currentBaseState.fullPathHash == locoState || currentBaseState.fullPathHash == SlidingState)
+        if(currentUpperBodyState.fullPathHash == ReloadingState)
+        {
+
+        }
+        else if (currentBaseState.fullPathHash == locoState || currentBaseState.fullPathHash == SlidingState)
         {
             rb.MovePosition(rb.position + velocity * anim.deltaPosition.magnitude * forwardSpeed);
             rb.MoveRotation(rotation);
@@ -74,11 +88,6 @@ public class PlayerMovement : MonoBehaviour
             rb.MoveRotation(rotation);
         }
 
-        else if (currentBaseState.fullPathHash == SlidingState)
-        {
-            rb.MovePosition(rb.position + velocity * anim.deltaPosition.magnitude * slidingSpeed);
-            rb.MoveRotation(rotation);
-        }
     }
 
     void OnAttack(InputValue value)
@@ -86,10 +95,14 @@ public class PlayerMovement : MonoBehaviour
         if (equipWeapon == null) 
             return;
 
+        if (equipWeapon.curAmmo <= 0)
+            return;
+
         fireDelay += Time.deltaTime;
         isFireReady = equipWeapon.rate < fireDelay;
 
-        if (isFireReady && value.isPressed && currentBaseState.fullPathHash != jumpState && currentBaseState.fullPathHash != SlidingState)
+        if (isFireReady && currentBaseState.fullPathHash != jumpState && currentBaseState.fullPathHash != SlidingState && currentBaseState.fullPathHash != 
+            ReloadingState)
         {
             Fire();
         }
@@ -117,11 +130,40 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    void OnReload(InputValue value)
+    {
+        if (equipWeapon == null)
+            return;
+
+        if (equipWeapon.type == Weapon.Type.Melee)
+            return;
+
+        if (ammo == 0)
+            return;
+
+        if (currentBaseState.fullPathHash != jumpState && currentBaseState.fullPathHash != SlidingState)
+        {
+            if (!anim.IsInTransition(0))
+            {
+                anim.SetBool("Reload", true);
+                int reAmmo = ammo < equipWeapon.maxAmmo ? ammo : equipWeapon.maxAmmo;
+                equipWeapon.curAmmo = reAmmo;
+                ammo -= reAmmo;
+            }
+        }
+    }
+
     void InitAnim(float h, float v)
     {
         anim.speed = animSpeed;
 
         float speed = new Vector2(h, v).magnitude;
+
+        if (currentUpperBodyState.fullPathHash == ReloadingState)
+        {
+            speed = 0f;
+        }
+
         anim.SetBool("IsWalking", speed > 0.01f);
     }
 
@@ -143,6 +185,14 @@ public class PlayerMovement : MonoBehaviour
 
     void HandleStateSpecificLogic()
     {
+        if (currentUpperBodyState.fullPathHash == ReloadingState)
+        {
+            if (!anim.IsInTransition(0))
+            {
+                anim.SetBool("Reload", false);
+            }
+        }
+
         if (currentBaseState.fullPathHash == locoState)
         {
             if (useCurves)

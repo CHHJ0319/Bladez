@@ -10,6 +10,10 @@ public class Weapon : MonoBehaviour
     public BoxCollider meleeArea;
     public TrailRenderer trailEffect;
 
+    //Gun
+    public int maxAmmo;
+    public int curAmmo;
+
     public GameObject bullet;
     public Transform bulletPos;
     public float bulletSpeed;
@@ -19,6 +23,7 @@ public class Weapon : MonoBehaviour
     public void Use()
     {
         StartCoroutine("Shot");
+        curAmmo--;
     }
 
     IEnumerator Shot ()

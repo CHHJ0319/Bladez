@@ -354,4 +354,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHP: 0
-  curHP: 1
+  curHP: 3

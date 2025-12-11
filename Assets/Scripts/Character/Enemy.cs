@@ -27,14 +27,31 @@ namespace Character
             {
                 Bullet bullet = collider.GetComponent<Bullet>();
                 curHP -= bullet.damage;
+                Vector3 reactVec = rb.position - collider.GetComponent<Rigidbody>().position;
 
-                Debug.Log("Hit");
+                StartCoroutine(OnDamage(reactVec));
             }
         }
 
-        IEnumerator OnDamage()
+        IEnumerator OnDamage(Vector3 reactVec)
         {
-            yield return null;
+            mat.color = Color.red;
+            yield return new WaitForSeconds(0.1f);
+
+            if(curHP > 0)
+            {
+                mat.color = Color.white;
+            }
+            else
+            {
+                mat.color = Color.gray;
+
+                reactVec = reactVec.normalized;
+                reactVec += Vector3.up;
+                rb.AddForce(reactVec * 5, ForceMode.Impulse);
+
+                Destroy(gameObject, 1);
+            }
         }
     }
 }

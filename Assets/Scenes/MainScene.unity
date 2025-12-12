@@ -8018,6 +8018,10 @@ PrefabInstance:
       propertyPath: gameEnding
       value: 
       objectReference: {fileID: 2006823166}
+    - target: {fileID: 5617796558578754419, guid: d4cb3becf1f49a5429e64055176b8f3a, type: 3}
+      propertyPath: m_Constraints
+      value: 4
+      objectReference: {fileID: 0}
     - target: {fileID: 7525190999458068906, guid: d4cb3becf1f49a5429e64055176b8f3a, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0

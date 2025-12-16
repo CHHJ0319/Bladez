@@ -10,7 +10,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 100326, guid: 8f0565f23a2b58541a475bd3c1393052, type: 3}
       propertyPath: m_Name
-      value: unitychan
+      value: UnityChanForWebGL
       objectReference: {fileID: 0}
     - target: {fileID: 400326, guid: 8f0565f23a2b58541a475bd3c1393052, type: 3}
       propertyPath: m_LocalPosition.x
@@ -64,6 +64,10 @@ PrefabInstance:
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: 75a6b66da3d3eb64f827c180ea5fabe5, type: 2}
+    - target: {fileID: 2300006, guid: 8f0565f23a2b58541a475bd3c1393052, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: e0849f3295d4fcb499a2aef28bbbf13a, type: 2}
     - target: {fileID: 9500000, guid: 8f0565f23a2b58541a475bd3c1393052, type: 3}
       propertyPath: m_Controller
       value: 
@@ -176,6 +180,10 @@ PrefabInstance:
       propertyPath: m_AABB.m_Extent.z
       value: 0.020959504
       objectReference: {fileID: 0}
+    - target: {fileID: 13700008, guid: 8f0565f23a2b58541a475bd3c1393052, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: e0849f3295d4fcb499a2aef28bbbf13a, type: 2}
     - target: {fileID: 13700010, guid: 8f0565f23a2b58541a475bd3c1393052, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
@@ -220,6 +228,10 @@ PrefabInstance:
       propertyPath: m_AABB.m_Extent.z
       value: 0.0553375
       objectReference: {fileID: 0}
+    - target: {fileID: 13700020, guid: 8f0565f23a2b58541a475bd3c1393052, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: e0849f3295d4fcb499a2aef28bbbf13a, type: 2}
     - target: {fileID: 13700022, guid: 8f0565f23a2b58541a475bd3c1393052, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 

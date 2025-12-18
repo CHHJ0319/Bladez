@@ -6,6 +6,7 @@ namespace Character
 {
     public class EnemyController : MonoBehaviour
     {
+        [Header("Settings")]
         public int maxHP;
         public int curHP;
 

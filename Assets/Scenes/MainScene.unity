@@ -985,8 +985,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Priority:
-    Enabled: 0
-    m_Value: 0
+    Enabled: 1
+    m_Value: 10
   OutputChannel: 1
   StandbyUpdate: 2
   m_StreamingVersion: 20241001
@@ -7609,7 +7609,6 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 2145481075}
   - {fileID: 608434756}
   - {fileID: 1991943320}
   m_Father: {fileID: 0}
@@ -8257,7 +8256,7 @@ GameObject:
   - component: {fileID: 2145481076}
   m_Layer: 0
   m_Name: CinemachineCamera
-  m_TagString: Untagged
+  m_TagString: MainCamera
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -8275,7 +8274,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Priority:
-    Enabled: 0
+    Enabled: 1
     m_Value: 0
   OutputChannel: 1
   StandbyUpdate: 2
@@ -8318,7 +8317,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1829413072}
+  m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 45, y: 0, z: 0}
 --- !u!114 &2145481076
 MonoBehaviour:
@@ -8532,6 +8531,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: EyeGhost
       objectReference: {fileID: 0}
+    - target: {fileID: 3300119294812124907, guid: 48630a19bdee0fa4ba020358190d8bd0, type: 3}
+      propertyPath: maxRange
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4757255505859292052, guid: 48630a19bdee0fa4ba020358190d8bd0, type: 3}
       propertyPath: player
       value: 
@@ -8644,4 +8647,5 @@ SceneRoots:
   - {fileID: 262838740}
   - {fileID: 1536794402}
   - {fileID: 1931073110}
+  - {fileID: 2145481075}
   - {fileID: 1829413072}

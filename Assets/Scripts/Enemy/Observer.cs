@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Character.Enemy
+namespace Enemy
 {
     public class Observer : MonoBehaviour
     {

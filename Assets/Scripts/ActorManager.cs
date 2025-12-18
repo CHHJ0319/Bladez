@@ -13,9 +13,9 @@ public class ActorManager : MonoBehaviour
 
     }
 
-    public static void StartChase(Character.Enemy.Observer observer)
+    public static void StartChase(Enemy.Observer observer)
     {
-        Character.EnemyController enemy = observer.gameObject.GetComponentInParent<Character.EnemyController>();
+        Enemy.EnemyController enemy = observer.gameObject.GetComponentInParent<Enemy.EnemyController>();
         enemy.StartChase();
     }
 }

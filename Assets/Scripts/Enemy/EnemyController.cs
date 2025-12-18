@@ -2,13 +2,21 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
 
-namespace Character
+namespace Enemy
 {
     public class EnemyController : MonoBehaviour
     {
+        [Header("Attack Settings")]
+        public ParticleSystem fireParticle;
+        public float fireRate = 2.0f;
+
+        protected float fireDelay;
+        protected bool isFireReady;
+
         [Header("Settings")]
         public int maxHP;
         public int curHP;
+        public virtual float ad => 10;
 
         public Transform target;
 
@@ -22,6 +30,17 @@ namespace Character
         Material mat;
         Animator anim;
 
+        private void OnEnable()
+        {
+            Events.EnemyEvents.OnFireHit += OnFireHit;
+        }
+
+        private void OnDisable()
+        {
+            Events.EnemyEvents.OnFireHit -= OnFireHit;
+
+        }
+
         void Awake()
         {
             rb = GetComponent<Rigidbody>();
@@ -34,9 +53,20 @@ namespace Character
 
         void Update()
         {
+            fireDelay += Time.deltaTime;
+            isFireReady = fireDelay > fireRate;
+
             if (isChase)
             {
-                navMeshAgent.SetDestination(target.position);
+                if (isFireReady)
+                {
+                    Fire();
+                    fireDelay = 0f;
+                }
+                else
+                {
+                    navMeshAgent.SetDestination(target.position);
+                }
             }
         }
 
@@ -98,6 +128,27 @@ namespace Character
         public void StartChase()
         {
             isChase = true;
+        }
+
+        protected void Fire()
+        {
+            if (fireParticle == null) return;
+
+            fireParticle.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+            fireParticle.Play();
+        }
+
+        public void OnFireHit(GameObject target)
+        {
+
+            //Debug.Log($"{target.name}ø° ∏Ì¡ﬂ!");
+
+            if (target.CompareTag("Player"))
+            {
+                PlayerMovement player = target.gameObject.GetComponent<PlayerMovement>();
+                player.TakeDamage(ad);
+   
+            }
         }
     }
 }

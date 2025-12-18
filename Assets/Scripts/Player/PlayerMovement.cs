@@ -3,12 +3,15 @@ using UnityEngine.InputSystem;
 
 public class PlayerMovement : MonoBehaviour
 {
+    public GameEnding gameEnding;
+
     public float animSpeed = 1.5f;
 
     public float forwardSpeed = 7.0f;
     public float rotateSpeed = 20.0f;
     public float slidingSpeed = 3.0f;
 
+    public float hp = 100f;
     public int ammo;
 
     public bool useCurves = true;
@@ -286,5 +289,14 @@ public class PlayerMovement : MonoBehaviour
     {
         col.height = orgColHight;
         col.center = orgVectColCenter;
+    }
+
+    public void TakeDamage(float damage)
+    {
+        hp -= damage;
+        if(hp < 0)
+        {
+            gameEnding.CaughtPlayer();
+        }
     }
 }

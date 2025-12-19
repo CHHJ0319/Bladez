@@ -5,12 +5,12 @@ using UnityEngine.Windows;
 namespace Player
 {
     [RequireComponent(typeof(PlayerInput))]
+    [RequireComponent(typeof(PlayerAnimator))]
     [RequireComponent(typeof(WeaponHandler))]
     public class PlayerController : MonoBehaviour
     {
         public GameEnding gameEnding;
 
-        public float animSpeed = 1.5f;
         public float forwardSpeed = 7.0f;
         public float rotateSpeed = 20.0f;
         public float slidingSpeed = 3.0f;
@@ -29,9 +29,9 @@ namespace Player
 
         private WeaponHandler weaponHandler;
         private PlayerInput input;
+        private PlayerAnimator anim;
 
         private Rigidbody rb;
-        private Animator anim;
         private AnimatorStateInfo currentBaseState;
         private AnimatorStateInfo currentUpperBodyState;
         private CapsuleCollider col;
@@ -48,9 +48,9 @@ namespace Player
         void Start()
         {
             input = GetComponent<PlayerInput>();
+            anim = GetComponent<PlayerAnimator>();
             weaponHandler = GetComponent<WeaponHandler>();
 
-            anim = GetComponent<Animator>();
             rb = GetComponent<Rigidbody>();
 
             col = GetComponent<CapsuleCollider>();
@@ -76,17 +76,12 @@ namespace Player
         {
             FreezeRotation();
 
-            float horizontal = input.MoveInput.x;
-            float vertical = input.MoveInput.y;
-
-            InitAnim(horizontal, vertical);
-
-            currentBaseState = anim.GetCurrentAnimatorStateInfo(0);
-            currentUpperBodyState = anim.GetCurrentAnimatorStateInfo(2);
+            currentBaseState = anim.GetBaseLayerState();
+            currentUpperBodyState = anim.GetUpperBodyState();
             rb.useGravity = true;
 
 
-            CalculateMoveAndRotate(horizontal, vertical);
+            CalculateMoveAndRotate();
 
             HandleStateSpecificLogic();
         }
@@ -99,7 +94,7 @@ namespace Player
             else if (currentBaseState.fullPathHash == locoState || currentBaseState.fullPathHash == SlidingState)
             {
                 float speedFactor = (currentBaseState.fullPathHash == SlidingState) ? slidingSpeed : forwardSpeed;
-                Vector3 deltaMovement = velocity * anim.deltaPosition.magnitude * speedFactor;
+                Vector3 deltaMovement = velocity * anim.GetAnimationDistance() * speedFactor;
 
                 float moveDistance = deltaMovement.magnitude;
                 Vector3 moveDirection = deltaMovement.normalized;
@@ -127,8 +122,8 @@ namespace Player
             }
             else if (currentBaseState.fullPathHash == jumpState)
             {
-                Vector3 desiredMove = velocity * anim.deltaPosition.magnitude;
-                float yMovement = anim.deltaPosition.y;
+                Vector3 desiredMove = velocity * anim.GetAnimationDistance();
+                float yMovement = anim.GetVerticalDelta();
                 Vector3 moveDelta = desiredMove + Vector3.up * yMovement;
                 rb.MovePosition(rb.position + moveDelta);
                 rb.MoveRotation(rotation);
@@ -138,23 +133,19 @@ namespace Player
 
         void Jump()
         {
-            if (currentBaseState.fullPathHash == locoState)
+            if (currentBaseState.fullPathHash == locoState
+                && !anim.IsTransitioning())
             {
-                if (!anim.IsInTransition(0))
-                {
-                    anim.SetBool("Jump", true);
-                }
+                anim.PlayJump();
             }
         }
 
         void Sliding()
         {
-            if (currentBaseState.fullPathHash == locoState)
+            if (currentBaseState.fullPathHash == locoState
+                && !anim.IsTransitioning())
             {
-                if (!anim.IsInTransition(0))
-                {
-                    anim.SetBool("Sliding", true);
-                }
+                anim.PlaySliding();
             }
         }
         void Attack()
@@ -166,10 +157,10 @@ namespace Player
 
             if(weaponHandler.CanFire())
             {
-                anim.SetTrigger("Shot");
+                anim.PlayFire();
                 weaponHandler.Fire();
             }
-            
+
         }
 
         void Reload()
@@ -183,32 +174,29 @@ namespace Player
 
             if (weaponHandler.CanReload())
             {
-                if (!anim.IsInTransition(0))
+                if (!anim.IsTransitioning())
                 {
-                    anim.SetBool("Reload", true);
-                    weaponHandler.Reload(ref ammo);
+                    anim.PlayReload();
                 }
+                weaponHandler.Reload(ref ammo);
             }
         }
 
-
-        void InitAnim(float h, float v)
+        void CalculateMoveAndRotate()
         {
-            anim.speed = animSpeed;
+            float horizontal = input.MoveInput.x;
+            float vertical = input.MoveInput.y;
 
-            float speed = new Vector2(h, v).magnitude;
+            float speed = new Vector2(horizontal, vertical).magnitude;
 
             if (currentUpperBodyState.fullPathHash == ReloadingState)
             {
                 speed = 0f;
             }
 
-            anim.SetBool("IsWalking", speed > 0.01f);
-        }
+            anim.PlayWalking(speed > 0.01f);
 
-        void CalculateMoveAndRotate(float h, float v)
-        {
-            velocity.Set(h, 0f, v);
+            velocity.Set(horizontal, 0f, vertical);
             velocity.Normalize();
 
             Vector3 desiredForward = Vector3.RotateTowards(transform.forward, velocity, rotateSpeed * Time.deltaTime, 0f);
@@ -222,12 +210,10 @@ namespace Player
 
         void HandleStateSpecificLogic()
         {
-            if (currentUpperBodyState.fullPathHash == ReloadingState)
+            if (currentUpperBodyState.fullPathHash == ReloadingState
+                && !anim.IsTransitioning())
             {
-                if (!anim.IsInTransition(0))
-                {
-                    anim.SetBool("Reload", false);
-                }
+                anim.StopReload();
             }
 
             if (currentBaseState.fullPathHash == locoState)
@@ -240,12 +226,12 @@ namespace Player
 
             else if (currentBaseState.fullPathHash == jumpState)
             {
-                if (!anim.IsInTransition(0))
+                if (!anim.IsTransitioning())
                 {
                     if (useCurves)
                     {
-                        float jumpHeight = anim.GetFloat("JumpHeight");
-                        float gravityControl = anim.GetFloat("GravityControl");
+                        float jumpHeight = anim.GetJumpHeight();
+                        float gravityControl = anim.GetGravityControlt();
                         if (gravityControl > 0)
                             rb.useGravity = false;
 
@@ -266,15 +252,15 @@ namespace Player
                             }
                         }
                     }
-                    anim.SetBool("Jump", false);
+                    anim.StopJump();
                 }
             }
 
             else if (currentBaseState.fullPathHash == SlidingState)
             {
-                if (!anim.IsInTransition(0))
+                if (!anim.IsTransitioning())
                 {
-                    anim.SetBool("Sliding", false);
+                    anim.StopSliding();
                 }
             }
 

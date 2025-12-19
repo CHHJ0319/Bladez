@@ -145,7 +145,7 @@ namespace Enemy
 
             if (target.CompareTag("Player"))
             {
-                PlayerMovement player = target.gameObject.GetComponent<PlayerMovement>();
+                Player.PlayerController player = target.gameObject.GetComponent<Player.PlayerController>();
                 player.TakeDamage(ad);
    
             }

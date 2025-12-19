@@ -1,8 +1,10 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Windows;
 
 namespace Player
 {
+    [RequireComponent(typeof(PlayerInput))]
     [RequireComponent(typeof(WeaponHandler))]
     public class PlayerController : MonoBehaviour
     {
@@ -26,6 +28,7 @@ namespace Player
         private Vector3 orgVectColCenter;
 
         private WeaponHandler weaponHandler;
+        private PlayerInput input;
 
         private Rigidbody rb;
         private Animator anim;
@@ -44,6 +47,7 @@ namespace Player
 
         void Start()
         {
+            input = GetComponent<PlayerInput>();
             weaponHandler = GetComponent<WeaponHandler>();
 
             anim = GetComponent<Animator>();
@@ -53,6 +57,12 @@ namespace Player
             orgColHight = col.height;
             orgVectColCenter = col.center;
             capsuleRadius = col.radius;
+
+            Events.PlayerEvents.OnAttack += Attack;
+            Events.PlayerEvents.OnJump += Jump;
+            Events.PlayerEvents.OnSliding += Sliding;
+            Events.PlayerEvents.OnReload += Reload;
+
 
             collisionLayerMask = LayerMask.GetMask("Wall");
         }
@@ -66,8 +76,8 @@ namespace Player
         {
             FreezeRotation();
 
-            float horizontal = Input.GetAxis("Horizontal");
-            float vertical = Input.GetAxis("Vertical");
+            float horizontal = input.MoveInput.x;
+            float vertical = input.MoveInput.y;
 
             InitAnim(horizontal, vertical);
 
@@ -126,7 +136,7 @@ namespace Player
         }
 
 
-        void OnJump(InputValue value)
+        void Jump()
         {
             if (currentBaseState.fullPathHash == locoState)
             {
@@ -137,7 +147,7 @@ namespace Player
             }
         }
 
-        void OnSliding(InputValue value)
+        void Sliding()
         {
             if (currentBaseState.fullPathHash == locoState)
             {
@@ -147,7 +157,7 @@ namespace Player
                 }
             }
         }
-        void OnAttack(InputValue value)
+        void Attack()
         {
             if (currentBaseState.fullPathHash == jumpState && 
                 currentBaseState.fullPathHash == SlidingState && 
@@ -162,7 +172,7 @@ namespace Player
             
         }
 
-        void OnReload(InputValue value)
+        void Reload()
         {
             if (ammo == 0)
                 return;

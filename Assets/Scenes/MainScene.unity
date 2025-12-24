@@ -8635,7 +8635,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 503242739705778537, guid: 6361b6ba9ffb4d14faff6d8a9140fe3f, type: 3}
       propertyPath: jumpSpeed
-      value: 0.5
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 503242739705778537, guid: 6361b6ba9ffb4d14faff6d8a9140fe3f, type: 3}
       propertyPath: gameEnding

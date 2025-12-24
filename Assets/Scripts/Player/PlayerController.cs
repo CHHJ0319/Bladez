@@ -10,20 +10,24 @@ namespace Player
     public class PlayerController : MonoBehaviour
     {
         public GameEnding gameEnding;
+        public Transform thirdCamTranform;
 
+        [Header("Property")]
         public float forwardSpeed = 7.0f;
         public float rotateSpeed = 20.0f;
         public float slidingSpeed = 3.0f;
         public float jumpSpeed = 0.5f;
 
         private float hp = 100f;
-        private int ammo = 100;
+        [SerializeField] private int ammo = 100;
 
         private bool useCurves = true;
         private float useCurvesHeight = 0.5f;
 
         private float orgColHeight;
         private Vector3 orgVectColCenter;
+
+        private CharacterController controller;
 
         private WeaponHandler weaponHandler;
         private PlayerInput input;
@@ -32,52 +36,35 @@ namespace Player
         private AnimatorStateInfo currentBaseState;
         private AnimatorStateInfo currentUpperBodyState;
 
-        //-------------------------------------------------------------
-        private CharacterController controller;
-        public Transform thirdCamTranform;
-
-        static int idleState = Animator.StringToHash("Base Layer.Idle");
-        static int locoState = Animator.StringToHash("Base Layer.RUN");
-        static int jumpState = Animator.StringToHash("Base Layer.Jump");
-        static int slidingState = Animator.StringToHash("Base Layer.Sliding");
-
-        static int reloadingState = Animator.StringToHash("UpperBody.Reloading");
-
         void Start()
         {
-            input = GetComponent<PlayerInput>();
-            anim = GetComponent<PlayerAnimator>();
-            weaponHandler = GetComponent<WeaponHandler>();
-
             controller = GetComponent<CharacterController>();
             orgColHeight = controller.height;
             orgVectColCenter = controller.center;
+
+            input = GetComponent<PlayerInput>();
+            anim = GetComponent<PlayerAnimator>();
+            weaponHandler = GetComponent<WeaponHandler>();
 
             Events.PlayerEvents.OnAttack += Attack;
             Events.PlayerEvents.OnJump += Jump;
             Events.PlayerEvents.OnSliding += Sliding;
             Events.PlayerEvents.OnReload += Reload;
+
+            Cursor.lockState = CursorLockMode.Locked;
         }
 
         private void Update()
         {
             weaponHandler.UpdateFireTimer();
-
             ApplyRotation();
         }
 
         void FixedUpdate()
         {
-            Cursor.lockState = CursorLockMode.Locked;
-
-            currentBaseState = anim.GetBaseLayerState();
-            currentUpperBodyState = anim.GetUpperBodyState();
-
+            GetAnimState();
             CalculateMove();
-
             HandleStateSpecificLogic();
-
-
         }
 
         void ApplyRotation()
@@ -86,10 +73,16 @@ namespace Player
             transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.Euler(0, targetRotation, 0), rotateSpeed * Time.deltaTime);
         }
 
+        void GetAnimState()
+        {
+            currentBaseState = anim.GetBaseLayerState();
+            currentUpperBodyState = anim.GetUpperBodyState();
+        }
+
 
         void Jump()
         {
-            if (currentBaseState.fullPathHash == locoState
+            if (currentBaseState.fullPathHash == PrayerState.LocoState
                 && !anim.IsTransitioning())
             {
                 anim.PlayJump();
@@ -98,17 +91,18 @@ namespace Player
 
         void Sliding()
         {
-            if (currentBaseState.fullPathHash == locoState
+            if (currentBaseState.fullPathHash == PrayerState.LocoState
                 && !anim.IsTransitioning())
             {
                 anim.PlaySliding();
             }
         }
+
         void Attack()
         {
-            if (currentBaseState.fullPathHash == jumpState && 
-                currentBaseState.fullPathHash == slidingState && 
-                currentBaseState.fullPathHash == reloadingState)
+            if (currentBaseState.fullPathHash == PrayerState.JumpState && 
+                currentBaseState.fullPathHash == PrayerState.SlidingState && 
+                currentBaseState.fullPathHash == PrayerState.ReloadingState)
                 return;
 
             if(weaponHandler.CanFire())
@@ -124,8 +118,8 @@ namespace Player
             if (ammo == 0)
                 return;
 
-            if (currentBaseState.fullPathHash == jumpState &&
-                currentBaseState.fullPathHash == slidingState)
+            if (currentBaseState.fullPathHash == PrayerState.JumpState &&
+                currentBaseState.fullPathHash == PrayerState.SlidingState)
                 return;
 
             if (weaponHandler.CanReload())
@@ -155,15 +149,15 @@ namespace Player
 
             float speedFactor = forwardSpeed;
 
-            if (currentUpperBodyState.fullPathHash == slidingState)
+            if (currentUpperBodyState.fullPathHash == PrayerState.SlidingState)
             {
                 speedFactor = slidingSpeed;
             }
-            else if (currentUpperBodyState.fullPathHash == jumpState)
+            else if (currentUpperBodyState.fullPathHash == PrayerState.JumpState)
             {
                 speedFactor = jumpSpeed;
             }
-            else if (currentUpperBodyState.fullPathHash == reloadingState)
+            else if (currentUpperBodyState.fullPathHash == PrayerState.ReloadingState)
             {
                 speedFactor = 0.0f;
             }
@@ -173,21 +167,21 @@ namespace Player
 
         void HandleStateSpecificLogic()
         {
-            if (currentUpperBodyState.fullPathHash == reloadingState
+            if (currentUpperBodyState.fullPathHash == PrayerState.ReloadingState
                 && !anim.IsTransitioning())
             {
                 anim.StopReload();
             }
 
-            if (currentBaseState.fullPathHash == locoState)
+            if (currentBaseState.fullPathHash == PrayerState.LocoState)
             {
                 if (useCurves)
                 {
-                    resetCollider();
+                    ResetCollider();
                 }
             }
 
-            else if (currentBaseState.fullPathHash == jumpState)
+            else if (currentBaseState.fullPathHash == PrayerState.JumpState)
             {
                 if (!anim.IsTransitioning())
                 {
@@ -203,6 +197,7 @@ namespace Player
                             if (hitInfo.distance > useCurvesHeight)
                             {
                                 float newHeight = orgColHeight - jumpHeight;
+                                Debug.Log("asasd " + jumpHeight);
                                 controller.height = newHeight;
 
                                 float adjCenterY = newHeight / 2f;
@@ -210,7 +205,7 @@ namespace Player
                             }
                             else
                             {
-                                resetCollider();
+                                ResetCollider();
                             }
                         }
                     }
@@ -218,7 +213,7 @@ namespace Player
                 }
             }
 
-            else if (currentBaseState.fullPathHash == slidingState)
+            else if (currentBaseState.fullPathHash == PrayerState.SlidingState)
             {
                 if (!anim.IsTransitioning())
                 {
@@ -226,16 +221,16 @@ namespace Player
                 }
             }
 
-            else if (currentBaseState.fullPathHash == idleState)
+            else if (currentBaseState.fullPathHash == PrayerState.IdleState)
             {
                 if (useCurves)
                 {
-                    resetCollider();
+                    ResetCollider();
                 }
             }
         }
 
-        void resetCollider()
+        void ResetCollider()
         {
             controller.height = orgColHeight;
             controller.center = orgVectColCenter;

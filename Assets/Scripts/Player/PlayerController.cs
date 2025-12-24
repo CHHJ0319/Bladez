@@ -14,6 +14,7 @@ namespace Player
         public float forwardSpeed = 7.0f;
         public float rotateSpeed = 20.0f;
         public float slidingSpeed = 3.0f;
+        public float jumpSpeed = 0.5f;
 
         private float hp = 100f;
         private int ammo = 100;
@@ -21,29 +22,26 @@ namespace Player
         private bool useCurves = true;
         private float useCurvesHeight = 0.5f;
 
-        private Vector3 velocity;
-        Quaternion rotation = Quaternion.identity;
-
-        private float orgColHight;
+        private float orgColHeight;
         private Vector3 orgVectColCenter;
 
         private WeaponHandler weaponHandler;
         private PlayerInput input;
         private PlayerAnimator anim;
 
-        private Rigidbody rb;
         private AnimatorStateInfo currentBaseState;
         private AnimatorStateInfo currentUpperBodyState;
-        private CapsuleCollider col;
-        private float capsuleRadius;
-        private int collisionLayerMask;
+
+        //-------------------------------------------------------------
+        private CharacterController controller;
+        public Transform thirdCamTranform;
 
         static int idleState = Animator.StringToHash("Base Layer.Idle");
         static int locoState = Animator.StringToHash("Base Layer.RUN");
         static int jumpState = Animator.StringToHash("Base Layer.Jump");
-        static int SlidingState = Animator.StringToHash("Base Layer.Sliding");
+        static int slidingState = Animator.StringToHash("Base Layer.Sliding");
 
-        static int ReloadingState = Animator.StringToHash("UpperBody.Reloading");
+        static int reloadingState = Animator.StringToHash("UpperBody.Reloading");
 
         void Start()
         {
@@ -51,83 +49,41 @@ namespace Player
             anim = GetComponent<PlayerAnimator>();
             weaponHandler = GetComponent<WeaponHandler>();
 
-            rb = GetComponent<Rigidbody>();
-
-            col = GetComponent<CapsuleCollider>();
-            orgColHight = col.height;
-            orgVectColCenter = col.center;
-            capsuleRadius = col.radius;
+            controller = GetComponent<CharacterController>();
+            orgColHeight = controller.height;
+            orgVectColCenter = controller.center;
 
             Events.PlayerEvents.OnAttack += Attack;
             Events.PlayerEvents.OnJump += Jump;
             Events.PlayerEvents.OnSliding += Sliding;
             Events.PlayerEvents.OnReload += Reload;
-
-
-            collisionLayerMask = LayerMask.GetMask("Wall");
         }
 
         private void Update()
         {
             weaponHandler.UpdateFireTimer();
+
+            ApplyRotation();
         }
 
         void FixedUpdate()
         {
-            FreezeRotation();
+            Cursor.lockState = CursorLockMode.Locked;
 
             currentBaseState = anim.GetBaseLayerState();
             currentUpperBodyState = anim.GetUpperBodyState();
-            rb.useGravity = true;
 
-
-            CalculateMoveAndRotate();
+            CalculateMove();
 
             HandleStateSpecificLogic();
+
+
         }
 
-        void OnAnimatorMove()
+        void ApplyRotation()
         {
-            if (currentUpperBodyState.fullPathHash == ReloadingState)
-            {
-            }
-            else if (currentBaseState.fullPathHash == locoState || currentBaseState.fullPathHash == SlidingState)
-            {
-                float speedFactor = (currentBaseState.fullPathHash == SlidingState) ? slidingSpeed : forwardSpeed;
-                Vector3 deltaMovement = velocity * anim.GetAnimationDistance() * speedFactor;
-
-                float moveDistance = deltaMovement.magnitude;
-                Vector3 moveDirection = deltaMovement.normalized;
-
-                RaycastHit hit;
-
-                Vector3 sphereOrigin = rb.position + Vector3.up * col.center.y;
-
-                if (Physics.SphereCast(sphereOrigin, capsuleRadius, moveDirection, out hit, moveDistance, collisionLayerMask))
-                {
-                    float safeDistance = hit.distance - 0.001f;
-
-                    if (safeDistance > 0)
-                    {
-                        deltaMovement = moveDirection * safeDistance;
-                    }
-                    else
-                    {
-                        deltaMovement = Vector3.zero;
-                    }
-                }
-
-                rb.MovePosition(rb.position + deltaMovement);
-                rb.MoveRotation(rotation);
-            }
-            else if (currentBaseState.fullPathHash == jumpState)
-            {
-                Vector3 desiredMove = velocity * anim.GetAnimationDistance();
-                float yMovement = anim.GetVerticalDelta();
-                Vector3 moveDelta = desiredMove + Vector3.up * yMovement;
-                rb.MovePosition(rb.position + moveDelta);
-                rb.MoveRotation(rotation);
-            }
+            float targetRotation = thirdCamTranform.eulerAngles.y;
+            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.Euler(0, targetRotation, 0), rotateSpeed * Time.deltaTime);
         }
 
 
@@ -151,8 +107,8 @@ namespace Player
         void Attack()
         {
             if (currentBaseState.fullPathHash == jumpState && 
-                currentBaseState.fullPathHash == SlidingState && 
-                currentBaseState.fullPathHash == ReloadingState)
+                currentBaseState.fullPathHash == slidingState && 
+                currentBaseState.fullPathHash == reloadingState)
                 return;
 
             if(weaponHandler.CanFire())
@@ -169,7 +125,7 @@ namespace Player
                 return;
 
             if (currentBaseState.fullPathHash == jumpState &&
-                currentBaseState.fullPathHash == SlidingState)
+                currentBaseState.fullPathHash == slidingState)
                 return;
 
             if (weaponHandler.CanReload())
@@ -182,35 +138,42 @@ namespace Player
             }
         }
 
-        void CalculateMoveAndRotate()
+        void CalculateMove()
         {
             float horizontal = input.MoveInput.x;
             float vertical = input.MoveInput.y;
 
-            float speed = new Vector2(horizontal, vertical).magnitude;
+            float moveSpeed = new Vector2(horizontal, vertical).magnitude;
+            anim.PlayWalking(moveSpeed > 0.01f);
 
-            if (currentUpperBodyState.fullPathHash == ReloadingState)
+            Vector3 moveDir = (transform.forward * vertical) + (transform.right * horizontal);
+
+            if (!controller.isGrounded)
             {
-                speed = 0f;
+                moveDir.y -= 9.81f * Time.deltaTime;
             }
 
-            anim.PlayWalking(speed > 0.01f);
+            float speedFactor = forwardSpeed;
 
-            velocity.Set(horizontal, 0f, vertical);
-            velocity.Normalize();
+            if (currentUpperBodyState.fullPathHash == slidingState)
+            {
+                speedFactor = slidingSpeed;
+            }
+            else if (currentUpperBodyState.fullPathHash == jumpState)
+            {
+                speedFactor = jumpSpeed;
+            }
+            else if (currentUpperBodyState.fullPathHash == reloadingState)
+            {
+                speedFactor = 0.0f;
+            }
 
-            Vector3 desiredForward = Vector3.RotateTowards(transform.forward, velocity, rotateSpeed * Time.deltaTime, 0f);
-            rotation = Quaternion.LookRotation(desiredForward);
-        }
-
-        void FreezeRotation()
-        {
-            rb.angularVelocity = Vector3.zero;
+            controller.Move(moveDir * speedFactor * Time.deltaTime);
         }
 
         void HandleStateSpecificLogic()
         {
-            if (currentUpperBodyState.fullPathHash == ReloadingState
+            if (currentUpperBodyState.fullPathHash == reloadingState
                 && !anim.IsTransitioning())
             {
                 anim.StopReload();
@@ -231,9 +194,6 @@ namespace Player
                     if (useCurves)
                     {
                         float jumpHeight = anim.GetJumpHeight();
-                        float gravityControl = anim.GetGravityControlt();
-                        if (gravityControl > 0)
-                            rb.useGravity = false;
 
                         Ray ray = new Ray(transform.position + Vector3.up, -Vector3.up);
                         RaycastHit hitInfo = new RaycastHit();
@@ -242,13 +202,15 @@ namespace Player
                         {
                             if (hitInfo.distance > useCurvesHeight)
                             {
-                                col.height = orgColHight - jumpHeight;
-                                float adjCenterY = orgVectColCenter.y + jumpHeight;
-                                col.center = new Vector3(0, adjCenterY, 0);
+                                float newHeight = orgColHeight - jumpHeight;
+                                controller.height = newHeight;
+
+                                float adjCenterY = newHeight / 2f;
+                                controller.center = new Vector3(0, adjCenterY, 0);
                             }
                             else
                             {
-                                //resetCollider();
+                                resetCollider();
                             }
                         }
                     }
@@ -256,7 +218,7 @@ namespace Player
                 }
             }
 
-            else if (currentBaseState.fullPathHash == SlidingState)
+            else if (currentBaseState.fullPathHash == slidingState)
             {
                 if (!anim.IsTransitioning())
                 {
@@ -275,8 +237,8 @@ namespace Player
 
         void resetCollider()
         {
-            col.height = orgColHight;
-            col.center = orgVectColCenter;
+            controller.height = orgColHeight;
+            controller.center = orgVectColCenter;
         }
 
         public void TakeDamage(float damage)

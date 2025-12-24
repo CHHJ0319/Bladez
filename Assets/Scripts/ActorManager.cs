@@ -1,18 +1,11 @@
 using UnityEngine;
 
-public class ActorManager : MonoBehaviour
+public static class ActorManager
 {
-    private void OnEnable()
+    public static void Init()
     {
         Events.EnemyEvents.OnPlayerDetected += StartChase;
     }
-
-    private void OnDisable()
-    {
-        Events.EnemyEvents.OnPlayerDetected -= StartChase;
-
-    }
-
     public static void StartChase(Enemy.Observer observer)
     {
         Enemy.EnemyController enemy = observer.gameObject.GetComponentInParent<Enemy.EnemyController>();

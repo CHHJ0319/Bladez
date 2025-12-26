@@ -89,6 +89,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: de464a5c683c64047a5c645b2a40f5d0, type: 3}
+--- !u!114 &4757255505859292052 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6819504821974914115, guid: de464a5c683c64047a5c645b2a40f5d0, type: 3}
+  m_PrefabInstance: {fileID: 2064501497242288087}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6c55c6b0a2f3638418824f481c689ccf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &9107104431924717770 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7116947549686159133, guid: de464a5c683c64047a5c645b2a40f5d0, type: 3}
@@ -353,7 +364,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 1
   m_Interpolate: 0
-  m_Constraints: 0
+  m_Constraints: 112
   m_CollisionDetection: 0
 --- !u!195 &2095113394881354372
 NavMeshAgent:
@@ -389,11 +400,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e117d587c0f9e834d8a50abfae312351, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  target: {fileID: 0}
+  observer: {fileID: 4757255505859292052}
   fireParticle: {fileID: 9148179370570588261}
   fireRate: 5
   maxHP: 0
   curHP: 3
-  target: {fileID: 0}
   waypoints: []
 --- !u!82 &4512197197583474915
 AudioSource:

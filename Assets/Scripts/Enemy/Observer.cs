@@ -4,16 +4,16 @@ namespace Enemy
 {
     public class Observer : MonoBehaviour
     {
-        public Transform player;
-        public GameEnding gameEnding;
+        private Transform player;
+        public bool IsPlayerDetected { get; private set; }
 
-        bool m_IsPlayerInRange;
+        bool isPlayerInRange;
 
         void OnTriggerEnter(Collider other)
         {
             if (other.transform == player)
             {
-                m_IsPlayerInRange = true;
+                isPlayerInRange = true;
             }
         }
 
@@ -21,13 +21,13 @@ namespace Enemy
         {
             if (other.transform == player)
             {
-                m_IsPlayerInRange = false;
+                isPlayerInRange = false;
             }
         }
 
         void Update()
         {
-            if (m_IsPlayerInRange)
+            if (isPlayerInRange)
             {
                 Vector3 direction = player.position - transform.position + Vector3.up;
                 Ray ray = new Ray(transform.position, direction);
@@ -37,10 +37,15 @@ namespace Enemy
                 {
                     if (raycastHit.collider.transform == player)
                     {
-                        Events.EnemyEvents.DetectPlayer(this);
+                        IsPlayerDetected = true;
                     }
                 }
             }
+        }
+
+        public void SetPlayer(Transform target)
+        {
+            player = target;
         }
     }
 }

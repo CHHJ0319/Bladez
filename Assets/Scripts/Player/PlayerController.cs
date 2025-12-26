@@ -15,8 +15,8 @@ namespace Player
         [Header("Property")]
         public float forwardSpeed = 7.0f;
         public float rotateSpeed = 20.0f;
-        public float slidingSpeed = 3.0f;
-        public float jumpSpeed = 0.5f;
+        public float slidingSpeed = 4.0f;
+        public float jumpSpeed = 2f;
 
         private float hp = 100f;
         [SerializeField] private int ammo = 100;
@@ -149,17 +149,17 @@ namespace Player
 
             float speedFactor = forwardSpeed;
 
-            if (currentUpperBodyState.fullPathHash == PrayerState.SlidingState)
+            if (currentUpperBodyState.fullPathHash == PrayerState.ReloadingState)
+            {
+                speedFactor = 0.0f;
+            }
+            else if (currentBaseState.fullPathHash == PrayerState.SlidingState)
             {
                 speedFactor = slidingSpeed;
             }
-            else if (currentUpperBodyState.fullPathHash == PrayerState.JumpState)
+            else if (currentBaseState.fullPathHash == PrayerState.JumpState)
             {
                 speedFactor = jumpSpeed;
-            }
-            else if (currentUpperBodyState.fullPathHash == PrayerState.ReloadingState)
-            {
-                speedFactor = 0.0f;
             }
 
             controller.Move(moveDir * speedFactor * Time.deltaTime);

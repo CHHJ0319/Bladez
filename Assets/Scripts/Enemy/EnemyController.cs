@@ -6,57 +6,50 @@ namespace Enemy
 {
     public class EnemyController : MonoBehaviour
     {
-        [Header("Attack Settings")]
+        public Transform target;
+        public Observer observer;
+
         public ParticleSystem fireParticle;
         public float fireRate = 2.0f;
 
         protected float fireDelay;
         protected bool isFireReady;
 
-        [Header("Settings")]
         public int maxHP;
         public int curHP;
         public virtual float ad => 10;
 
-        public Transform target;
-
-        protected bool isChase;
         protected NavMeshAgent navMeshAgent;
+        protected bool isHit;
 
         Vector3 reactVec;
 
-        Rigidbody rb;
-        BoxCollider col;
-        Material mat;
-        Animator anim;
-
-        private void OnEnable()
-        {
-            Events.EnemyEvents.OnFireHit += OnFireHit;
-        }
-
-        private void OnDisable()
-        {
-            Events.EnemyEvents.OnFireHit -= OnFireHit;
-
-        }
+        protected Rigidbody rb;
+        protected Material mat;
+        protected Animator anim;
 
         void Awake()
         {
             rb = GetComponent<Rigidbody>();
-            col = rb.GetComponent<BoxCollider>();
-            mat = GetComponentInChildren<SkinnedMeshRenderer>().material;
+            mat = GetComponentInChildren<SkinnedMeshRenderer>().materials[1];
             anim = GetComponent<Animator>();
             navMeshAgent = GetComponent<NavMeshAgent>();
+
+            observer.SetPlayer(target);
         }
 
+        private void Start()
+        {
+            Events.PlayerEvents.OnBulletHit += TakeDamage;
+            Events.EnemyEvents.OnFireHit += OnFireHit;
+        }
 
         void Update()
         {
             fireDelay += Time.deltaTime;
             isFireReady = fireDelay > fireRate;
 
-            if (isChase)
+            if (observer.IsPlayerDetected && !isHit)
             {
                 if (isFireReady)
                 {
@@ -70,31 +63,28 @@ namespace Enemy
             }
         }
 
-        private void FixedUpdate()
+        public void TakeDamage(int damage, Vector3 bulletPos)
         {
-            FreezeVelocity();
-        }
-
-        void OnTriggerEnter(Collider collider)
-        {
-            if(collider.tag == "Bullet")
+            if(!isHit)
             {
-                Bullet bullet = collider.GetComponent<Bullet>();
-                curHP -= bullet.damage;
-                reactVec = rb.position - collider.GetComponent<Rigidbody>().position;
+                reactVec = transform.position + bulletPos;
+                reactVec = reactVec.normalized;
 
-                StartCoroutine(OnDamage());
+                StartCoroutine(OnDamage(damage));
             }
         }
 
-        IEnumerator OnDamage()
+        IEnumerator OnDamage(int damage)
         {
-            mat.color = Color.red;
-            yield return new WaitForSeconds(0.1f);
+            curHP -= damage;
+
+            ApplyKnockback();
+
+            yield return new WaitForSeconds(0.2f);
 
             if(curHP > 0)
             {
-                mat.color = Color.white;
+                ResumeActivity();
             }
             else
             {
@@ -102,32 +92,37 @@ namespace Enemy
             }
         }
 
-        void FreezeVelocity()
+        void ApplyKnockback()
         {
-            if(isChase)
-            {
-                rb.linearVelocity = Vector3.zero;
-                rb.angularVelocity = Vector3.zero;
-            }
+            mat.color = Color.red;
+
+            isHit = true;
+            navMeshAgent.enabled = false;
+            rb.isKinematic = false;
+
+            
+            //rb.AddForce(reactVec * 5f, ForceMode.Impulse);
+        }
+
+        void ResumeActivity()
+        {
+            mat.color = Color.white;
+            rb.linearVelocity = Vector3.zero;
+
+            isHit = false;
+            navMeshAgent.enabled = true;
+            rb.isKinematic = true;
         }
 
         void Die()
         {
             mat.color = Color.gray;
 
-            anim.SetTrigger("doDie");
-            isChase = false;
-
-            reactVec = reactVec.normalized;
             reactVec += Vector3.up;
-            rb.AddForce(reactVec * 5, ForceMode.Impulse);
+            //rb.AddForce(reactVec * 5f, ForceMode.Impulse);
 
-            Destroy(gameObject, 1);
-        }
-
-        public void StartChase()
-        {
-            isChase = true;
+            anim.enabled = false;
+            Destroy(gameObject, 1f);
         }
 
         protected void Fire()

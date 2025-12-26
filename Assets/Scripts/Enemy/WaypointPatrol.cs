@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.AI;
 
 namespace Enemy
 {
@@ -7,19 +8,27 @@ namespace Enemy
         public Transform[] waypoints;
         public override float ad => 20;
 
-        int m_CurrentWaypointIndex;
+        int currentWaypointIndex;
+
+        void Awake()
+        {
+            rb = GetComponent<Rigidbody>();
+            mat = GetComponentInChildren<SkinnedMeshRenderer>().material;
+            anim = GetComponent<Animator>();
+            navMeshAgent = GetComponent<NavMeshAgent>();
+
+            observer.SetPlayer(target);
+        }
 
         void Update()
         {
             fireDelay += Time.deltaTime;
             isFireReady = fireDelay > fireRate;
 
-            if (isChase)
+            if (observer.IsPlayerDetected && !isHit)
             {
                 if (isFireReady)
                 {
-                    navMeshAgent.isStopped = true;
-                    navMeshAgent.updateRotation = false;
                     navMeshAgent.velocity = Vector3.zero;
 
                     Fire();
@@ -27,20 +36,15 @@ namespace Enemy
                 }
                 else
                 {
-                    navMeshAgent.isStopped = false;
-                    navMeshAgent.updateRotation = true;
                     navMeshAgent.SetDestination(target.position);
                 }
             }
-            else
+            else if (!isHit)
             {
-                navMeshAgent.isStopped = false;
-                navMeshAgent.updateRotation = true;
-
                 if (navMeshAgent.remainingDistance < navMeshAgent.stoppingDistance)
                 {
-                    m_CurrentWaypointIndex = (m_CurrentWaypointIndex + 1) % waypoints.Length;
-                    navMeshAgent.SetDestination(waypoints[m_CurrentWaypointIndex].position);
+                    currentWaypointIndex = (currentWaypointIndex + 1) % waypoints.Length;
+                    navMeshAgent.SetDestination(waypoints[currentWaypointIndex].position);
                 }
             }
 

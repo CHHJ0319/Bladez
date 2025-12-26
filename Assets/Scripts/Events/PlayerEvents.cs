@@ -10,6 +10,8 @@ namespace Events
         public static event Action OnJump;
         public static event Action OnSliding;
         public static event Action OnReload;
+        public static event Action<int, Vector3> OnBulletHit;
+
 
         public static void Clear()
         {
@@ -18,6 +20,7 @@ namespace Events
             OnJump = null;
             OnSliding = null;
             OnReload = null;
+            OnBulletHit = null;
         }
 
         public static void Move(float horizontal, float vertical)
@@ -43,6 +46,11 @@ namespace Events
         public static void Reload()
         {
             OnReload?.Invoke();
+        }
+
+        public static void OnAttackHit(int damage, Vector3 bulletPos)
+        {
+            OnBulletHit?.Invoke(damage, bulletPos);
         }
     }
 }

@@ -8,6 +8,8 @@ namespace Enemy
     {
         public Transform target;
         public Observer observer;
+        public GameObject dectionMark;
+
         public bool isAttacking;
 
         public ParticleSystem fireParticle;

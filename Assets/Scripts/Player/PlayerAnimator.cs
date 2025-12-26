@@ -6,11 +6,20 @@ namespace Player
     {
         public float animSpeed = 1.5f;
 
+        [Header("SoundList")]
+        public AudioClip smileSound;
+        public AudioClip startSound;
+        public AudioClip jumpSound;
+        public AudioClip slidingSound;
+        public AudioClip winSound;
+
         private Animator anim;
+        private AudioSource audioSource;
 
         void Start()
         {
             anim = GetComponent<Animator>();
+            audioSource = GetComponent<AudioSource>();
 
             anim.speed = animSpeed;
         }
@@ -39,19 +48,21 @@ namespace Player
             return anim.IsInTransition(0);
         }
 
-        public void PlayWalking(bool isWalkin)
+        public void PlayWalking(bool isWalking)
         {
-            anim.SetBool("IsWalking", isWalkin);
+            anim.SetBool("IsWalking", isWalking);
         }
 
         public void PlayJump()
         {
             anim.SetBool("Jump", true);
+            audioSource.PlayOneShot(jumpSound);
         }
 
         public void PlaySliding()
         {
             anim.SetBool("Sliding", true);
+            audioSource.PlayOneShot(slidingSound);
         }
 
         public void PlayFire()
@@ -62,6 +73,7 @@ namespace Player
         public void PlayReload()
         {
             anim.SetBool("Reload", true);
+            audioSource.Play();
         }
 
         public float GetJumpHeight()

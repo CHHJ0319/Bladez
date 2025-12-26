@@ -9,6 +9,7 @@ public class Weapon : MonoBehaviour
     public float rate;
     public BoxCollider meleeArea;
     public TrailRenderer trailEffect;
+    public AudioSource audioSource;
 
     //Gun
     public int maxAmmo;
@@ -28,6 +29,8 @@ public class Weapon : MonoBehaviour
 
     IEnumerator Shot ()
     {
+        audioSource.Play();
+
         GameObject effect = Instantiate(shotEffect, bulletPos.position, bulletPos.rotation);
 
         GameObject instantBulet = Instantiate(bullet, bulletPos.position, bulletPos.rotation);

@@ -492,6 +492,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   target: {fileID: 0}
   observer: {fileID: 4757255505859292052}
+  dectionMark: {fileID: 2061495336513587541}
   isAttacking: 0
   fireParticle: {fileID: 9148179370570588261}
   fireRate: 5

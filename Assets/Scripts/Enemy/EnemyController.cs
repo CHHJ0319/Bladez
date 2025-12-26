@@ -8,6 +8,7 @@ namespace Enemy
     {
         public Transform target;
         public Observer observer;
+        public bool isAttacking;
 
         public ParticleSystem fireParticle;
         public float fireRate = 2.0f;
@@ -50,6 +51,7 @@ namespace Enemy
             isFireReady = fireDelay > fireRate;
 
             if (observer.IsPlayerDetected && !isHit)
+            // if (isAttacking)
             {
                 if (isFireReady)
                 {

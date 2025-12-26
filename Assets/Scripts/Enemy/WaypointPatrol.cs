@@ -26,6 +26,7 @@ namespace Enemy
             isFireReady = fireDelay > fireRate;
 
             if (observer.IsPlayerDetected && !isHit)
+            //if (isAttacking)
             {
                 if (isFireReady)
                 {

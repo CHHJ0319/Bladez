@@ -439,6 +439,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   target: {fileID: 0}
   observer: {fileID: 5349059559681308844}
+  isAttacking: 0
   fireParticle: {fileID: 4936720488767293119}
   fireRate: 2
   maxHP: 0
@@ -503,7 +504,7 @@ NavMeshAgent:
   m_Enabled: 1
   m_AgentTypeID: -1372625422
   m_Radius: 0.7
-  m_Speed: 3.5
+  m_Speed: 1
   m_Acceleration: 8
   avoidancePriority: 50
   m_AngularSpeed: 120

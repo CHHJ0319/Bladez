@@ -12,7 +12,7 @@ namespace Player
         public void UpdateFireTimer()
         {
             fireDelay += Time.deltaTime;
-            isFireReady = equipWeapon.rate < fireDelay;
+            //isFireReady = equipWeapon.rate < fireDelay;
         }
         
         public bool CanFire()

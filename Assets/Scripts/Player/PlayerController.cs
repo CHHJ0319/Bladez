@@ -51,11 +51,12 @@ namespace Player
             Events.PlayerEvents.OnSliding += Sliding;
             Events.PlayerEvents.OnReload += Reload;
 
-            Cursor.lockState = CursorLockMode.Locked;
+            input.LockCursor();
         }
 
         private void Update()
         {
+            input.UnlockCursor();
             weaponHandler.UpdateFireTimer();
             ApplyRotation();
         }
@@ -138,7 +139,7 @@ namespace Player
             float vertical = input.MoveInput.y;
 
             float moveSpeed = new Vector2(horizontal, vertical).magnitude;
-            anim.PlayWalking(moveSpeed > 0.01f);
+            anim.PlayMoving(moveSpeed > 0.01f);
 
             Vector3 moveDir = (transform.forward * vertical) + (transform.right * horizontal);
 

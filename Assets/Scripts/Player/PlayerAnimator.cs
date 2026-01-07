@@ -48,9 +48,9 @@ namespace Player
             return anim.IsInTransition(0);
         }
 
-        public void PlayWalking(bool isWalking)
+        public void PlayMoving(bool isMoving)
         {
-            anim.SetBool("IsWalking", isWalking);
+            anim.SetBool("IsMoving", isMoving);
         }
 
         public void PlayJump()

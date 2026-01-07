@@ -5,6 +5,21 @@ namespace Player
 {
     public class PlayerInput : MonoBehaviour
     {
+        public void LockCursor()
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+        }
+
+        public void UnlockCursor()
+        {
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                Cursor.lockState = CursorLockMode.None;
+                Cursor.visible = true;
+            }
+        }
+
         public Vector2 MoveInput { get; private set; }
 
         public void OnMove(InputValue value)

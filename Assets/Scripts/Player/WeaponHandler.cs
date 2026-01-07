@@ -5,9 +5,10 @@ namespace Player
 {
     public class WeaponHandler : MonoBehaviour
     {
-        public List<GameObject> weapons = new List<GameObject>();
+        public Transform weaponHolder;
         public Item.Weapon.WeaponController equipWeapon;
 
+        public List<GameObject> weapons = new List<GameObject>();
         private int maxWeaponSlots = 3;
 
         private bool isAttackReady;
@@ -17,7 +18,10 @@ namespace Player
         {
             attackReady += Time.deltaTime;
 
-            isAttackReady = equipWeapon.rate < attackReady;
+            if(equipWeapon != null)
+            {
+                isAttackReady = equipWeapon.rate < attackReady;
+            }
         }
         
         public bool CanAttack()
@@ -79,6 +83,12 @@ namespace Player
             {
                 return false;
             }
+
+            newWeapon.transform.SetParent(weaponHolder);
+            newWeapon.transform.localPosition = Vector3.zero;
+            newWeapon.transform.localRotation = Quaternion.identity;
+
+            newWeapon.SetActive(false);
 
             weapons.Add(newWeapon);
 

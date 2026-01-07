@@ -891,6 +891,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 6014585492699913858}
   - {fileID: 8539912121522368641}
   - {fileID: 6427490250550687799}
   - {fileID: 1295466743052565800}
@@ -4569,6 +4570,37 @@ Transform:
   m_Children: []
   m_Father: {fileID: 3227446034294395380}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &4537495313694624509
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6014585492699913858}
+  m_Layer: 0
+  m_Name: WeaponHolder
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6014585492699913858
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4537495313694624509}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0.70551556, y: -0.07823989, z: -0.07840079, w: 0.69998556}
+  m_LocalPosition: {x: 0.018, y: 0.052, z: 0.321}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3563515476838073206}
+  m_LocalEulerAnglesHint: {x: -90.447, y: -8.026001, z: -4.692993}
 --- !u!1 &4548939026367729001
 GameObject:
   m_ObjectHideFlags: 0
@@ -5191,6 +5223,7 @@ GameObject:
   - component: {fileID: 3394261578365086756}
   - component: {fileID: 2072567029159643191}
   - component: {fileID: 1435344443934966911}
+  - component: {fileID: 7618282981480441203}
   m_Layer: 0
   m_Name: Player1
   m_TagString: Untagged
@@ -5225,7 +5258,7 @@ Animator:
   m_GameObject: {fileID: 5860959105476182566}
   m_Enabled: 1
   m_Avatar: {fileID: 9000000, guid: 7da70a07a5a8eae49a78d810714a6fd8, type: 2}
-  m_Controller: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 9ea3a2dce7ad34e48ae2fddb8e88ac48, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -5354,6 +5387,14 @@ CharacterController:
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 1, z: 0}
+--- !u!81 &7618282981480441203
+AudioListener:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5860959105476182566}
+  m_Enabled: 1
 --- !u!1 &5887113252087320969
 GameObject:
   m_ObjectHideFlags: 0

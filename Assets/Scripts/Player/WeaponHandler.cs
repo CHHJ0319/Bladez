@@ -4,15 +4,16 @@ namespace Player
 {
     public class WeaponHandler : MonoBehaviour
     {
-        public Weapon equipWeapon;
+        public Weapon.WeaponController equipWeapon;
 
-        private bool isFireReady;
-        private float fireDelay;
+        private bool isAttackReady;
+        private float attackReady;
 
         public void UpdateFireTimer()
         {
-            fireDelay += Time.deltaTime;
-            //isFireReady = equipWeapon.rate < fireDelay;
+            attackReady += Time.deltaTime;
+
+            isAttackReady = equipWeapon.rate < attackReady;
         }
         
         public bool CanFire()
@@ -20,10 +21,10 @@ namespace Player
             if (equipWeapon == null)
                 return false;
 
-            if (equipWeapon.curAmmo <= 0)
+            if (!isAttackReady)
                 return false;
 
-            if (!isFireReady)
+            if (equipWeapon.Type == Weapon.WeaponType.Range && equipWeapon.GetComponent<Weapon.GunController>().curAmmo <= 0)
                 return false;
 
             return true;
@@ -32,7 +33,7 @@ namespace Player
         public void Fire()
         {
             equipWeapon.Use();
-            fireDelay = 0;
+            attackReady = 0;
         }
 
         public bool CanReload()
@@ -40,7 +41,7 @@ namespace Player
             if (equipWeapon == null)
                 return false;
 
-            if (equipWeapon.type == Weapon.Type.Melee)
+            if (equipWeapon.Type == Weapon.WeaponType.Melee)
                 return false;
 
             return true;
@@ -48,9 +49,14 @@ namespace Player
 
         public void Reload(ref int curAmmo)
         {
-            int reAmmo = curAmmo < equipWeapon.maxAmmo ? curAmmo : equipWeapon.maxAmmo;
-            equipWeapon.curAmmo = reAmmo;
-            curAmmo -= reAmmo;
+            if (equipWeapon.Type == Weapon.WeaponType.Range)
+            {
+                Weapon.GunController gunController = equipWeapon.GetComponent<Weapon.GunController>();
+                int reAmmo = curAmmo < gunController.maxAmmo ? curAmmo : gunController.maxAmmo;
+                gunController.curAmmo = reAmmo;
+                curAmmo -= reAmmo;
+            }
+            
         }
     }
 }

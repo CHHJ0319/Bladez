@@ -68,6 +68,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: IceSword
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 4bf7547de21b36440b3c6d91352d5f3b, type: 3}
+      propertyPath: m_TagString
+      value: Weapon
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -78,6 +82,12 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 4bf7547de21b36440b3c6d91352d5f3b, type: 3}
       insertIndex: -1
       addedObject: {fileID: 5522858913060250482}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 4bf7547de21b36440b3c6d91352d5f3b, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4279746618957831588}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 4bf7547de21b36440b3c6d91352d5f3b, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1587014185066398850}
   m_SourcePrefab: {fileID: 100100000, guid: 4bf7547de21b36440b3c6d91352d5f3b, type: 3}
 --- !u!1 &4128020530607792455 stripped
 GameObject:
@@ -198,3 +208,53 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!54 &4279746618957831588
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4128020530607792455}
+  serializedVersion: 4
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 0
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
+--- !u!136 &1587014185066398850
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4128020530607792455}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.14734957
+  m_Height: 1.6211748
+  m_Direction: 1
+  m_Center: {x: 0, y: 0.81008387, z: 0}

@@ -4,13 +4,14 @@ using UnityEngine.Windows;
 
 namespace Player
 {
-    [RequireComponent(typeof(PlayerInput))]
+    [RequireComponent(typeof(PlayerInputHandler))]
     [RequireComponent(typeof(PlayerAnimator))]
     [RequireComponent(typeof(WeaponHandler))]
     public class PlayerController : MonoBehaviour
     {
         public GameEnding gameEnding;
         public Transform thirdCamTranform;
+        public ItemPicker itemPicker;
 
         [Header("Property")]
         public float forwardSpeed = 7.0f;
@@ -30,11 +31,21 @@ namespace Player
         private CharacterController controller;
 
         private WeaponHandler weaponHandler;
-        private PlayerInput input;
+        private PlayerInputHandler input;
         private PlayerAnimator anim;
 
         private AnimatorStateInfo currentBaseState;
         private AnimatorStateInfo currentUpperBodyState;
+
+        void OnEnable()
+        {
+            Events.PlayerEvents.OnAttack += Attack;
+            Events.PlayerEvents.OnJump += Jump;
+            Events.PlayerEvents.OnSliding += Sliding;
+            Events.PlayerEvents.OnReload += Reload;
+            Events.PlayerEvents.OnItemPickedUp += PickUp;
+        }
+
 
         void Start()
         {
@@ -42,14 +53,9 @@ namespace Player
             orgColHeight = controller.height;
             orgVectColCenter = controller.center;
 
-            input = GetComponent<PlayerInput>();
+            input = GetComponent<PlayerInputHandler>();
             anim = GetComponent<PlayerAnimator>();
             weaponHandler = GetComponent<WeaponHandler>();
-
-            Events.PlayerEvents.OnAttack += Attack;
-            Events.PlayerEvents.OnJump += Jump;
-            Events.PlayerEvents.OnSliding += Sliding;
-            Events.PlayerEvents.OnReload += Reload;
 
             input.LockCursor();
         }
@@ -77,7 +83,7 @@ namespace Player
         void GetAnimState()
         {
             currentBaseState = anim.GetBaseLayerState();
-            currentUpperBodyState = anim.GetUpperBodyState();
+            //currentUpperBodyState = anim.GetUpperBodyState();
         }
 
 
@@ -108,11 +114,11 @@ namespace Player
 
             if(weaponHandler.CanAttack())
             {
-                if(weaponHandler.GetEquipWeapon() == Weapon.WeaponType.Melee)
+                if(weaponHandler.GetEquipWeapon() == Item.Weapon.WeaponType.Melee)
                 {
                     anim.PlaySlash();
                 }
-                else if(weaponHandler.GetEquipWeapon() == Weapon.WeaponType.Range)
+                else if(weaponHandler.GetEquipWeapon() == Item.Weapon.WeaponType.Range)
                 {
                     anim.PlayShot();
                 }
@@ -138,6 +144,19 @@ namespace Player
                     anim.PlayReload();
                 }
                 weaponHandler.Reload(ref ammo);
+            }
+        }
+
+        void PickUp()
+        {
+            GameObject item = itemPicker.GetPickedUpItem();
+            if(item.tag == "Weapon")
+            {
+                if(weaponHandler.CanAddWeapon())
+                {
+                    weaponHandler.AddWeapon(item);
+                    Destroy(item);
+                }
             }
         }
 

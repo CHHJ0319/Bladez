@@ -1,10 +1,14 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Player
 {
     public class WeaponHandler : MonoBehaviour
     {
-        public Weapon.WeaponController equipWeapon;
+        public List<GameObject> weapons = new List<GameObject>();
+        public Item.Weapon.WeaponController equipWeapon;
+
+        private int maxWeaponSlots = 3;
 
         private bool isAttackReady;
         private float attackReady;
@@ -24,7 +28,7 @@ namespace Player
             if (!isAttackReady)
                 return false;
 
-            if (equipWeapon.Type == Weapon.WeaponType.Range && equipWeapon.GetComponent<Weapon.GunController>().curAmmo <= 0)
+            if (equipWeapon.Type == Item.Weapon.WeaponType.Range && equipWeapon.GetComponent<Item.Weapon.GunController>().curAmmo <= 0)
                 return false;
 
             return true;
@@ -41,7 +45,7 @@ namespace Player
             if (equipWeapon == null)
                 return false;
 
-            if (equipWeapon.Type == Weapon.WeaponType.Melee)
+            if (equipWeapon.Type == Item.Weapon.WeaponType.Melee)
                 return false;
 
             return true;
@@ -49,9 +53,9 @@ namespace Player
 
         public void Reload(ref int curAmmo)
         {
-            if (equipWeapon.Type == Weapon.WeaponType.Range)
+            if (equipWeapon.Type == Item.Weapon.WeaponType.Range)
             {
-                Weapon.GunController gunController = equipWeapon.GetComponent<Weapon.GunController>();
+                Item.Weapon.GunController gunController = equipWeapon.GetComponent<Item.Weapon.GunController>();
                 int reAmmo = curAmmo < gunController.maxAmmo ? curAmmo : gunController.maxAmmo;
                 gunController.curAmmo = reAmmo;
                 curAmmo -= reAmmo;
@@ -59,9 +63,34 @@ namespace Player
             
         }
 
-        public Weapon.WeaponType GetEquipWeapon()
+        public Item.Weapon.WeaponType GetEquipWeapon()
         {
             return equipWeapon.Type;
+        }
+
+        public bool CanAddWeapon()
+        {
+            return weapons.Count < maxWeaponSlots;
+        }
+
+        public bool AddWeapon(GameObject newWeapon)
+        {
+            if (!CanAddWeapon())
+            {
+                return false;
+            }
+
+            weapons.Add(newWeapon);
+
+            return true;
+        }
+
+        public void RemoveWeapon(GameObject weaponToRemove)
+        {
+            if (weapons.Contains(weaponToRemove))
+            {
+                weapons.Remove(weaponToRemove);
+            }
         }
     }
 }

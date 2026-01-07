@@ -2,10 +2,18 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    void Awake()
+    public static GameManager Instance;
+
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+    static void InitializeBeforeScene()
     {
         ActorManager.Init();
         EventManager.Init();
+    }
+
+    void Awake()
+    {
+        Instance = this;
     }
 
     void Update()

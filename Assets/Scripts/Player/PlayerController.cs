@@ -27,6 +27,7 @@ namespace Player
 
         private float orgColHeight;
         private Vector3 orgVectColCenter;
+        private float verticalVelocity;
 
         private CharacterController controller;
 
@@ -164,32 +165,34 @@ namespace Player
             float horizontal = input.MoveInput.x;
             float vertical = input.MoveInput.y;
 
+            Vector3 moveDir = (transform.forward * vertical) + (transform.right * horizontal);
+
             float moveSpeed = new Vector2(horizontal, vertical).magnitude;
             anim.PlayMoving(moveSpeed > 0.01f);
 
-            Vector3 moveDir = (transform.forward * vertical) + (transform.right * horizontal);
-
-            if (!controller.isGrounded)
-            {
-                moveDir.y -= 9.81f * Time.deltaTime;
-            }
-
             float speedFactor = forwardSpeed;
+            if (currentUpperBodyState.fullPathHash == PrayerState.ReloadingState) speedFactor = 0.0f;
+            else if (currentBaseState.fullPathHash == PrayerState.SlidingState) speedFactor = slidingSpeed;
+            else if (currentBaseState.fullPathHash == PrayerState.JumpState) speedFactor = jumpSpeed;
 
-            if (currentUpperBodyState.fullPathHash == PrayerState.ReloadingState)
-            {
-                speedFactor = 0.0f;
-            }
-            else if (currentBaseState.fullPathHash == PrayerState.SlidingState)
-            {
-                speedFactor = slidingSpeed;
-            }
-            else if (currentBaseState.fullPathHash == PrayerState.JumpState)
-            {
-                speedFactor = jumpSpeed;
-            }
+            ApplyGravity();
 
-            controller.Move(moveDir * speedFactor * Time.deltaTime);
+            Vector3 finalMove = (moveDir * speedFactor) + (Vector3.up * verticalVelocity);
+
+            controller.Move(finalMove * Time.deltaTime);
+        }
+
+        private void ApplyGravity()
+        {
+            if (controller.isGrounded)
+            {
+                if (verticalVelocity < 0)
+                    verticalVelocity = -2f;
+            }
+            else
+            {
+                verticalVelocity -= 9.81f * Time.deltaTime;
+            }
         }
 
         void HandleStateSpecificLogic()

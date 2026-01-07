@@ -16,7 +16,7 @@ namespace Player
             isAttackReady = equipWeapon.rate < attackReady;
         }
         
-        public bool CanFire()
+        public bool CanAttack()
         {
             if (equipWeapon == null)
                 return false;
@@ -30,7 +30,7 @@ namespace Player
             return true;
         }
 
-        public void Fire()
+        public void Attack()
         {
             equipWeapon.Use();
             attackReady = 0;
@@ -57,6 +57,11 @@ namespace Player
                 curAmmo -= reAmmo;
             }
             
+        }
+
+        public Weapon.WeaponType GetEquipWeapon()
+        {
+            return equipWeapon.Type;
         }
     }
 }

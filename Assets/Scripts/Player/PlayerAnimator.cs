@@ -65,9 +65,14 @@ namespace Player
             audioSource.PlayOneShot(slidingSound);
         }
 
-        public void PlayFire()
+        public void PlayShot()
         {
             anim.SetTrigger("Shot");
+        }
+
+        public void PlaySlash()
+        {
+            anim.SetTrigger("Slash");
         }
 
         public void PlayReload()

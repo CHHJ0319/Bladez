@@ -106,10 +106,18 @@ namespace Player
                 currentBaseState.fullPathHash == PrayerState.ReloadingState)
                 return;
 
-            if(weaponHandler.CanFire())
+            if(weaponHandler.CanAttack())
             {
-                anim.PlayFire();
-                weaponHandler.Fire();
+                if(weaponHandler.GetEquipWeapon() == Weapon.WeaponType.Melee)
+                {
+                    anim.PlaySlash();
+                }
+                else if(weaponHandler.GetEquipWeapon() == Weapon.WeaponType.Range)
+                {
+                    anim.PlayShot();
+                }
+
+                weaponHandler.Attack();
             }
 
         }

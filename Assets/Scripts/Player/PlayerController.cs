@@ -155,7 +155,6 @@ namespace Player
                 if(weaponHandler.CanAddWeapon())
                 {
                     weaponHandler.AddWeapon(item);
-                    //Destroy(item);
                 }
             }
         }

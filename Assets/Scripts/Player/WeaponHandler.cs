@@ -1,3 +1,4 @@
+using Item.Weapon;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -13,6 +14,11 @@ namespace Player
 
         private bool isAttackReady;
         private float attackReady;
+
+        private void OnEnable()
+        {
+            Events.PlayerEvents.OnQuickSlotPressed += EquipWeapon;
+        }
 
         public void UpdateFireTimer()
         {
@@ -72,6 +78,17 @@ namespace Player
             return equipWeapon.Type;
         }
 
+        public void EquipWeapon(int idx)
+        {
+            foreach(var weapon in weapons)
+            {
+                weapon.SetActive(false);
+            }
+            
+            weapons[idx].SetActive(true);
+            equipWeapon = weapons[idx].GetComponent<WeaponController>();
+        }
+
         public bool CanAddWeapon()
         {
             return weapons.Count < maxWeaponSlots;
@@ -84,13 +101,22 @@ namespace Player
                 return false;
             }
 
+            if (weapons.Contains(newWeapon)) return false;
+
             newWeapon.transform.SetParent(weaponHolder);
             newWeapon.transform.localPosition = Vector3.zero;
             newWeapon.transform.localRotation = Quaternion.identity;
 
-            newWeapon.SetActive(false);
-
             weapons.Add(newWeapon);
+
+            if (equipWeapon == null)
+            {
+                EquipWeapon(0);
+            }
+            else
+            {
+                newWeapon.SetActive(false);
+            }
 
             return true;
         }

@@ -12,6 +12,7 @@ namespace Events
         public static event Action OnReload;
         public static event Action<int, Vector3> OnBulletHit;
         public static event Action OnItemPickedUp;
+        public static event Action<int> OnQuickSlotPressed;
 
 
         public static void Clear()
@@ -23,6 +24,7 @@ namespace Events
             OnReload = null;
             OnBulletHit = null;
             OnItemPickedUp = null;
+            OnQuickSlotPressed = null;
         }
 
         public static void Move(float horizontal, float vertical)
@@ -58,6 +60,11 @@ namespace Events
         public static void PickUp()
         {
             OnItemPickedUp?.Invoke();
+        }
+
+        public static void ChangeWeapon(int weaponIdx)
+        {
+            OnQuickSlotPressed?.Invoke(weaponIdx);
         }
     }
 }

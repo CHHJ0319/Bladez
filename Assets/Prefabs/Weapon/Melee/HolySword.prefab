@@ -231,7 +231,7 @@ GameObject:
   - component: {fileID: 1740339588685660212}
   - component: {fileID: 7405061141926715156}
   m_Layer: 0
-  m_Name: Holy_Swing
+  m_Name: HolySword
   m_TagString: Weapon
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -10312,6 +10312,10 @@ PrefabInstance:
     - target: {fileID: 8964840855789828876, guid: ed019ba4ad5138e4583cc1c8ca047788, type: 3}
       propertyPath: m_Name
       value: SwingTrailVFX
+      objectReference: {fileID: 0}
+    - target: {fileID: 8964840855789828876, guid: ed019ba4ad5138e4583cc1c8ca047788, type: 3}
+      propertyPath: m_TagString
+      value: Untagged
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

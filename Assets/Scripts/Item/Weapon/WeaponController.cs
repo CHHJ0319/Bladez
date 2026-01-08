@@ -30,13 +30,13 @@ namespace Item.Weapon
 
         IEnumerator Attack()
         {
-            yield return new WaitForSeconds(0.3f);
+            yield return new WaitForSeconds(0.2f);
             meleeArea.gameObject.SetActive(true);
             //trailEffect.enabled = true;
 
             audioSource.Play();
 
-            yield return new WaitForSeconds(0.2f);
+            yield return new WaitForSeconds(0.3f);
             meleeArea.gameObject.SetActive(false);
 
             yield return new WaitForSeconds(0.3f);

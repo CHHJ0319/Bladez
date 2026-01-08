@@ -75,6 +75,11 @@ namespace Actor
             anim.SetTrigger("Slash");
         }
 
+        public void PlayImpact()
+        {
+            anim.SetTrigger("Hit");
+        }
+
         public void PlayReload()
         {
             anim.SetBool("Reload", true);

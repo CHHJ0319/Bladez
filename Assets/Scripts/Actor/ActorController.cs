@@ -252,7 +252,8 @@ namespace Actor
                 }
                 else
                 {
-
+                    TakeDamage(weapon.damage);
+                    anim.PlayImpact();
                 }
             }
         }

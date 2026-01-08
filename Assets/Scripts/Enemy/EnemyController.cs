@@ -139,12 +139,9 @@ namespace Enemy
 
         public void OnFireHit(GameObject target)
         {
-
-            //Debug.Log($"{target.name}ø° ∏Ì¡ﬂ!");
-
             if (target.CompareTag("Player"))
             {
-                Player.PlayerController player = target.gameObject.GetComponent<Player.PlayerController>();
+                Actor.Player.PlayerController player = target.gameObject.GetComponent<Actor.Player.PlayerController>();
                 player.TakeDamage(ad);
    
             }

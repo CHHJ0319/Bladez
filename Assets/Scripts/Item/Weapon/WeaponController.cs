@@ -20,9 +20,17 @@ namespace Item.Weapon
 
         IEnumerator Attack()
         {
+            yield return new WaitForSeconds(0.1f);
+            meleeArea.enabled = true;
+            //trailEffect.enabled = true;
+
             audioSource.Play();
 
-            yield return null;
+            yield return new WaitForSeconds(0.3f);
+            meleeArea.enabled = false;
+
+            yield return new WaitForSeconds(0.3f);
+            //trailEffect.enabled = false;
         }
     }
 }

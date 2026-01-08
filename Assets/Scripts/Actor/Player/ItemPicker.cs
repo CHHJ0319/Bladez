@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Player
+namespace Actor.Player
 {
     public class ItemPicker : MonoBehaviour
     {

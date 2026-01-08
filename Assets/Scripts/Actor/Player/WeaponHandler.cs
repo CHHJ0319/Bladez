@@ -2,7 +2,7 @@ using Item.Weapon;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Player
+namespace Actor.Player
 {
     public class WeaponHandler : MonoBehaviour
     {

@@ -6,19 +6,26 @@ namespace Actor
     {
         GameObject nearObj;
 
+        public bool IsItemDetected { get; set; }
+
         private void OnTriggerEnter(Collider other)
         {
             if (other.tag == "Weapon")
             {
                 nearObj = other.gameObject;
-                Events.PlayerEvents.PickUp();
+
+                IsItemDetected = true;
             }
         }
 
         private void OnTriggerExit(Collider other)
         {
             if (other.tag == "Weapon")
+            {
                 nearObj = null;
+
+                IsItemDetected = false;
+            }
         }
 
         public GameObject GetPickedUpItem()

@@ -2,13 +2,24 @@ using UnityEngine;
 
 namespace Actor.Player
 {
-    [RequireComponent(typeof(PlayerInputHandler))] 
+    [RequireComponent(typeof(ActorAnimator))]
+    [RequireComponent(typeof(WeaponHandler))]
+    [RequireComponent(typeof(PlayerInputHandler))]
     public class PlayerController : ActorController
     {
         public GameEnding gameEnding;
         public Transform thirdCamTranform;
 
         private PlayerInputHandler input;
+
+        void OnEnable()
+        {
+            Events.PlayerEvents.OnJump += Jump;
+            Events.PlayerEvents.OnSliding += Sliding;
+            Events.PlayerEvents.OnAttack += Attack;
+            Events.PlayerEvents.OnReload += Reload;
+            Events.PlayerEvents.OnQuickSlotPressed += EquipWeapon;
+        }
 
         protected override void Start()
         {

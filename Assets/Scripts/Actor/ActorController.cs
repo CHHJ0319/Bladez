@@ -4,8 +4,6 @@ using UnityEngine.Windows;
 
 namespace Actor
 {
-    [RequireComponent(typeof(ActorAnimator))]
-    [RequireComponent(typeof(WeaponHandler))]
     public abstract class ActorController : MonoBehaviour
     {
         public ItemPicker itemPicker;
@@ -30,21 +28,11 @@ namespace Actor
 
         protected CharacterController controller;
 
-        private Player.WeaponHandler weaponHandler;
+        private WeaponHandler weaponHandler;
         protected ActorAnimator anim;
 
         protected AnimatorStateInfo currentBaseState;
         protected AnimatorStateInfo currentUpperBodyState;
-
-
-        void OnEnable()
-        {
-            Events.PlayerEvents.OnJump += Jump;
-            Events.PlayerEvents.OnSliding += Sliding;
-            Events.PlayerEvents.OnAttack += Attack;
-            Events.PlayerEvents.OnReload += Reload;
-            Events.PlayerEvents.OnItemPickedUp += PickUp;
-        }
 
         protected virtual void Start()
         {
@@ -59,12 +47,24 @@ namespace Actor
         protected virtual void Update()
         {
             weaponHandler.UpdateFireTimer();
+            DetectDroppedItems();
         }
 
         protected virtual void FixedUpdate()
         {
             GetAnimState();
             HandleStateSpecificLogic();
+        }
+
+        void DetectDroppedItems()
+        {
+            if(itemPicker != null)
+            {
+                if(itemPicker.IsItemDetected)
+                {
+                    PickUp();
+                }
+            }
         }
 
         void GetAnimState()
@@ -208,13 +208,20 @@ namespace Actor
         protected void PickUp()
         {
             GameObject item = itemPicker.GetPickedUpItem();
-            if (item.tag == "Weapon")
+
+            if (item != null && item.tag == "Weapon")
             {
                 if (weaponHandler.CanAddWeapon())
                 {
                     weaponHandler.AddWeapon(item);
+                    itemPicker.IsItemDetected = false;
                 }
             }
+        }
+
+        protected void EquipWeapon(int weaponIdx)
+        {
+            weaponHandler.EquipWeapon(weaponIdx);
         }
 
         protected void ApplyGravity()

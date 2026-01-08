@@ -1,8 +1,7 @@
-using Item.Weapon;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Actor.Player
+namespace Actor
 {
     public class WeaponHandler : MonoBehaviour
     {
@@ -15,9 +14,15 @@ namespace Actor.Player
         private bool isAttackReady;
         private float attackReady;
 
-        private void OnEnable()
+        private void Start()
         {
-            Events.PlayerEvents.OnQuickSlotPressed += EquipWeapon;
+            if (weaponHolder.transform.childCount > 0)
+            {
+                foreach (var weapon in weaponHolder.GetComponentsInChildren<Item.Weapon.WeaponController>())
+                {
+                    AddWeapon(weapon.gameObject);
+                }
+            }
         }
 
         public void UpdateFireTimer()
@@ -86,7 +91,7 @@ namespace Actor.Player
             }
             
             weapons[idx].SetActive(true);
-            equipWeapon = weapons[idx].GetComponent<WeaponController>();
+            equipWeapon = weapons[idx].GetComponent<Item.Weapon.WeaponController>();
         }
 
         public bool CanAddWeapon()

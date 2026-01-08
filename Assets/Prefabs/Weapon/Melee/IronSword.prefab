@@ -12,6 +12,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: AttackRange
       objectReference: {fileID: 0}
+    - target: {fileID: 4549025934915932723, guid: 6496111a7c770504c81611da1eb4c59b, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8730028704095837039, guid: 6496111a7c770504c81611da1eb4c59b, type: 3}
       propertyPath: m_Size.y
       value: 1.005561
@@ -194,6 +198,9 @@ MonoBehaviour:
   meleeArea: {fileID: 7551971068566442647}
   trailEffect: {fileID: 0}
   audioSource: {fileID: 305423807541744382}
+  capsuleCollider: {fileID: -3748188500892712960}
+  ownerName: 
+  isEquiped: 0
 --- !u!82 &305423807541744382
 AudioSource:
   m_ObjectHideFlags: 0

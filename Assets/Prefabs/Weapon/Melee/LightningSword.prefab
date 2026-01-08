@@ -5029,6 +5029,9 @@ MonoBehaviour:
   meleeArea: {fileID: 2775334865924271514}
   trailEffect: {fileID: 734912238436307369}
   audioSource: {fileID: 8315388436191079377}
+  capsuleCollider: {fileID: 1740339588685660212}
+  ownerName: 
+  isEquiped: 0
 --- !u!54 &4690966798092899230
 Rigidbody:
   m_ObjectHideFlags: 0

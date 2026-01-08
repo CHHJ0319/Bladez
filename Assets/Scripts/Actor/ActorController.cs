@@ -172,11 +172,11 @@ namespace Actor
 
             if (weaponHandler.CanAttack())
             {
-                if (weaponHandler.GetEquipWeapon() == Item.Weapon.WeaponType.Melee)
+                if (weaponHandler.GetEquipWeaponType() == Item.Weapon.WeaponType.Melee)
                 {
                     anim.PlaySlash();
                 }
-                else if (weaponHandler.GetEquipWeapon() == Item.Weapon.WeaponType.Range)
+                else if (weaponHandler.GetEquipWeaponType() == Item.Weapon.WeaponType.Range)
                 {
                     anim.PlayShot();
                 }
@@ -240,6 +240,21 @@ namespace Actor
         public virtual void TakeDamage(float damage)
         {
             hp -= damage;
+        }
+
+        private void OnTriggerEnter(Collider other)
+        {
+            if (other.CompareTag("AttackRange"))
+            {
+                Item.Weapon.WeaponController weapon = other.transform.parent.gameObject.GetComponent<Item.Weapon.WeaponController>();
+                if (weaponHandler.IsEquipWeapon(weapon))
+                {
+                }
+                else
+                {
+
+                }
+            }
         }
     }
 }

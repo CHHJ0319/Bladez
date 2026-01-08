@@ -78,9 +78,22 @@ namespace Actor
             
         }
 
-        public Item.Weapon.WeaponType GetEquipWeapon()
+        public Item.Weapon.WeaponType GetEquipWeaponType()
         {
             return equipWeapon.Type;
+        }
+
+        public bool IsEquipWeapon(Item.Weapon.WeaponController weapon)
+        {
+            if(weapon.ownerName == equipWeapon.ownerName)
+            {
+                return true;
+
+            }
+            else
+            {
+                return false;
+            }
         }
 
         public void EquipWeapon(int idx)
@@ -88,10 +101,12 @@ namespace Actor
             foreach(var weapon in weapons)
             {
                 weapon.SetActive(false);
+                weapon.GetComponent<Item.Weapon.WeaponController>().isEquiped = false;
             }
             
             weapons[idx].SetActive(true);
             equipWeapon = weapons[idx].GetComponent<Item.Weapon.WeaponController>();
+            equipWeapon.isEquiped = true;
         }
 
         public bool CanAddWeapon()
@@ -113,6 +128,7 @@ namespace Actor
             newWeapon.transform.localRotation = Quaternion.identity;
 
             weapons.Add(newWeapon);
+            newWeapon.GetComponent<Item.Weapon.WeaponController>().OnPickedUp(gameObject.name);
 
             if (equipWeapon == null)
             {

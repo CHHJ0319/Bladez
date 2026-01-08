@@ -8,7 +8,7 @@ TagManager:
   - Bullet
   - Enemy
   - Weapon
-  - Melee
+  - AttackRange
   layers:
   - Default
   - TransparentFX

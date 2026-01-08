@@ -1,8 +1,8 @@
 using UnityEngine;
 
-namespace Actor.Player
+namespace Actor
 {
-    public class PlayerAnimator : MonoBehaviour
+    public class ActorAnimator : MonoBehaviour
     {
         public float animSpeed = 1.5f;
 

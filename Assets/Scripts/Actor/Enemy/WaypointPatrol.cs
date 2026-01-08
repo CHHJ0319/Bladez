@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.AI;
 
-namespace Enemy
+namespace Actor.Enemy
 {
     public class WaypointPatrol : EnemyController
     {

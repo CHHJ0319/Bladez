@@ -25,6 +25,7 @@ namespace Item.Weapon
             curAmmo--;
         }
 
+
         IEnumerator Attack()
         {
             audioSource.Play();

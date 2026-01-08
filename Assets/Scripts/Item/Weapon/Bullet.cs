@@ -1,4 +1,3 @@
-using Enemy;
 using UnityEngine;
 
 namespace Item.Weapon 
@@ -28,7 +27,7 @@ namespace Item.Weapon
             }
             else if (collision.gameObject.tag == "Enemy")
             {
-                collision.gameObject.GetComponent<EnemyController>().TakeDamage(damage, transform.position);
+                collision.gameObject.GetComponent<Actor.Enemy.EnemyController>().TakeDamage(damage, transform.position);
                 Destroy(gameObject);
             }
         }

@@ -2,7 +2,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
 
-namespace Enemy
+namespace Actor.Enemy
 {
     public class EnemyController : MonoBehaviour
     {

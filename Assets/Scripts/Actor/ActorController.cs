@@ -203,6 +203,10 @@ namespace Actor
                 }
                 weaponHandler.Reload(ref ammo);
             }
+            else
+            {
+                anim.PlayInteract();
+            }
         }
 
         protected void PickUp()

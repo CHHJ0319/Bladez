@@ -80,6 +80,11 @@ namespace Actor
             anim.SetTrigger("Hit");
         }
 
+        public void PlayInteract()
+        {
+            anim.SetTrigger("Act");
+        }
+
         public void PlayReload()
         {
             anim.SetBool("Reload", true);

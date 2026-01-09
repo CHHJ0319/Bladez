@@ -7,6 +7,8 @@ namespace Item.Weapon
         public GameObject weaponPrefab;
         public Transform particles;
 
+        private string type;
+
         private void Start()
         {          
             GameObject weapon = Instantiate(weaponPrefab, transform);
@@ -19,9 +21,12 @@ namespace Item.Weapon
 
         private void Update()
         {
-            transform.Rotate(Vector3.up * 40 * Time.deltaTime);
+            if(type != "Holy")
+            {
+                transform.Rotate(Vector3.up * 40 * Time.deltaTime);
+            }
 
-            if(transform.childCount < 2)
+            if (transform.childCount < 2)
             {
                 Destroy();
             }
@@ -30,7 +35,7 @@ namespace Item.Weapon
         private void ApplyParticleEffect()
         {
             string prefabName = weaponPrefab.name;
-            string type = prefabName.Replace("Sword", "").Replace("Weapon", "").Replace("(Clone)", "");
+            type = prefabName.Replace("Sword", "").Replace("Weapon", "").Replace("(Clone)", "");
             string targetParticleName = type + "Particle";
 
             foreach (Transform child in particles)

@@ -99,8 +99,8 @@ Material:
     - _water_movement_speed: 2.01
     m_Colors:
     - _Wave_Direction: {r: 0.5, g: 0.1, b: 0, a: 0}
-    - _deep_water_color: {r: 0, g: 0.023339774, b: 0.254717, a: 1}
+    - _deep_water_color: {r: 0.15908688, g: 0.23584908, b: 0.17292339, a: 1}
     - _foam_color: {r: 1, g: 1, b: 1, a: 1}
-    - _shallow_water_color: {r: 0, g: 0.41029096, b: 1, a: 1}
+    - _shallow_water_color: {r: 0.44304025, g: 0.7169812, b: 0.69488835, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1

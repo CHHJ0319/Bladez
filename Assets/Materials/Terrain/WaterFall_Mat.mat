@@ -51,10 +51,10 @@ Material:
     - _Glossiness: 0.849
     - _Smoothness: 1
     m_Colors:
-    - _BaseColor: {r: 0, g: 0.62476015, b: 1, a: 0.49803922}
+    - _BaseColor: {r: 0.23918656, g: 0.4056604, b: 0.3203933, a: 0.49803922}
     - _BaseColorAddSubDiff: {r: 0, g: 0, b: 0, a: 0}
-    - _Color: {r: 0, g: 0.62476015, b: 1, a: 0.49803922}
-    - _EmissionColor: {r: 0, g: 0.14886887, b: 2.4815447, a: 1}
+    - _Color: {r: 0.23918653, g: 0.40566036, b: 0.32039326, a: 0.49803922}
+    - _EmissionColor: {r: 0.4804947, g: 1.0085632, b: 0.965059, a: 1}
     - _SpecColor: {r: 0.058823526, g: 0.058823526, b: 0.058823526, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1

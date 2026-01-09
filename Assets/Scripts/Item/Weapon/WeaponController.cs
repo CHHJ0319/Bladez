@@ -8,10 +8,14 @@ namespace Item.Weapon
         public WeaponType Type { get; protected set; } = WeaponType.Melee;
         public int damage;
         public float rate;
+
         public BoxCollider meleeArea;
-        public TrailRenderer trailEffect;
-        public AudioSource audioSource;
         public CapsuleCollider capsuleCollider;
+
+        public TrailRenderer trailEffect;
+        public ParticleSystem particle;
+
+        public AudioSource audioSource;
 
         public string ownerName;
         public bool isEquiped;
@@ -30,9 +34,25 @@ namespace Item.Weapon
 
         IEnumerator Attack()
         {
-            yield return new WaitForSeconds(0.2f);
+            yield return new WaitForSeconds(0.0f);
             meleeArea.gameObject.SetActive(true);
-            //trailEffect.enabled = true;
+            trailEffect.enabled = true;
+
+            // 공격 애니메이션 타이밍에 맞춰 이펙트 생성
+            yield return new WaitForSeconds(0.5f);
+
+            if (particle != null)
+            {
+                // 1. 생성 위치 계산
+                Vector3 spawnPos = transform.position + (transform.right * 0.5f) + (transform.forward * 0.5f);
+
+                // 2. 파티클 프리팹을 월드 공간에 생성 (검의 자식이 아님)
+                ParticleSystem newVFX = Instantiate(particle, spawnPos, transform.rotation);
+
+                // 3. 실행 및 자동 삭제 설정
+                newVFX.Play();
+                Destroy(newVFX.gameObject, 1.0f);
+            }
 
             audioSource.Play();
 
@@ -40,7 +60,7 @@ namespace Item.Weapon
             meleeArea.gameObject.SetActive(false);
 
             yield return new WaitForSeconds(0.3f);
-            //trailEffect.enabled = false;
+            trailEffect.enabled = false;
         }
     }
 }

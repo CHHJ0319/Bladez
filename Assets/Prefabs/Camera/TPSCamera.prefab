@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 3833813483987146307}
   - component: {fileID: 4757656335885555305}
   m_Layer: 0
-  m_Name: CinemachineCamera
+  m_Name: TPSCamera
   m_TagString: MainCamera
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

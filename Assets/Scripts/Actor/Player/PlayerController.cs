@@ -33,7 +33,6 @@ namespace Actor.Player
         {
             base.Update();
 
-            input.UnlockCursor();
             ApplyRotation();
         }
 

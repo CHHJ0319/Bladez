@@ -11,15 +11,6 @@ namespace Actor.Player
             Cursor.visible = false;
         }
 
-        public void UnlockCursor()
-        {
-            if (Input.GetKeyDown(KeyCode.Escape))
-            {
-                Cursor.lockState = CursorLockMode.None;
-                Cursor.visible = true;
-            }
-        }
-
         public Vector2 MoveInput { get; private set; }
 
         public void OnMove(InputValue value)

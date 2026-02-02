@@ -5,54 +5,65 @@ namespace Actor
 {
     public abstract class CharaterController : MonoBehaviour
     {
-        public ItemPicker itemPicker;
+        public GameObject character;
 
         [Header("Settings")]
         public float forwardSpeed = 7.0f;
-        public float rotateSpeed = 20.0f;
-        public float slidingSpeed = 4.0f;
-        public float jumpSpeed = 2f;
+        public float backwardSpeed = 2.0f;
+        public float rotateSpeed = 2.0f;
+        public float jumpPower = 3.0f;
 
-        protected float verticalVelocity;
+        public float lookSmoother = 3.0f;
+        public bool useCurves = true;
+        public float useCurvesHeight = 0.5f;
+
+        private CapsuleCollider col;
+        private Rigidbody rb;
+
+        private float orgColHeight;
+        private Vector3 orgVectColCenter;
+        private AnimatorStateInfo currentBaseState;
+
+        protected CharacterAnimator characterAnimator;
+        /// <summary>
+        /// //////////////////////////////////////////////////////
+        /// </summary>
+
+        public ItemPicker itemPicker;
 
         // [Header("Character Status")]
         protected float hp = 100f;
         private int ammo = 100;
 
-        private float orgColHeight;
-        private Vector3 orgVectColCenter;
-
-        private bool useCurves = true;
-        private float useCurvesHeight = 0.5f;
-
-        protected CharacterController controller;
-
         private WeaponHandler weaponHandler;
-        protected CharacterAnimator anim;
 
-        protected AnimatorStateInfo currentBaseState;
         protected AnimatorStateInfo currentUpperBodyState;
 
         protected virtual void Start()
         {
-            controller = GetComponent<CharacterController>();
-            orgColHeight = controller.height;
-            orgVectColCenter = controller.center;
+            col = character.GetComponent<CapsuleCollider>();
+            rb = character.GetComponent<Rigidbody>();
 
-            anim = GetComponent<CharacterAnimator>();
-            weaponHandler = GetComponent<WeaponHandler>();
+            characterAnimator = character.GetComponent<CharacterAnimator>();
+
+            orgColHeight = col.height;
+            orgVectColCenter = col.center;
+
+            //weaponHandler = GetComponent<WeaponHandler>();
         }
 
         protected virtual void Update()
         {
-            weaponHandler.UpdateFireTimer();
+            //weaponHandler.UpdateFireTimer();
             DetectDroppedItems();
         }
 
         protected virtual void FixedUpdate()
         {
-            GetAnimState();
-            HandleStateSpecificLogic();
+            UpdateAnimationState();
+            SetGravity(true);
+
+            UpdateStateBehavior();
         }
 
         void DetectDroppedItems()
@@ -66,18 +77,22 @@ namespace Actor
             }
         }
 
-        void GetAnimState()
+        void UpdateAnimationState()
         {
-            currentBaseState = anim.GetBaseLayerState();
-            //currentUpperBodyState = anim.GetUpperBodyState();
+            currentBaseState = characterAnimator.GetBaseLayerState(); ;
         }
 
-        void HandleStateSpecificLogic()
+        void SetGravity(bool active)
+        {
+            rb.useGravity = active;
+        }
+
+        void UpdateStateBehavior()
         {
             if (currentUpperBodyState.fullPathHash == PlayerState.ReloadingState
-                && !anim.IsTransitioning())
+                && !characterAnimator.IsTransitioning())
             {
-                anim.StopReload();
+                characterAnimator.StopReload();
             }
 
             if (currentBaseState.fullPathHash == PlayerState.LocoState)
@@ -90,25 +105,24 @@ namespace Actor
 
             else if (currentBaseState.fullPathHash == PlayerState.JumpState)
             {
-                if (!anim.IsTransitioning())
+                if (!characterAnimator.IsTransitioning())
                 {
                     if (useCurves)
                     {
-                        float jumpHeight = anim.GetJumpHeight();
+                        float jumpHeight = characterAnimator.GetJumpHeight();
+                        float gravityControl = characterAnimator.GetJumpHeight();
+                        if (gravityControl > 0)
+                            rb.useGravity = false;
 
                         Ray ray = new Ray(transform.position + Vector3.up, -Vector3.up);
                         RaycastHit hitInfo = new RaycastHit();
-
                         if (Physics.Raycast(ray, out hitInfo))
                         {
                             if (hitInfo.distance > useCurvesHeight)
                             {
-                                float newHeight = orgColHeight - jumpHeight;
-                                Debug.Log("asasd " + jumpHeight);
-                                controller.height = newHeight;
-
-                                float adjCenterY = newHeight / 2f;
-                                controller.center = new Vector3(0, adjCenterY, 0);
+                                col.height = orgColHeight - jumpHeight;
+                                float adjCenterY = orgVectColCenter.y + jumpHeight;
+                                col.center = new Vector3(0, adjCenterY, 0);
                             }
                             else
                             {
@@ -116,15 +130,15 @@ namespace Actor
                             }
                         }
                     }
-                    //anim.StopJump();
+                    characterAnimator.SetJump(false);
                 }
             }
 
             else if (currentBaseState.fullPathHash == PlayerState.SlidingState)
             {
-                if (!anim.IsTransitioning())
+                if (!characterAnimator.IsTransitioning())
                 {
-                    anim.StopSliding();
+                    characterAnimator.StopSliding();
                 }
             }
 
@@ -135,30 +149,39 @@ namespace Actor
                     ResetCollider();
                 }
             }
+
+            else if (currentBaseState.fullPathHash == PlayerState.restState)
+            {
+                if (!characterAnimator.IsTransitioning())
+                {
+                    characterAnimator.SetJump(false);
+                }
+            }
         }
 
         void ResetCollider()
         {
-            controller.height = orgColHeight;
-            controller.center = orgVectColCenter;
+            col.height = orgColHeight;
+            col.center = orgVectColCenter;
         }
 
 
-        protected void Jump()
+        protected virtual void Jump()
         {
             if (currentBaseState.fullPathHash == PlayerState.LocoState
-                && !anim.IsTransitioning())
+                && !characterAnimator.IsTransitioning())
             {
-                //anim.PlayJump();
+                rb.AddForce(Vector3.up * jumpPower, ForceMode.VelocityChange);
+                characterAnimator.SetJump(true);
             }
         }
 
         protected void Sliding()
         {
             if (currentBaseState.fullPathHash == PlayerState.LocoState
-                && !anim.IsTransitioning())
+                && !characterAnimator.IsTransitioning())
             {
-                anim.PlaySliding();
+                characterAnimator.PlaySliding();
             }
         }
 
@@ -173,11 +196,11 @@ namespace Actor
             {
                 if (weaponHandler.GetEquipWeaponType() == Item.Weapon.WeaponType.Melee)
                 {
-                    anim.PlaySlash();
+                    characterAnimator.PlaySlash();
                 }
                 else if (weaponHandler.GetEquipWeaponType() == Item.Weapon.WeaponType.Range)
                 {
-                    anim.PlayShot();
+                    characterAnimator.PlayShot();
                 }
 
                 weaponHandler.Attack();
@@ -196,15 +219,15 @@ namespace Actor
 
             if (weaponHandler.CanReload())
             {
-                if (!anim.IsTransitioning())
+                if (!characterAnimator.IsTransitioning())
                 {
-                    anim.PlayReload();
+                    characterAnimator.PlayReload();
                 }
                 weaponHandler.Reload(ref ammo);
             }
             else
             {
-                anim.PlayInteract();
+                characterAnimator.PlayInteract();
             }
         }
 
@@ -227,19 +250,6 @@ namespace Actor
             weaponHandler.EquipWeapon(weaponIdx);
         }
 
-        protected void ApplyGravity()
-        {
-            if (controller.isGrounded)
-            {
-                if (verticalVelocity < 0)
-                    verticalVelocity = -2f;
-            }
-            else
-            {
-                verticalVelocity -= 9.81f * Time.deltaTime;
-            }
-        }
-
         public virtual void TakeDamage(float damage)
         {
             hp -= damage;
@@ -256,7 +266,7 @@ namespace Actor
                 else
                 {
                     TakeDamage(weapon.damage);
-                    anim.PlayImpact();
+                    characterAnimator.PlayImpact();
                 }
             }
         }

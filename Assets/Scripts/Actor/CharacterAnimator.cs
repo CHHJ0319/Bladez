@@ -68,12 +68,12 @@ namespace Actor
 
         public void PlayAttack()
         {
-            anim.SetTrigger("Slash");
+            anim.SetTrigger("Attack");
         }
 
         public void PlayTakeDamage()
         {
-            anim.SetTrigger("Hit");
+            anim.SetTrigger("TakeDamage");
         }
 
         public float GetJumpHeight()

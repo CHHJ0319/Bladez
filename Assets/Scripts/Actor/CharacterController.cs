@@ -18,6 +18,7 @@ namespace Actor
         public float useCurvesHeight = 0.5f;
 
         protected CharacterAnimator characterAnimator;
+        private WeaponHandler weaponHandler;
 
         private CapsuleCollider col;
         private Rigidbody rb;
@@ -37,8 +38,6 @@ namespace Actor
 
         public ItemPicker itemPicker;
 
-        private WeaponHandler weaponHandler;
-
 
         protected virtual void Start()
         {
@@ -46,16 +45,15 @@ namespace Actor
             rb = character.GetComponent<Rigidbody>();
 
             characterAnimator = character.GetComponent<CharacterAnimator>();
+            weaponHandler = GetComponent<WeaponHandler>();
 
             orgColHeight = col.height;
             orgVectColCenter = col.center;
-
-            //weaponHandler = GetComponent<WeaponHandler>();
         }
 
         protected virtual void Update()
         {
-            //weaponHandler.UpdateFireTimer();
+            weaponHandler.UpdateAttackTimer();
             DetectDroppedItems();
         }
 
@@ -63,7 +61,6 @@ namespace Actor
         {
             UpdateAnimationState();
             SetGravity(true);
-
             UpdateStateBehavior();
         }
 
@@ -161,7 +158,6 @@ namespace Actor
             col.center = orgVectColCenter;
         }
 
-
         protected virtual void Jump()
         {
             if (currentBaseState.fullPathHash == PlayerState.LocoState
@@ -182,24 +178,21 @@ namespace Actor
             }
         }
 
-        protected void Attack()
+        protected virtual void Attack()
         {
             if (currentBaseState.fullPathHash == PlayerState.JumpState &&
                 currentBaseState.fullPathHash == PlayerState.SlidingState &&
                 currentBaseState.fullPathHash == PlayerState.ReloadingState)
                 return;
 
-            if (weaponHandler.CanAttack())
+
+            if (weaponHandler.GetEquipWeaponType() == Item.Weapon.WeaponType.Melee)
             {
-                if (weaponHandler.GetEquipWeaponType() == Item.Weapon.WeaponType.Melee)
-                {
-                    characterAnimator.PlayAttack();
-                }
-
-
-                weaponHandler.Attack();
+                characterAnimator.PlayAttack();
             }
 
+
+            weaponHandler.Attack();
         }
 
         protected void PickUp()
@@ -231,14 +224,14 @@ namespace Actor
             if (other.CompareTag("AttackRange"))
             {
                 Item.Weapon.WeaponController weapon = other.transform.parent.gameObject.GetComponent<Item.Weapon.WeaponController>();
-                if (weaponHandler.IsEquipWeapon(weapon))
-                {
-                }
-                else
-                {
-                    TakeDamage(weapon.damage);
-                    characterAnimator.PlayTakeDamage();
-                }
+                //if (weaponHandler.IsEquipWeapon(weapon))
+                //{
+                //}
+                //else
+                //{
+                //    TakeDamage(weapon.damage);
+                //    characterAnimator.PlayTakeDamage();
+                //}
             }
         }
     }

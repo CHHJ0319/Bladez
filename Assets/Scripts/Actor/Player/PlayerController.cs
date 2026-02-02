@@ -26,6 +26,7 @@ namespace Actor.Player
             ApplyMovement(h);
             Jump();
             Sliding();
+            Attack();
         }
 
 
@@ -58,6 +59,14 @@ namespace Actor.Player
             if (playerInputHandler.SlidingTriggered)
             {
                 base.Sliding();   
+            }
+        }
+
+        protected override void Attack()
+        {
+            if (playerInputHandler.AttackTriggered)
+            {
+                base.Attack();
             }
         }
 

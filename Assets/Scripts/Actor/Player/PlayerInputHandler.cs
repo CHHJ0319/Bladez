@@ -36,14 +36,28 @@ namespace Actor.Player
             }
         }
 
-        public void OnMove(InputValue value)
+        private bool _attackTriggered;
+        public bool AttackTriggered
+        {
+            get
+            {
+                if (_attackTriggered)
+                {
+                    _attackTriggered = false;
+                    return true;
+                }
+                return false;
+            }
+        }
+
+        void OnMove(InputValue value)
         {
             Vector2 movement = value.Get<Vector2>();
             Horizontal = movement.x;
             Vertical = movement.y;
         }
 
-        public void OnJump(InputValue value)
+        void OnJump(InputValue value)
         {
             if (value.isPressed)
             {
@@ -51,11 +65,19 @@ namespace Actor.Player
             }
         }
 
-        public void OnSliding(InputValue value)
+        void OnSliding(InputValue value)
         {
             if (value.isPressed)
             {
                 _slidingTriggered = true;
+            }
+        }
+
+        void OnAttack(InputValue value)
+        {
+            if (value.isPressed)
+            {
+                _attackTriggered = true;
             }
         }
     }

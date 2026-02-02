@@ -19,14 +19,14 @@ namespace Item.Weapon
             Type = WeaponType.Range;
         }
 
-        public override void Use()
+        public override void Attack()
         {
-            StartCoroutine("Attack");
+            StartCoroutine("AttackProcess");
             curAmmo--;
         }
 
 
-        IEnumerator Attack()
+        IEnumerator AttackProcess()
         {
             audioSource.Play();
 

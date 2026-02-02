@@ -191,7 +191,6 @@ namespace Actor
                 characterAnimator.PlayAttack();
             }
 
-
             weaponHandler.Attack();
         }
 

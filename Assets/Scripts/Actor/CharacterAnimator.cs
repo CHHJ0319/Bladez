@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 namespace Actor
@@ -15,6 +16,9 @@ namespace Actor
 
         private Animator anim;
         private AudioSource audioSource;
+
+        private int _comboCount = 0;
+        private bool _canCombo = false;
 
         void Start()
         {
@@ -68,7 +72,15 @@ namespace Actor
 
         public void PlayAttack()
         {
-            anim.SetTrigger("Attack");
+            if (_comboCount == 0)
+            {
+                StartCoroutine(AttackProcess());
+            }
+            else if (_canCombo && _comboCount < 4)
+            {
+                _canCombo = false;
+                _comboCount++;
+            }
         }
 
         public void PlayTakeDamage()
@@ -84,6 +96,27 @@ namespace Actor
         public float GetGravityControl()
         {
             return anim.GetFloat("GravityControl");
+        }
+
+        IEnumerator AttackProcess()
+        {
+            _comboCount = 1;
+
+            while (_comboCount <= 4)
+            {
+                int currentStep = _comboCount;
+
+                anim.SetInteger("ComboCount", currentStep);
+                anim.SetTrigger("Attack");
+
+                _canCombo = true;
+                yield return new WaitForSeconds(0.4f);
+
+                if (_comboCount == currentStep) break;
+            }
+
+            _comboCount = 0;
+            _canCombo = false;
         }
     }
 }

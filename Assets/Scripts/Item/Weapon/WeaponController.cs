@@ -22,7 +22,7 @@ namespace Item.Weapon
 
         public virtual void Attack()
         {
-            StartCoroutine("AttackProcess");
+            StartCoroutine(AttackProcess());
         }
 
         IEnumerator AttackProcess()

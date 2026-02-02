@@ -12,6 +12,7 @@ namespace Actor
         public float backwardSpeed = 2.0f;
         public float rotateSpeed = 2.0f;
         public float jumpPower = 3.0f;
+        public float slidingPower = 1.0f;
 
         public bool useCurves = true;
         public float useCurvesHeight = 0.5f;
@@ -25,6 +26,8 @@ namespace Actor
         private Vector3 orgVectColCenter;
         private AnimatorStateInfo currentBaseState;
         private AnimatorStateInfo currentUpperBodyState;
+
+        protected Vector3 velocity;
 
         private float hp = 100f;
 
@@ -169,11 +172,12 @@ namespace Actor
             }
         }
 
-        protected void Sliding()
+        protected virtual void Sliding()
         {
             if (currentBaseState.fullPathHash == PlayerState.LocoState
                 && !characterAnimator.IsTransitioning())
             {
+                rb.AddForce(velocity * slidingPower, ForceMode.VelocityChange);
                 characterAnimator.SetSliding(true);
             }
         }

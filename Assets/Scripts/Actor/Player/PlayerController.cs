@@ -6,8 +6,6 @@ namespace Actor.Player
     {
         private PlayerInputHandler playerInputHandler;
 
-        private Vector3 velocity;
-
         protected override void Start()
         {
             base.Start();
@@ -27,7 +25,7 @@ namespace Actor.Player
             CalculateVelocity(v);
             ApplyMovement(h);
             Jump();
-
+            Sliding();
         }
 
 
@@ -52,6 +50,14 @@ namespace Actor.Player
             if (playerInputHandler.JumpTriggered)
             {
                 base.Jump();   
+            }
+        }
+
+        protected override void Sliding()
+        {
+            if (playerInputHandler.SlidingTriggered)
+            {
+                base.Sliding();   
             }
         }
 

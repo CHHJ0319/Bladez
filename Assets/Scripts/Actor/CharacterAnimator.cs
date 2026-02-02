@@ -50,7 +50,10 @@ namespace Actor
         public void SetJump(bool isJump)
         {
             anim.SetBool("Jump", isJump);
-            //audioSource.PlayOneShot(jumpSound);
+            if (isJump)
+            {
+                //audioSource.PlayOneShot(jumpSound);
+            }
         }
 
         public void SetSliding(bool isSliding)
@@ -58,7 +61,7 @@ namespace Actor
             anim.SetBool("Sliding", isSliding);
             if(isSliding)
             {
-                audioSource.PlayOneShot(slidingSound);
+                //audioSource.PlayOneShot(slidingSound);
 
             }
         }

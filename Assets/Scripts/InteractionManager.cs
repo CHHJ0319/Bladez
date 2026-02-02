@@ -20,8 +20,8 @@ public class InteractionManager : MonoBehaviour
 
     void SetCursorState(bool lockCursor)
     {
-        Cursor.lockState = lockCursor ? CursorLockMode.Locked : CursorLockMode.None;
-        Cursor.visible = !lockCursor;
+        //Cursor.lockState = lockCursor ? CursorLockMode.Locked : CursorLockMode.None;
+        //Cursor.visible = !lockCursor;
 
         if (inputController != null)
         {

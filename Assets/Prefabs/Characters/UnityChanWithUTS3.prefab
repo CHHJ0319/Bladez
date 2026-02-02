@@ -168,6 +168,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 100326, guid: 8f0565f23a2b58541a475bd3c1393052, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2975195783413477811}
+    - targetCorrespondingSourceObject: {fileID: 100326, guid: 8f0565f23a2b58541a475bd3c1393052, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6326118983049468605}
   m_SourcePrefab: {fileID: 100100000, guid: 8f0565f23a2b58541a475bd3c1393052, type: 3}
 --- !u!4 &292221277337004491 stripped
 Transform:
@@ -247,6 +250,21 @@ MonoBehaviour:
   jumpSound: {fileID: 0}
   slidingSound: {fileID: 0}
   winSound: {fileID: 0}
+--- !u!114 &6326118983049468605
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 292221277337040103}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 53851cdd1063b344bbb9a058de88493a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  weaponHolder: {fileID: 3596140973812406926}
+  equipWeapon: {fileID: 0}
+  slottedWeapons: []
 --- !u!1001 &2275523749408411030
 PrefabInstance:
   m_ObjectHideFlags: 0

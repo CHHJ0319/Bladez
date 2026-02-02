@@ -45,7 +45,7 @@ namespace Actor
             rb = character.GetComponent<Rigidbody>();
 
             characterAnimator = character.GetComponent<CharacterAnimator>();
-            weaponHandler = GetComponent<WeaponHandler>();
+            weaponHandler = character.GetComponent<WeaponHandler>();
 
             orgColHeight = col.height;
             orgVectColCenter = col.center;
@@ -213,25 +213,19 @@ namespace Actor
             weaponHandler.EquipWeapon(weaponIdx);
         }
 
-        public virtual void TakeDamage(float damage)
+        public virtual void TakeDamage(float damage, Vector3 damageDirection, float knockbackForce)
         {
             hp -= damage;
+
+            characterAnimator.PlayTakeDamage();
+            ApplyKnockback(-damageDirection, knockbackForce);
         }
 
-        private void OnTriggerEnter(Collider other)
+        private void ApplyKnockback(Vector3 knockbackDirection, float knockbackForce)
         {
-            if (other.CompareTag("AttackRange"))
-            {
-                Item.Weapon.WeaponController weapon = other.transform.parent.gameObject.GetComponent<Item.Weapon.WeaponController>();
-                //if (weaponHandler.IsEquipWeapon(weapon))
-                //{
-                //}
-                //else
-                //{
-                //    TakeDamage(weapon.damage);
-                //    characterAnimator.PlayTakeDamage();
-                //}
-            }
+            knockbackDirection.y = 0.1f;
+
+            rb.AddForce(knockbackDirection * knockbackForce, ForceMode.VelocityChange);
         }
     }
 }

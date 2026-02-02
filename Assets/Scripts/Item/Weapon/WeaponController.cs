@@ -7,7 +7,8 @@ namespace Item.Weapon
     public class WeaponController : MonoBehaviour
     {
         public WeaponType Type { get; protected set; } = WeaponType.Melee;
-        public int damage;
+        public float damage;
+        public float knockbackForce;
         public float rate;
 
         public TrailRenderer trailEffect;
@@ -62,12 +63,21 @@ namespace Item.Weapon
         {
             string targetName = "";
 
-            Transform rootTransform = other.transform.root;
+            GameObject rootGameObject = other.transform.root.gameObject;
 
-            if (rootTransform.gameObject.TryGetComponent(out PlayerController controller))
+            if (rootGameObject.TryGetComponent(out PlayerController playerCcontroller))
             {
-                targetName = rootTransform.name;
+                targetName = rootGameObject.name;
+                //Debug.Log($"{targetName}와(과) 접촉했습니다!");
+            }
+            else if (rootGameObject.TryGetComponent(out RemotePlayerController remotePlayerController))
+            {
+                targetName = rootGameObject.name;
                 Debug.Log($"{targetName}와(과) 접촉했습니다!");
+
+                Vector3 damageDirection = (transform.position - other.transform.position).normalized;
+                RemotePlayerController remotePlayer = rootGameObject.GetComponent<RemotePlayerController>();
+                remotePlayer.TakeDamage(damage, damageDirection, knockbackForce);
             }
         }
     }

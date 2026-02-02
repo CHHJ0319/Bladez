@@ -106,10 +106,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 96219386e2cb8a64f93b8a923c735f83, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  damage: 0
-  rate: 0
-  meleeArea: {fileID: 0}
-  capsuleCollider: {fileID: -3748188500892712960}
+  damage: 2
+  knockbackForce: 5
+  rate: 0.1
   trailEffect: {fileID: 0}
   particle: {fileID: 0}
   audioSource: {fileID: 305423807541744382}

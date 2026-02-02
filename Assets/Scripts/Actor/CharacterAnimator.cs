@@ -76,7 +76,7 @@ namespace Actor
             {
                 StartCoroutine(AttackProcess());
             }
-            else if (_canCombo && _comboCount < 4)
+            else if (_canCombo && _comboCount < 2)
             {
                 _canCombo = false;
                 _comboCount++;
@@ -102,7 +102,7 @@ namespace Actor
         {
             _comboCount = 1;
 
-            while (_comboCount <= 4)
+            while (_comboCount <= 2)
             {
                 int currentStep = _comboCount;
 

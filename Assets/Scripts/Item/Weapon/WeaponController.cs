@@ -1,3 +1,4 @@
+using Actor.Player;
 using System.Collections;
 using UnityEngine;
 
@@ -9,12 +10,8 @@ namespace Item.Weapon
         public int damage;
         public float rate;
 
-        public BoxCollider meleeArea;
-        public CapsuleCollider capsuleCollider;
-
         public TrailRenderer trailEffect;
         public ParticleSystem particle;
-
         public AudioSource audioSource;
 
         public string ownerName;
@@ -28,7 +25,7 @@ namespace Item.Weapon
         IEnumerator AttackProcess()
         {
             yield return new WaitForSeconds(0.0f);
-            meleeArea.gameObject.SetActive(true);
+
             if (trailEffect != null)
             {
                 trailEffect.enabled = true;
@@ -48,7 +45,6 @@ namespace Item.Weapon
             audioSource.Play();
 
             yield return new WaitForSeconds(0.3f);
-            meleeArea.gameObject.SetActive(false);
 
             yield return new WaitForSeconds(0.3f);
             if (trailEffect != null)
@@ -59,9 +55,20 @@ namespace Item.Weapon
 
         public void OnPickedUp(string name)
         {
-            //capsuleCollider.enabled = false;
-
             ownerName = name;
+        }
+
+        private void OnTriggerEnter(Collider other)
+        {
+            string targetName = "";
+
+            Transform rootTransform = other.transform.root;
+
+            if (rootTransform.gameObject.TryGetComponent(out PlayerController controller))
+            {
+                targetName = rootTransform.name;
+                Debug.Log($"{targetName}와(과) 접촉했습니다!");
+            }
         }
     }
 }

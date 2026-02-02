@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Actor
 {
-    public class ActorAnimator : MonoBehaviour
+    public class CharacterAnimator : MonoBehaviour
     {
         public float animSpeed = 1.5f;
 
@@ -20,6 +20,13 @@ namespace Actor
         {
             anim = GetComponent<Animator>();
             audioSource = GetComponent<AudioSource>();
+
+        }
+
+        public void UpdateMovementAnimation(float horizontal, float vertical)
+        {
+            anim.SetFloat("Speed", vertical);
+            anim.SetFloat("Direction", horizontal);
 
             anim.speed = animSpeed;
         }
@@ -53,10 +60,10 @@ namespace Actor
             anim.SetBool("IsMoving", isMoving);
         }
 
-        public void PlayJump()
+        public void SetJump(bool isJump)
         {
-            anim.SetBool("Jump", true);
-            audioSource.PlayOneShot(jumpSound);
+            anim.SetBool("Jump", isJump);
+            //audioSource.PlayOneShot(jumpSound);
         }
 
         public void PlaySliding()
@@ -99,11 +106,6 @@ namespace Actor
         public float GetGravityControlt()
         {
             return anim.GetFloat("GravityControl");
-        }
-
-        public void StopJump()
-        {
-            anim.SetBool("Jump", false);
         }
 
         public void StopSliding()

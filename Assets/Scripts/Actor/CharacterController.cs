@@ -1,14 +1,13 @@
 using Actor.Player;
 using UnityEngine;
-using UnityEngine.Windows;
 
 namespace Actor
 {
-    public abstract class ActorController : MonoBehaviour
+    public abstract class CharaterController : MonoBehaviour
     {
         public ItemPicker itemPicker;
 
-        [Header("Movement Settings")]
+        [Header("Settings")]
         public float forwardSpeed = 7.0f;
         public float rotateSpeed = 20.0f;
         public float slidingSpeed = 4.0f;
@@ -29,7 +28,7 @@ namespace Actor
         protected CharacterController controller;
 
         private WeaponHandler weaponHandler;
-        protected ActorAnimator anim;
+        protected CharacterAnimator anim;
 
         protected AnimatorStateInfo currentBaseState;
         protected AnimatorStateInfo currentUpperBodyState;
@@ -40,7 +39,7 @@ namespace Actor
             orgColHeight = controller.height;
             orgVectColCenter = controller.center;
 
-            anim = GetComponent<ActorAnimator>();
+            anim = GetComponent<CharacterAnimator>();
             weaponHandler = GetComponent<WeaponHandler>();
         }
 
@@ -75,13 +74,13 @@ namespace Actor
 
         void HandleStateSpecificLogic()
         {
-            if (currentUpperBodyState.fullPathHash == PrayerState.ReloadingState
+            if (currentUpperBodyState.fullPathHash == PlayerState.ReloadingState
                 && !anim.IsTransitioning())
             {
                 anim.StopReload();
             }
 
-            if (currentBaseState.fullPathHash == PrayerState.LocoState)
+            if (currentBaseState.fullPathHash == PlayerState.LocoState)
             {
                 if (useCurves)
                 {
@@ -89,7 +88,7 @@ namespace Actor
                 }
             }
 
-            else if (currentBaseState.fullPathHash == PrayerState.JumpState)
+            else if (currentBaseState.fullPathHash == PlayerState.JumpState)
             {
                 if (!anim.IsTransitioning())
                 {
@@ -117,11 +116,11 @@ namespace Actor
                             }
                         }
                     }
-                    anim.StopJump();
+                    //anim.StopJump();
                 }
             }
 
-            else if (currentBaseState.fullPathHash == PrayerState.SlidingState)
+            else if (currentBaseState.fullPathHash == PlayerState.SlidingState)
             {
                 if (!anim.IsTransitioning())
                 {
@@ -129,7 +128,7 @@ namespace Actor
                 }
             }
 
-            else if (currentBaseState.fullPathHash == PrayerState.IdleState)
+            else if (currentBaseState.fullPathHash == PlayerState.IdleState)
             {
                 if (useCurves)
                 {
@@ -147,16 +146,16 @@ namespace Actor
 
         protected void Jump()
         {
-            if (currentBaseState.fullPathHash == PrayerState.LocoState
+            if (currentBaseState.fullPathHash == PlayerState.LocoState
                 && !anim.IsTransitioning())
             {
-                anim.PlayJump();
+                //anim.PlayJump();
             }
         }
 
         protected void Sliding()
         {
-            if (currentBaseState.fullPathHash == PrayerState.LocoState
+            if (currentBaseState.fullPathHash == PlayerState.LocoState
                 && !anim.IsTransitioning())
             {
                 anim.PlaySliding();
@@ -165,9 +164,9 @@ namespace Actor
 
         protected void Attack()
         {
-            if (currentBaseState.fullPathHash == PrayerState.JumpState &&
-                currentBaseState.fullPathHash == PrayerState.SlidingState &&
-                currentBaseState.fullPathHash == PrayerState.ReloadingState)
+            if (currentBaseState.fullPathHash == PlayerState.JumpState &&
+                currentBaseState.fullPathHash == PlayerState.SlidingState &&
+                currentBaseState.fullPathHash == PlayerState.ReloadingState)
                 return;
 
             if (weaponHandler.CanAttack())
@@ -191,8 +190,8 @@ namespace Actor
             if (ammo == 0)
                 return;
 
-            if (currentBaseState.fullPathHash == PrayerState.JumpState &&
-                currentBaseState.fullPathHash == PrayerState.SlidingState)
+            if (currentBaseState.fullPathHash == PlayerState.JumpState &&
+                currentBaseState.fullPathHash == PlayerState.SlidingState)
                 return;
 
             if (weaponHandler.CanReload())

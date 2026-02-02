@@ -5,33 +5,35 @@ namespace Actor.Player
 {
     public class PlayerInputHandler : MonoBehaviour
     {
-        public void LockCursor()
+        public float Horizontal { get; private set; }
+        public float Vertical { get; private set; }
+        private bool _jumpTriggered;
+        public bool JumpTriggered
         {
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
+            get
+            {
+                if (_jumpTriggered)
+                {
+                    _jumpTriggered = false;
+                    return true;
+                }
+                return false;
+            }
         }
-
-        public Vector2 MoveInput { get; private set; }
 
         public void OnMove(InputValue value)
         {
-            MoveInput = value.Get<Vector2>();
+            Vector2 movement = value.Get<Vector2>();
+            Horizontal = movement.x;
+            Vertical = movement.y;
         }
-        public void OnJump(InputValue value) => Events.PlayerEvents.Jump();
-        public void OnSliding(InputValue value) => Events.PlayerEvents.Sliding();
-        public void OnAttack(InputValue value) => Events.PlayerEvents.Attack();
-        public void OnReload(InputValue value) => Events.PlayerEvents.Reload();
-        public void OnQuickSlot1(InputValue value)
+
+        public void OnJump(InputValue value)
         {
-            Events.PlayerEvents.ChangeWeapon(0);
-        }
-        public void OnQuickSlot2(InputValue value)
-        {
-            Events.PlayerEvents.ChangeWeapon(1);
-        }
-        public void OnQuickSlot3(InputValue value)
-        {
-            Events.PlayerEvents.ChangeWeapon(2);
+            if (value.isPressed)
+            {
+                _jumpTriggered = true;
+            }
         }
     }
 }

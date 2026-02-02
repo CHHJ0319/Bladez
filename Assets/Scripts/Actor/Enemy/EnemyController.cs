@@ -142,7 +142,7 @@ namespace Actor.Enemy
             if (target.CompareTag("Player"))
             {
                 Actor.Player.PlayerController player = target.gameObject.GetComponent<Actor.Player.PlayerController>();
-                player.TakeDamage(ad);
+                //player.TakeDamage(ad);
    
             }
         }

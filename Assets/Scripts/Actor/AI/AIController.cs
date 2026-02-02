@@ -3,9 +3,9 @@ using UnityEngine;
 
 namespace Actor.AI
 {
-    [RequireComponent(typeof(ActorAnimator))]
+    [RequireComponent(typeof(CharacterAnimator))]
     [RequireComponent(typeof(WeaponHandler))]
-    public class AIController : ActorController
+    public class AIController : CharaterController
     {
         
     }

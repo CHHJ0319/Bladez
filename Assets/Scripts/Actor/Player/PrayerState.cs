@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Actor.Player
 {
-    public static class PrayerState
+    public static class PlayerState
     {
         public static int IdleState = Animator.StringToHash("Base Layer.Idle");
         public static int LocoState = Animator.StringToHash("Base Layer.RUN");

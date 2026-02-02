@@ -2,83 +2,175 @@ using UnityEngine;
 
 namespace Actor.Player
 {
-    [RequireComponent(typeof(ActorAnimator))]
-    [RequireComponent(typeof(WeaponHandler))]
-    [RequireComponent(typeof(PlayerInputHandler))]
-    public class PlayerController : ActorController
+    public class PlayerController : MonoBehaviour
     {
-        public GameEnding gameEnding;
-        public Transform thirdCamTranform;
+        public GameObject character;
 
-        private PlayerInputHandler input;
+        public float lookSmoother = 3.0f;
+        public bool useCurves = true;
+        public float useCurvesHeight = 0.5f;
 
-        void OnEnable()
+        public float forwardSpeed = 7.0f;
+        public float backwardSpeed = 2.0f;
+        public float rotateSpeed = 2.0f;
+        public float jumpPower = 3.0f;
+
+        private CapsuleCollider col;
+        private Rigidbody rb;
+
+        private Vector3 velocity;
+        private float orgColHeight;
+        private Vector3 orgVectColCenter;
+        private AnimatorStateInfo currentBaseState;
+
+        private PlayerInputHandler playerInputHandler;
+        private CharacterAnimator characterAnimator;
+
+        static int idleState = Animator.StringToHash("Base Layer.Idle");
+        static int locoState = Animator.StringToHash("Base Layer.Locomotion");
+        static int jumpState = Animator.StringToHash("Base Layer.Jump");
+        static int restState = Animator.StringToHash("Base Layer.Rest");
+
+        void Start()
         {
-            Events.PlayerEvents.OnJump += Jump;
-            Events.PlayerEvents.OnSliding += Sliding;
-            Events.PlayerEvents.OnAttack += Attack;
-            Events.PlayerEvents.OnReload += Reload;
-            Events.PlayerEvents.OnQuickSlotPressed += EquipWeapon;
+            col = character.GetComponent<CapsuleCollider>();
+            rb = character.GetComponent<Rigidbody>();
+
+            playerInputHandler = GetComponent<PlayerInputHandler>();
+            characterAnimator = character.GetComponent<CharacterAnimator>();
+
+            orgColHeight = col.height;
+            orgVectColCenter = col.center;
         }
 
-        protected override void Start()
+        void FixedUpdate()
         {
-            base.Start();
+            float h = playerInputHandler.Horizontal;
+            float v = playerInputHandler.Vertical;
 
-            input = GetComponent<PlayerInputHandler>();
-            input.LockCursor();
+            SetGravity(true);
+            characterAnimator.UpdateMovementAnimation(h, v);
+            UpdateAnimationState();
+            CalculateVelocity(v);
+            Jump();
+            ApplyMovement(h);
+            UpdateStateBehavior();
         }
 
-        protected override void Update()
+        void SetGravity(bool active)
         {
-            base.Update();
-
-            ApplyRotation();
+            rb.useGravity = active;
         }
 
-        protected override void FixedUpdate()
-        {
-            base.FixedUpdate();
+        
 
-            CalculateMove();
+        void UpdateAnimationState()
+        {
+            currentBaseState = characterAnimator.GetBaseLayerState(); ;
         }
 
-        void ApplyRotation()
+        void CalculateVelocity(float vertical)
         {
-            float targetRotation = thirdCamTranform.eulerAngles.y;
-            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.Euler(0, targetRotation, 0), rotateSpeed * Time.deltaTime);
-        }
+            velocity = new Vector3(0, 0, vertical);
+            velocity = transform.TransformDirection(velocity);
 
-        void CalculateMove()
-        {
-            float horizontal = input.MoveInput.x;
-            float vertical = input.MoveInput.y;
-
-            Vector3 moveDir = (transform.forward * vertical) + (transform.right * horizontal);
-
-            float moveSpeed = new Vector2(horizontal, vertical).magnitude;
-            anim.PlayMoving(moveSpeed > 0.01f);
-
-            float speedFactor = forwardSpeed;
-            if (currentUpperBodyState.fullPathHash == PrayerState.ReloadingState) speedFactor = 0.0f;
-            else if (currentBaseState.fullPathHash == PrayerState.SlidingState) speedFactor = slidingSpeed;
-            else if (currentBaseState.fullPathHash == PrayerState.JumpState) speedFactor = jumpSpeed;
-
-            ApplyGravity();
-
-            Vector3 finalMove = (moveDir * speedFactor) + (Vector3.up * verticalVelocity);
-
-            controller.Move(finalMove * Time.deltaTime);
-        }
-
-        public override void TakeDamage(float damage)
-        {
-            base.TakeDamage(damage);
-
-            if (hp < 0)
+            if (vertical > 0.1f)
             {
-                gameEnding.CaughtPlayer();
+                velocity *= forwardSpeed;
             }
+            else if (vertical < -0.1f)
+            {
+                velocity *= backwardSpeed;
+            }
+        }
+
+        void Jump()
+        {
+            if (playerInputHandler.JumpTriggered)
+            {
+                if (currentBaseState.fullPathHash == locoState)
+                {
+                    if (!characterAnimator.IsTransitioning())
+                    {
+                        rb.AddForce(Vector3.up * jumpPower, ForceMode.VelocityChange);
+                        characterAnimator.SetJump(true);
+                    }
+                }
+            }
+        }
+
+        void ApplyMovement(float horizontal)
+        {
+            transform.localPosition += velocity * Time.fixedDeltaTime;
+
+            transform.Rotate(0, horizontal * rotateSpeed, 0);
+        }
+
+        void UpdateStateBehavior()
+        {
+            if (currentBaseState.fullPathHash == locoState)
+            {
+                if (useCurves)
+                {
+                    ResetCollider();
+                }
+            }
+            else if (currentBaseState.fullPathHash == jumpState)
+            {
+                if (!characterAnimator.IsTransitioning())
+                {
+                    if (useCurves)
+                    {
+                        float jumpHeight = characterAnimator.GetJumpHeight();
+                        float gravityControl = characterAnimator.GetJumpHeight();
+                        if (gravityControl > 0)
+                            rb.useGravity = false;
+
+                        Ray ray = new Ray(transform.position + Vector3.up, -Vector3.up);
+                        RaycastHit hitInfo = new RaycastHit();
+                        if (Physics.Raycast(ray, out hitInfo))
+                        {
+                            if (hitInfo.distance > useCurvesHeight)
+                            {
+                                col.height = orgColHeight - jumpHeight;
+                                float adjCenterY = orgVectColCenter.y + jumpHeight;
+                                col.center = new Vector3(0, adjCenterY, 0);
+                            }
+                            else
+                            {
+                                ResetCollider();
+                            }
+                        }
+                    }
+                    characterAnimator.SetJump(false);
+                }
+            }
+            else if (currentBaseState.fullPathHash == idleState)
+            {
+                if (useCurves)
+                {
+                    ResetCollider();
+                }
+                if (playerInputHandler.JumpTriggered)
+                {
+                    characterAnimator.SetJump(true);
+                }
+            }
+            else if (currentBaseState.fullPathHash == restState)
+            {
+                if (!characterAnimator.IsTransitioning())
+                {
+                    characterAnimator.SetJump(false);
+                }
+            }
+        }
+
+        void ResetCollider()
+        {
+            col.height = orgColHeight;
+            col.center = orgVectColCenter;
         }
     }
 }
+
+

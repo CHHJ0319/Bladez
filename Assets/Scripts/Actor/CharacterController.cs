@@ -13,9 +13,10 @@ namespace Actor
         public float rotateSpeed = 2.0f;
         public float jumpPower = 3.0f;
 
-        public float lookSmoother = 3.0f;
         public bool useCurves = true;
         public float useCurvesHeight = 0.5f;
+
+        protected CharacterAnimator characterAnimator;
 
         private CapsuleCollider col;
         private Rigidbody rb;
@@ -23,21 +24,18 @@ namespace Actor
         private float orgColHeight;
         private Vector3 orgVectColCenter;
         private AnimatorStateInfo currentBaseState;
+        private AnimatorStateInfo currentUpperBodyState;
 
-        protected CharacterAnimator characterAnimator;
+        private float hp = 100f;
+
         /// <summary>
         /// //////////////////////////////////////////////////////
         /// </summary>
 
         public ItemPicker itemPicker;
 
-        // [Header("Character Status")]
-        protected float hp = 100f;
-        private int ammo = 100;
-
         private WeaponHandler weaponHandler;
 
-        protected AnimatorStateInfo currentUpperBodyState;
 
         protected virtual void Start()
         {
@@ -79,7 +77,8 @@ namespace Actor
 
         void UpdateAnimationState()
         {
-            currentBaseState = characterAnimator.GetBaseLayerState(); ;
+            currentBaseState = characterAnimator.GetBaseLayerState();
+            //currentUpperBodyState = characterAnimator.GetUpperBodyState();
         }
 
         void SetGravity(bool active)
@@ -89,12 +88,6 @@ namespace Actor
 
         void UpdateStateBehavior()
         {
-            if (currentUpperBodyState.fullPathHash == PlayerState.ReloadingState
-                && !characterAnimator.IsTransitioning())
-            {
-                characterAnimator.StopReload();
-            }
-
             if (currentBaseState.fullPathHash == PlayerState.LocoState)
             {
                 if (useCurves)
@@ -110,7 +103,7 @@ namespace Actor
                     if (useCurves)
                     {
                         float jumpHeight = characterAnimator.GetJumpHeight();
-                        float gravityControl = characterAnimator.GetJumpHeight();
+                        float gravityControl = characterAnimator.GetGravityControl();
                         if (gravityControl > 0)
                             rb.useGravity = false;
 
@@ -138,7 +131,7 @@ namespace Actor
             {
                 if (!characterAnimator.IsTransitioning())
                 {
-                    characterAnimator.StopSliding();
+                    characterAnimator.SetSliding(false);
                 }
             }
 
@@ -181,7 +174,7 @@ namespace Actor
             if (currentBaseState.fullPathHash == PlayerState.LocoState
                 && !characterAnimator.IsTransitioning())
             {
-                characterAnimator.PlaySliding();
+                characterAnimator.SetSliding(true);
             }
         }
 
@@ -196,39 +189,13 @@ namespace Actor
             {
                 if (weaponHandler.GetEquipWeaponType() == Item.Weapon.WeaponType.Melee)
                 {
-                    characterAnimator.PlaySlash();
+                    characterAnimator.PlayAttack();
                 }
-                else if (weaponHandler.GetEquipWeaponType() == Item.Weapon.WeaponType.Range)
-                {
-                    characterAnimator.PlayShot();
-                }
+
 
                 weaponHandler.Attack();
             }
 
-        }
-
-        protected void Reload()
-        {
-            if (ammo == 0)
-                return;
-
-            if (currentBaseState.fullPathHash == PlayerState.JumpState &&
-                currentBaseState.fullPathHash == PlayerState.SlidingState)
-                return;
-
-            if (weaponHandler.CanReload())
-            {
-                if (!characterAnimator.IsTransitioning())
-                {
-                    characterAnimator.PlayReload();
-                }
-                weaponHandler.Reload(ref ammo);
-            }
-            else
-            {
-                characterAnimator.PlayInteract();
-            }
         }
 
         protected void PickUp()
@@ -266,7 +233,7 @@ namespace Actor
                 else
                 {
                     TakeDamage(weapon.damage);
-                    characterAnimator.PlayImpact();
+                    characterAnimator.PlayTakeDamage();
                 }
             }
         }

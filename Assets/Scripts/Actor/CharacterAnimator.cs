@@ -35,29 +35,16 @@ namespace Actor
         {
             return anim.GetCurrentAnimatorStateInfo(0);
         }
+
         public AnimatorStateInfo GetUpperBodyState()
         {
             return anim.GetCurrentAnimatorStateInfo(2);
         }
-
-        public float GetAnimationDistance()
-        {
-            return anim.deltaPosition.magnitude;
-        }
-
-        public float GetVerticalDelta()
-        {
-            return anim.deltaPosition.y;
-        }
+       
 
         public bool IsTransitioning()
         {
             return anim.IsInTransition(0);
-        }
-
-        public void PlayMoving(bool isMoving)
-        {
-            anim.SetBool("IsMoving", isMoving);
         }
 
         public void SetJump(bool isJump)
@@ -66,36 +53,24 @@ namespace Actor
             //audioSource.PlayOneShot(jumpSound);
         }
 
-        public void PlaySliding()
+        public void SetSliding(bool isSliding)
         {
-            anim.SetBool("Sliding", true);
-            audioSource.PlayOneShot(slidingSound);
+            anim.SetBool("Sliding", isSliding);
+            if(isSliding)
+            {
+                audioSource.PlayOneShot(slidingSound);
+
+            }
         }
 
-        public void PlayShot()
-        {
-            anim.SetTrigger("Shot");
-        }
-
-        public void PlaySlash()
+        public void PlayAttack()
         {
             anim.SetTrigger("Slash");
         }
 
-        public void PlayImpact()
+        public void PlayTakeDamage()
         {
             anim.SetTrigger("Hit");
-        }
-
-        public void PlayInteract()
-        {
-            anim.SetTrigger("Act");
-        }
-
-        public void PlayReload()
-        {
-            anim.SetBool("Reload", true);
-            audioSource.Play();
         }
 
         public float GetJumpHeight()
@@ -103,19 +78,9 @@ namespace Actor
             return anim.GetFloat("JumpHeight");
         }
 
-        public float GetGravityControlt()
+        public float GetGravityControl()
         {
             return anim.GetFloat("GravityControl");
-        }
-
-        public void StopSliding()
-        {
-            anim.SetBool("Sliding", false);
-        }
-
-        public void StopReload()
-        {
-            anim.SetBool("Reload", false);
         }
     }
 }

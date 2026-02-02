@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 4923310231248860526}
   - component: {fileID: 712563660761417808}
-  - component: {fileID: 1973258057046848696}
   m_Layer: 0
   m_Name: RemotePlayer
   m_TagString: Untagged
@@ -55,21 +54,6 @@ MonoBehaviour:
   useCurves: 1
   useCurvesHeight: 0.5
   itemPicker: {fileID: 0}
---- !u!114 &1973258057046848696
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 558534991584875990}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 53851cdd1063b344bbb9a058de88493a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  weaponHolder: {fileID: 0}
-  equipWeapon: {fileID: 0}
-  slottedWeapons: []
 --- !u!1 &1280343465246498873
 GameObject:
   m_ObjectHideFlags: 0

@@ -657,7 +657,6 @@ MonoBehaviour:
   hostButton: {fileID: 2143803577}
   clientButton: {fileID: 935557001}
   serverButton: {fileID: 599624925}
-  moveButton: {fileID: 0}
   statusText: {fileID: 1248511165}
 --- !u!1 &893484894
 GameObject:
@@ -2003,7 +2002,7 @@ MonoBehaviour:
   NetworkConfig:
     ProtocolVersion: 0
     NetworkTransport: {fileID: 2034761065}
-    PlayerPrefab: {fileID: 8070457771775360432, guid: 107d5a0c549e0304291e8a82943917ae, type: 3}
+    PlayerPrefab: {fileID: 202232820513539697, guid: 386ad77af4dfe1047a69eb974e7f9f8b, type: 3}
     Prefabs:
       NetworkPrefabsLists:
       - {fileID: 11400000, guid: 01dfe498fdc73ce4b9a7c4337c8b17d1, type: 2}

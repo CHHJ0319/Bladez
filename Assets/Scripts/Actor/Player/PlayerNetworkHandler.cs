@@ -12,15 +12,13 @@ namespace Actor.Player
         public NetworkVariable<Vector3> Position = new NetworkVariable<Vector3>();
         public NetworkVariable<Quaternion> Rotation = new NetworkVariable<Quaternion>();
 
-        //private PlayerController _playerController;
-        private CharacterAnimator _chracaterAnimator;
+        private CharacterAnimator _characterAnimator;
         private PlayerInput _playerInput;
 
         private void Awake()
         {
-            //_playerController = GetComponent<PlayerController>();
             _playerInput = GetComponent<PlayerInput>();
-            //_chracaterAnimator = _playerController.character.GetComponent<CharacterAnimator>();
+            _characterAnimator = GetComponent<CharacterAnimator>();
         }
 
         public override void OnNetworkSpawn()
@@ -53,6 +51,22 @@ namespace Actor.Player
             if (Position.Value != previous)
             {
                 transform.position = Position.Value;
+
+                Vector3 moveDirection = (current - previous);
+                //Vector3 localDirection = transform.InverseTransformDirection(moveDirection);
+
+                if (!IsOwner)
+                {
+                    _characterAnimator.UpdateMovementAnimation(moveDirection.normalized.x, moveDirection.normalized.z);
+
+                }
+            }
+            else
+            {
+                if (!IsOwner)
+                {
+                    _characterAnimator.UpdateMovementAnimation(0, 0);
+                }
             }
         }
 

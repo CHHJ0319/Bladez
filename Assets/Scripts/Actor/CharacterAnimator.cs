@@ -20,7 +20,7 @@ namespace Actor
         private int _comboCount = 0;
         private bool _canCombo = false;
 
-        void Start()
+        void Awake()
         {
             anim = GetComponent<Animator>();
             audioSource = GetComponent<AudioSource>();
@@ -30,6 +30,8 @@ namespace Actor
         {
             anim.SetFloat("Speed", vertical);
             anim.SetFloat("Direction", horizontal);
+
+            Debug.Log("h : " +  horizontal + "v : " + vertical);
 
             anim.speed = animSpeed;
         }

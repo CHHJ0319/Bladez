@@ -5,8 +5,6 @@ namespace Actor
 {
     public abstract class CharaterController : MonoBehaviour
     {
-        public GameObject character;
-
         [Header("Settings")]
         public float forwardSpeed = 7.0f;
         public float backwardSpeed = 2.0f;
@@ -41,11 +39,11 @@ namespace Actor
 
         protected virtual void Start()
         {
-            col = character.GetComponent<CapsuleCollider>();
-            rb = character.GetComponent<Rigidbody>();
+            col = GetComponent<CapsuleCollider>();
+            rb = GetComponent<Rigidbody>();
 
-            characterAnimator = character.GetComponent<CharacterAnimator>();
-            weaponHandler = character.GetComponent<WeaponHandler>();
+            characterAnimator = GetComponent<CharacterAnimator>();
+            weaponHandler = GetComponent<WeaponHandler>();
 
             orgColHeight = col.height;
             orgVectColCenter = col.center;

@@ -24,7 +24,6 @@ namespace Actor
         {
             anim = GetComponent<Animator>();
             audioSource = GetComponent<AudioSource>();
-
         }
 
         public void UpdateMovementAnimation(float horizontal, float vertical)

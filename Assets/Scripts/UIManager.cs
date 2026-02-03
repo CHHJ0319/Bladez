@@ -10,7 +10,6 @@ public class UIManager : MonoBehaviour
     public Button hostButton;
     public Button clientButton;
     public Button serverButton;
-    public Button moveButton;
 
     [Header("Status")]
     public TMP_Text statusText;
@@ -20,8 +19,6 @@ public class UIManager : MonoBehaviour
         hostButton.onClick.AddListener(OnHostButtonClicked);
         clientButton.onClick.AddListener(OnClientButtonClicked);
         serverButton.onClick.AddListener(OnServerButtonClicked);
-
-        moveButton.onClick.AddListener(SubmitNewPosition);
     }
 
     void Update()
@@ -68,7 +65,6 @@ public class UIManager : MonoBehaviour
         if (NetworkManager.Singleton == null)
         {
             SetStartButtons(false);
-            SetMoveButton(false);
             SetStatusText("NetworkManager not found");
             return;
         }
@@ -76,13 +72,11 @@ public class UIManager : MonoBehaviour
         if (!NetworkManager.Singleton.IsClient && !NetworkManager.Singleton.IsServer)
         {
             SetStartButtons(true);
-            SetMoveButton(false);
             SetStatusText("Not connected");
         }
         else
         {
             SetStartButtons(false);
-            SetMoveButton(true);
             UpdateStatusLabels();
         }
     }
@@ -92,19 +86,6 @@ public class UIManager : MonoBehaviour
         hostButton.gameObject.SetActive(state);
         clientButton.gameObject.SetActive(state);
         serverButton.gameObject.SetActive(state);
-    }
-
-    void SetMoveButton(bool state)
-    {
-        moveButton.gameObject.SetActive(state);
-        if (state)
-        {
-            TMP_Text btnText = moveButton.GetComponentInChildren<TMP_Text>();
-            if (btnText != null)
-            {
-                btnText.text = NetworkManager.Singleton.IsServer ? "Move" : "Request Position Change";
-            }
-        }
     }
 
     void SetStatusText(string text)

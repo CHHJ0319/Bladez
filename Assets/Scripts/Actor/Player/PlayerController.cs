@@ -5,12 +5,15 @@ namespace Actor.Player
     public class PlayerController : CharaterController
     {
         private PlayerInputHandler playerInputHandler;
+        private PlayerNetworkHandler playerNetworkHandler;
 
         protected override void Start()
         {
             base.Start();
 
             playerInputHandler = GetComponent<PlayerInputHandler>();
+            playerNetworkHandler = GetComponent<PlayerNetworkHandler>();
+
         }
 
         protected override void FixedUpdate()
@@ -20,10 +23,7 @@ namespace Actor.Player
             float h = playerInputHandler.Horizontal;
             float v = playerInputHandler.Vertical;
 
-            characterAnimator.UpdateMovementAnimation(h, v);
-
-            CalculateVelocity(v);
-            ApplyMovement(h);
+            Move(h, v);
             Jump();
             Sliding();
             Attack();
@@ -50,7 +50,7 @@ namespace Actor.Player
         {
             if (playerInputHandler.JumpTriggered)
             {
-                base.Jump();   
+                base.Jump();
             }
         }
 
@@ -58,7 +58,7 @@ namespace Actor.Player
         {
             if (playerInputHandler.SlidingTriggered)
             {
-                base.Sliding();   
+                base.Sliding();
             }
         }
 
@@ -70,11 +70,17 @@ namespace Actor.Player
             }
         }
 
-        void ApplyMovement(float horizontal)
+        public void Move(float horizontal, float vertical)
         {
+            characterAnimator.UpdateMovementAnimation(horizontal, vertical);
+
+            CalculateVelocity(vertical);
+
             transform.localPosition += velocity * Time.fixedDeltaTime;
 
             transform.Rotate(0, horizontal * rotateSpeed, 0);
+
+            playerNetworkHandler.Move(transform.localPosition, transform.localRotation);
         }
     }
 }

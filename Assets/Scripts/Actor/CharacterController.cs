@@ -78,7 +78,7 @@ namespace Actor
         void UpdateAnimationState()
         {
             currentBaseState = characterAnimator.GetBaseLayerState();
-            //currentUpperBodyState = characterAnimator.GetUpperBodyState();
+            currentUpperBodyState = characterAnimator.GetUpperBodyState();
         }
 
         void SetGravity(bool active)

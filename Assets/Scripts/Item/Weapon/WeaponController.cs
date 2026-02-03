@@ -70,15 +70,6 @@ namespace Item.Weapon
                 targetName = rootGameObject.name;
                 //Debug.Log($"{targetName}와(과) 접촉했습니다!");
             }
-            else if (rootGameObject.TryGetComponent(out RemotePlayerController remotePlayerController))
-            {
-                targetName = rootGameObject.name;
-                Debug.Log($"{targetName}와(과) 접촉했습니다!");
-
-                Vector3 damageDirection = (transform.position - other.transform.position).normalized;
-                RemotePlayerController remotePlayer = rootGameObject.GetComponent<RemotePlayerController>();
-                remotePlayer.TakeDamage(damage, damageDirection, knockbackForce);
-            }
         }
     }
 }

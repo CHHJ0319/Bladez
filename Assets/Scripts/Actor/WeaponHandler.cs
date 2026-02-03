@@ -1,3 +1,4 @@
+using Item.Weapon;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -14,19 +15,22 @@ namespace Actor
         private bool isAttackReady;
         private float attackReady;
 
-        private void Start()
+        private void Awake()
         {
             if (weaponHolder.transform.childCount > 0)
             {
-                EquipWeapons();
+                foreach (var weapon in weaponHolder.GetComponentsInChildren<Item.Weapon.WeaponController>())
+                {
+                    AddWeapon(weapon.gameObject);
+                }
             }
         }
 
-        private void EquipWeapons()
+        public void AssignOwnerId(string id)
         {
-            foreach (var weapon in weaponHolder.GetComponentsInChildren<Item.Weapon.WeaponController>())
+            foreach(var weapon in slottedWeapons)
             {
-                AddWeapon(weapon.gameObject);
+                weapon.GetComponent<WeaponController>().SetOwnerID(id);
             }
         }
 
@@ -63,6 +67,7 @@ namespace Actor
                 weapon.GetComponent<Item.Weapon.WeaponController>().isEquiped = false;
             }
 
+            slottedWeapons[idx].GetComponent<CapsuleCollider>().enabled = false;
             slottedWeapons[idx].SetActive(true);
             equipWeapon = slottedWeapons[idx].GetComponent<Item.Weapon.WeaponController>();
             equipWeapon.isEquiped = true;
@@ -82,7 +87,7 @@ namespace Actor
             newWeapon.transform.localRotation = Quaternion.identity;
 
             slottedWeapons.Add(newWeapon);
-            newWeapon.GetComponent<Item.Weapon.WeaponController>().OnPickedUp(gameObject.name);
+            newWeapon.GetComponent<Item.Weapon.WeaponController>().SetOwnerID(gameObject.name);
 
             if (equipWeapon == null)
             {

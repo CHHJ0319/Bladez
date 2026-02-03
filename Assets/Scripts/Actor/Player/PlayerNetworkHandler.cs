@@ -2,7 +2,6 @@ using Unity.Cinemachine;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using static UnityEditor.Searcher.SearcherWindow.Alignment;
 
 namespace Actor.Player
 {
@@ -18,17 +17,26 @@ namespace Actor.Player
 
         private PlayerController _playerController;
         private CharacterAnimator _characterAnimator;
+        private WeaponHandler _weaponHandler;
+
         private PlayerInput _playerInput;
+
+        public string ownerID;
 
         private void Awake()
         {
             _playerController = GetComponent<PlayerController>();
             _characterAnimator = GetComponent<CharacterAnimator>();
+            _weaponHandler = GetComponent<WeaponHandler>();
+
             _playerInput = GetComponent<PlayerInput>();
         }
 
         public override void OnNetworkSpawn()
         {
+            ownerID = OwnerClientId.ToString();
+            _weaponHandler.AssignOwnerId(ownerID);
+
             Position.OnValueChanged += OnPositionChanged;
             Rotation.OnValueChanged += OnRotationChanged;
 

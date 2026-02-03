@@ -1,5 +1,7 @@
 using Actor.Player;
 using System.Collections;
+using System.Diagnostics;
+using Unity.Netcode;
 using UnityEngine;
 
 namespace Item.Weapon 
@@ -15,7 +17,7 @@ namespace Item.Weapon
         public ParticleSystem particle;
         public AudioSource audioSource;
 
-        public string ownerName;
+        public string ownerID;
         public bool isEquiped;
 
         public virtual void Attack()
@@ -26,6 +28,7 @@ namespace Item.Weapon
         IEnumerator AttackProcess()
         {
             yield return new WaitForSeconds(0.0f);
+            GetComponent<CapsuleCollider>().enabled = true;
 
             if (trailEffect != null)
             {
@@ -48,27 +51,35 @@ namespace Item.Weapon
             yield return new WaitForSeconds(0.3f);
 
             yield return new WaitForSeconds(0.3f);
+            GetComponent<CapsuleCollider>().enabled = false;
             if (trailEffect != null)
             {
                 trailEffect.enabled = false;
             }
         }
 
-        public void OnPickedUp(string name)
+        public void SetOwnerID(string id)
         {
-            ownerName = name;
+            ownerID = id;
         }
 
         private void OnTriggerEnter(Collider other)
         {
-            string targetName = "";
-
             GameObject rootGameObject = other.transform.root.gameObject;
 
-            if (rootGameObject.TryGetComponent(out PlayerController playerCcontroller))
+
+            if (rootGameObject.TryGetComponent(out NetworkObject netObj))
             {
-                targetName = rootGameObject.name;
-                //Debug.Log($"{targetName}와(과) 접촉했습니다!");
+                if (ownerID == rootGameObject.GetComponent<PlayerNetworkHandler>().ownerID)
+                {
+                    
+                }
+                else
+                {
+                    //UnityEngine.Debug.Log("o : " + netObj.OwnerClientId + "L : " + NetworkManager.Singleton.LocalClientId);
+                    Vector3 damageDirection = (transform.position - other.transform.position).normalized;
+                    rootGameObject.GetComponent<PlayerController>().TakeDamage(damage, damageDirection, knockbackForce);
+                }
             }
         }
     }

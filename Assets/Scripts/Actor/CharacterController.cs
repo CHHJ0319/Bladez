@@ -15,8 +15,8 @@ namespace Actor
         public bool useCurves = true;
         public float useCurvesHeight = 0.5f;
 
-        protected CharacterAnimator characterAnimator;
-        private WeaponHandler weaponHandler;
+        public CharacterAnimator characterAnimator;
+        public WeaponHandler weaponHandler;
 
         private CapsuleCollider col;
         private Rigidbody rb;

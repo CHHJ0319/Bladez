@@ -31,7 +31,7 @@ namespace Actor
             anim.SetFloat("Speed", vertical);
             anim.SetFloat("Direction", horizontal);
 
-            Debug.Log("h : " +  horizontal + "v : " + vertical);
+            Debug.Log("h : " + horizontal + "v :" + vertical);
 
             anim.speed = animSpeed;
         }

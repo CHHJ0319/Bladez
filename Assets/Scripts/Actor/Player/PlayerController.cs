@@ -24,12 +24,10 @@ namespace Actor.Player
             float v = playerInputHandler.Vertical;
 
             Move(h, v);
-            Jump();
-            Sliding();
-            Attack();
+            JumpWithPlayerInput();
+            SlidingWithPlayerInput();
+            AttackWithPlayerInput();
         }
-
-
 
         void CalculateVelocity(float vertical)
         {
@@ -46,27 +44,29 @@ namespace Actor.Player
             }
         }
 
-        protected override void Jump()
+        void JumpWithPlayerInput()
         {
             if (playerInputHandler.JumpTriggered)
             {
-                base.Jump();
+                playerNetworkHandler.SubmitJumpRequestServerRpc();
+                Jump();
             }
         }
 
-        protected override void Sliding()
+        void SlidingWithPlayerInput()
         {
             if (playerInputHandler.SlidingTriggered)
             {
-                base.Sliding();
+                Sliding();
             }
         }
 
-        protected override void Attack()
+        void AttackWithPlayerInput()
         {
             if (playerInputHandler.AttackTriggered)
-            {
-                base.Attack();
+            { 
+                playerNetworkHandler.SubmitAttackRequestServerRpc();
+                Attack();
             }
         }
 
@@ -80,7 +80,7 @@ namespace Actor.Player
 
             transform.Rotate(0, horizontal * rotateSpeed, 0);
 
-            playerNetworkHandler.Move(transform.localPosition, transform.localRotation);
+            playerNetworkHandler.SubmitTransfromRequestServerRpc(transform.localPosition, transform.localRotation);
         }
     }
 }

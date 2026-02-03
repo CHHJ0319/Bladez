@@ -156,7 +156,7 @@ namespace Actor
             col.center = orgVectColCenter;
         }
 
-        protected virtual void Jump()
+        public void Jump()
         {
             if (currentBaseState.fullPathHash == PlayerState.LocoState
                 && !characterAnimator.IsTransitioning())
@@ -166,7 +166,7 @@ namespace Actor
             }
         }
 
-        protected virtual void Sliding()
+        public void Sliding()
         {
             if (currentBaseState.fullPathHash == PlayerState.LocoState
                 && !characterAnimator.IsTransitioning())
@@ -176,7 +176,7 @@ namespace Actor
             }
         }
 
-        protected virtual void Attack()
+        public void Attack()
         {
             if (currentBaseState.fullPathHash == PlayerState.JumpState &&
                 currentBaseState.fullPathHash == PlayerState.SlidingState &&

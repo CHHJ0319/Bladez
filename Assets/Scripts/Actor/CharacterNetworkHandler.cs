@@ -13,6 +13,7 @@ namespace Actor
         public NetworkVariable<Quaternion> Rotation = new NetworkVariable<Quaternion>();
 
         public NetworkVariable<bool> JumpTriggered = new NetworkVariable<bool>();
+        public NetworkVariable<bool> SlidingTriggered = new NetworkVariable<bool>();
         public NetworkVariable<bool> AttackTriggered = new NetworkVariable<bool>();
 
         public NetworkVariable<float> HP = new NetworkVariable<float>();
@@ -41,6 +42,7 @@ namespace Actor
             Rotation.OnValueChanged += OnRotationChanged;
 
             JumpTriggered.OnValueChanged += OnJumpTriggeredChanged;
+            SlidingTriggered.OnValueChanged += OnSlidingTriggeredChanged;
             AttackTriggered.OnValueChanged += OnAttackTriggeredChanged;
 
             HP.OnValueChanged += OnHPChanged;
@@ -65,6 +67,7 @@ namespace Actor
             Rotation.OnValueChanged -= OnRotationChanged;
 
             JumpTriggered.OnValueChanged -= OnJumpTriggeredChanged;
+            SlidingTriggered.OnValueChanged -= OnSlidingTriggeredChanged;
             AttackTriggered.OnValueChanged -= OnAttackTriggeredChanged;
 
             HP.OnValueChanged -= OnHPChanged;
@@ -109,6 +112,14 @@ namespace Actor
             }
         }
 
+        public void OnSlidingTriggeredChanged(bool previous, bool current)
+        {
+            if (SlidingTriggered.Value != previous && !IsOwner)
+            {
+                _playerController.Sliding();
+            }
+        }
+
         public void OnAttackTriggeredChanged(bool previous, bool current)
         {
             if (AttackTriggered.Value != previous && !IsOwner)
@@ -136,6 +147,12 @@ namespace Actor
         public void SubmitJumpRequestServerRpc(RpcParams rpcParams = default)
         {
             JumpTriggered.Value = !JumpTriggered.Value;
+        }
+
+        [Rpc(SendTo.Server)]
+        public void SubmitslidingRequestServerRpc(RpcParams rpcParams = default)
+        {
+            SlidingTriggered.Value = !SlidingTriggered.Value;
         }
 
         [Rpc(SendTo.Server)]

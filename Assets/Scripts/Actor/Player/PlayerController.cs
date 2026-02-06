@@ -55,6 +55,7 @@ namespace Actor.Player
         {
             if (playerInputHandler.SlidingTriggered)
             {
+                characterNetworkHandler.SubmitslidingRequestServerRpc();
                 Sliding();
             }
         }

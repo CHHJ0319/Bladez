@@ -15,7 +15,9 @@ namespace Actor
         public bool useCurves = true;
         public float useCurvesHeight = 0.5f;
 
-        public CharacterNetworkAnimator characterNetworkAnimator;
+        protected CharacterNetworkHandler characterNetworkHandler;
+        protected CharacterNetworkAnimator characterNetworkAnimator;
+
         public WeaponHandler weaponHandler;
 
         private CapsuleCollider col;
@@ -28,7 +30,7 @@ namespace Actor
 
         protected Vector3 velocity;
 
-        private float hp = 100f;
+        private float _hp = 100f;
 
         /// <summary>
         /// //////////////////////////////////////////////////////
@@ -37,21 +39,24 @@ namespace Actor
         public ItemPicker itemPicker;
 
 
-        protected virtual void Start()
+        protected virtual void Awake()
         {
             col = GetComponent<CapsuleCollider>();
             rb = GetComponent<Rigidbody>();
-
-            characterNetworkAnimator = GetComponent<CharacterNetworkAnimator>();
+            
             weaponHandler = GetComponent<WeaponHandler>();
 
             orgColHeight = col.height;
             orgVectColCenter = col.center;
+
+            characterNetworkHandler = GetComponent<CharacterNetworkHandler>();
+            characterNetworkAnimator = GetComponent<CharacterNetworkAnimator>();
         }
 
         protected virtual void Update()
         {
             weaponHandler.UpdateAttackTimer();
+
             DetectDroppedItems();
         }
 
@@ -194,18 +199,27 @@ namespace Actor
 
         public void TakeDamage(float damage, Vector3 damageDirection, float knockbackForce)
         {
-            hp -= damage;
-
-            Debug.Log("hp: " + hp);
+            if(characterNetworkHandler.IsOwner)
+            {
+                float hp = _hp - damage;
+                SetHP(hp);
+                characterNetworkHandler.SubmitHPRequestServerRpc(_hp);
+            }
 
             characterNetworkAnimator.PlayTakeDamage();
             ApplyKnockback(-damageDirection, knockbackForce);
 
-            if (hp < 0)
+            if (_hp < 0)
             {
                 Die();
             }
 
+        }
+
+        public void SetHP(float hp)
+        {
+            _hp = hp;
+            Debug.Log("HP: " + _hp);
         }
 
         public void Die()

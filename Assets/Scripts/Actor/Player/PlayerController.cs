@@ -5,14 +5,12 @@ namespace Actor.Player
     public class PlayerController : CharaterController
     {
         private PlayerInputHandler playerInputHandler;
-        private PlayerNetworkHandler playerNetworkHandler;
 
-        protected override void Start()
+        protected override void Awake()
         {
-            base.Start();
+            base.Awake();
 
             playerInputHandler = GetComponent<PlayerInputHandler>();
-            playerNetworkHandler = GetComponent<PlayerNetworkHandler>();
 
         }
 
@@ -48,7 +46,7 @@ namespace Actor.Player
         {
             if (playerInputHandler.JumpTriggered)
             {
-                playerNetworkHandler.SubmitJumpRequestServerRpc();
+                characterNetworkHandler.SubmitJumpRequestServerRpc();
                 Jump();
             }
         }
@@ -64,23 +62,22 @@ namespace Actor.Player
         void AttackWithPlayerInput()
         {
             if (playerInputHandler.AttackTriggered)
-            { 
-                playerNetworkHandler.SubmitAttackRequestServerRpc();
+            {
+                characterNetworkHandler.SubmitAttackRequestServerRpc();
                 Attack();
             }
         }
 
         public void Move(float horizontal, float vertical)
         {
+            characterNetworkHandler.SubmitTransfromRequestServerRpc(transform.localPosition, transform.localRotation);
+
             characterNetworkAnimator.UpdateMovementAnimation(horizontal, vertical);
 
             CalculateVelocity(vertical);
-
             transform.localPosition += velocity * Time.fixedDeltaTime;
-
             transform.Rotate(0, horizontal * rotateSpeed, 0);
 
-            playerNetworkHandler.SubmitTransfromRequestServerRpc(transform.localPosition, transform.localRotation);
         }
     }
 }

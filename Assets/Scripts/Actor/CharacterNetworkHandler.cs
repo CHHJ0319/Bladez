@@ -1,13 +1,11 @@
-using Unity.Android.Gradle.Manifest;
 using Unity.Cinemachine;
 using Unity.Netcode;
-using Unity.Netcode.Components;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-namespace Actor.Player
+namespace Actor
 {
-    public class PlayerNetworkHandler : NetworkBehaviour
+    public class CharacterNetworkHandler : NetworkBehaviour
     {
         public CinemachineCamera tpsCamera;
 
@@ -17,7 +15,9 @@ namespace Actor.Player
         public NetworkVariable<bool> JumpTriggered = new NetworkVariable<bool>();
         public NetworkVariable<bool> AttackTriggered = new NetworkVariable<bool>();
 
-        private PlayerController _playerController;
+        public NetworkVariable<float> HP = new NetworkVariable<float>();
+
+        private Player.PlayerController _playerController;
         private WeaponHandler _weaponHandler;
 
         private PlayerInput _playerInput;
@@ -26,7 +26,7 @@ namespace Actor.Player
 
         void Awake()
         {
-            _playerController = GetComponent<PlayerController>();
+            _playerController = GetComponent<Player.PlayerController>();
             _weaponHandler = GetComponent<WeaponHandler>();
 
             _playerInput = GetComponent<PlayerInput>();
@@ -42,6 +42,8 @@ namespace Actor.Player
 
             JumpTriggered.OnValueChanged += OnJumpTriggeredChanged;
             AttackTriggered.OnValueChanged += OnAttackTriggeredChanged;
+
+            HP.OnValueChanged += OnHPChanged;
 
             if (IsOwner)
             {
@@ -64,6 +66,8 @@ namespace Actor.Player
 
             JumpTriggered.OnValueChanged -= OnJumpTriggeredChanged;
             AttackTriggered.OnValueChanged -= OnAttackTriggeredChanged;
+
+            HP.OnValueChanged -= OnHPChanged;
         }
 
         public void OnPositionChanged(Vector3 previous, Vector3 current)
@@ -113,6 +117,14 @@ namespace Actor.Player
             }
         }
 
+        public void OnHPChanged(float previous, float current)
+        {
+            if (HP.Value != previous && !IsOwner)
+            {
+                _playerController.SetHP(HP.Value);
+            }
+        }
+
         [Rpc(SendTo.Server)]
         public void SubmitTransfromRequestServerRpc(Vector3 position, Quaternion rotation = default, RpcParams rpcParams = default)
         {
@@ -130,6 +142,12 @@ namespace Actor.Player
         public void SubmitAttackRequestServerRpc(RpcParams rpcParams = default)
         {
             AttackTriggered.Value = !AttackTriggered.Value;
+        }
+
+        [Rpc(SendTo.Server)]
+        public void SubmitHPRequestServerRpc(float hp, RpcParams rpcParams = default)
+        {
+            HP.Value = hp;
         }
 
         static Vector3 GetRandomPositionOnPlane()

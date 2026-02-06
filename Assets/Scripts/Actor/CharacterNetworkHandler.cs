@@ -93,7 +93,6 @@ namespace Actor
                 if (!IsOwner)
                 {
                     transform.rotation = Rotation.Value;
-
                 }
             }
         }
@@ -169,6 +168,7 @@ namespace Actor
         void MoveToRandomPosition()
         {
             Vector3 pos = GetRandomPositionOnPlane();
+            transform.position = pos;
             SubmitTransfromRequestServerRpc(pos);
         }
     }

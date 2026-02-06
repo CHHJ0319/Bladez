@@ -40,9 +40,6 @@ namespace Actor.Player
             Position.OnValueChanged += OnPositionChanged;
             Rotation.OnValueChanged += OnRotationChanged;
 
-            JumpTriggered.OnValueChanged += OnJumpTriggeredChanged;
-            AttackTriggered.OnValueChanged += OnAttackTriggeredChanged;
-
             if (IsOwner)
             {
                 _playerInput.enabled = true;
@@ -61,9 +58,6 @@ namespace Actor.Player
         {
             Position.OnValueChanged -= OnPositionChanged;
             Rotation.OnValueChanged -= OnRotationChanged;
-
-            JumpTriggered.OnValueChanged -= OnJumpTriggeredChanged;
-            AttackTriggered.OnValueChanged -= OnAttackTriggeredChanged;
         }
 
         public void OnPositionChanged(Vector3 previous, Vector3 current)
@@ -97,39 +91,12 @@ namespace Actor.Player
             }
         }
 
-        public void OnJumpTriggeredChanged(bool previous, bool current)
-        {
-            if (JumpTriggered.Value != previous && !IsOwner)
-            {
-                _playerController.Jump();
-            }
-        }
-
-        public void OnAttackTriggeredChanged(bool previous, bool current)
-        {
-            if (AttackTriggered.Value != previous && !IsOwner)
-            {
-                _playerController.Attack();
-            }
-        }
 
         [Rpc(SendTo.Server)]
         public void SubmitTransfromRequestServerRpc(Vector3 position, Quaternion rotation = default, RpcParams rpcParams = default)
         {
             Position.Value = position;
             Rotation.Value = rotation;
-        }
-
-        [Rpc(SendTo.Server)]
-        public void SubmitJumpRequestServerRpc(RpcParams rpcParams = default)
-        {
-            JumpTriggered.Value = !JumpTriggered.Value;
-        }
-
-        [Rpc(SendTo.Server)]
-        public void SubmitAttackRequestServerRpc(RpcParams rpcParams = default)
-        {
-            AttackTriggered.Value = !AttackTriggered.Value;
         }
 
         static Vector3 GetRandomPositionOnPlane()

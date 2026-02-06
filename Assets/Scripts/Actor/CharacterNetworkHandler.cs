@@ -79,21 +79,9 @@ namespace Actor
         {
             if (Position.Value != previous)
             {
-                transform.position = Position.Value;
-
                 if (!IsOwner)
                 {
-                    Vector3 moveDirection = (current - previous);
-                    Vector3 localDirection = transform.InverseTransformDirection(moveDirection);
-
-                    float horizontal = 0f;
-                    float vertical = 0f;
-
-                    if (Mathf.Abs(localDirection.x) > 0.0001f)
-                        horizontal = localDirection.x > 0 ? 1f : -1f;
-
-                    if (Mathf.Abs(localDirection.z) > 0.0001f)
-                        vertical = localDirection.z > 0 ? 1f : -1f;
+                    transform.position = Position.Value;
                 }
             }
         }
@@ -102,7 +90,11 @@ namespace Actor
         {
             if (Rotation.Value != previous)
             {
-                transform.rotation = Rotation.Value;
+                if (!IsOwner)
+                {
+                    transform.rotation = Rotation.Value;
+
+                }
             }
         }
 

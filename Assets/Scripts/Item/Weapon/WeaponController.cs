@@ -67,7 +67,6 @@ namespace Item.Weapon
         {
             GameObject rootGameObject = other.transform.root.gameObject;
 
-
             if (rootGameObject.TryGetComponent(out NetworkObject netObj))
             {
                 if (ownerID == rootGameObject.GetComponent<PlayerNetworkHandler>().ownerID)
@@ -76,7 +75,7 @@ namespace Item.Weapon
                 }
                 else
                 {
-                    //UnityEngine.Debug.Log("o : " + netObj.OwnerClientId + "L : " + NetworkManager.Singleton.LocalClientId);
+                    UnityEngine.Debug.Log("o : " + netObj.OwnerClientId + "L : " + NetworkManager.Singleton.LocalClientId);
                     Vector3 damageDirection = (transform.position - other.transform.position).normalized;
                     rootGameObject.GetComponent<PlayerController>().TakeDamage(damage, damageDirection, knockbackForce);
                 }

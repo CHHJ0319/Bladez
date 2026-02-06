@@ -48,6 +48,7 @@ namespace Actor.Player
         {
             if (playerInputHandler.JumpTriggered)
             {
+                playerNetworkHandler.SubmitJumpRequestServerRpc();
                 Jump();
             }
         }
@@ -64,6 +65,7 @@ namespace Actor.Player
         {
             if (playerInputHandler.AttackTriggered)
             { 
+                playerNetworkHandler.SubmitAttackRequestServerRpc();
                 Attack();
             }
         }

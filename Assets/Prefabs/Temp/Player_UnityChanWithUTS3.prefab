@@ -372,6 +372,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9adac3d0e437e8a4e94c684fde4cc624, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  hpBarPrefab: {fileID: 6620614952732356700, guid: 3d5c996a743c28441aed8687c6c8af95, type: 3}
+  staminaBarPrefab: {fileID: 3800545974895629330, guid: 59dc203c87c0f7b41ae4e4c8d7c25fb0, type: 3}
   forwardSpeed: 7
   backwardSpeed: 2
   rotateSpeed: 2
@@ -379,7 +381,6 @@ MonoBehaviour:
   slidingPower: 1
   useCurves: 1
   useCurvesHeight: 0.5
-  characterAnimator: {fileID: 0}
   weaponHandler: {fileID: 0}
   itemPicker: {fileID: 0}
 --- !u!114 &-1727386698250687990
@@ -439,7 +440,11 @@ MonoBehaviour:
     m_InternalValue: {x: 0, y: 0, z: 0, w: 0}
   JumpTriggered:
     m_InternalValue: 0
+  SlidingTriggered:
+    m_InternalValue: 0
   AttackTriggered:
+    m_InternalValue: 0
+  HP:
     m_InternalValue: 0
   ownerID: 
 --- !u!114 &7061884872998588291

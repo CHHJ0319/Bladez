@@ -1,4 +1,5 @@
 using Actor.Player;
+using Actor.UI;
 using UnityEngine;
 
 namespace Actor
@@ -30,7 +31,11 @@ namespace Actor
 
         protected Vector3 velocity;
 
-        private float _hp = 100f;
+        protected float hp = 100f;
+        protected float maxHP = 100f;
+
+        protected GaugeBar hpBar;
+        protected GaugeBar staminaBar;
 
         /// <summary>
         /// //////////////////////////////////////////////////////
@@ -201,25 +206,28 @@ namespace Actor
         {
             if(characterNetworkHandler.IsOwner)
             {
-                float hp = _hp - damage;
+                hp -= damage;
                 SetHP(hp);
-                characterNetworkHandler.SubmitHPRequestServerRpc(_hp);
+                characterNetworkHandler.SubmitHPRequestServerRpc(hp);
+
+                if (hp < 0)
+                {
+                    Die();
+                }
             }
 
             characterNetworkAnimator.PlayTakeDamage();
             ApplyKnockback(-damageDirection, knockbackForce);
-
-            if (_hp < 0)
-            {
-                Die();
-            }
-
         }
 
         public void SetHP(float hp)
         {
-            _hp = hp;
-            Debug.Log("HP: " + _hp);
+            this.hp = hp;
+
+            if(characterNetworkHandler.IsOwner)
+            {
+                hpBar.UpdateGaugeBar(hp, maxHP);
+            }
         }
 
         public void Die()

@@ -52,6 +52,8 @@ namespace Actor
                 _playerInput.enabled = true;
                 tpsCamera.gameObject.SetActive(true);
 
+                _playerController.CreatePlayerUI();
+
                 MoveToRandomPosition();
             }
             else

@@ -1,17 +1,23 @@
+using Actor.UI;
 using UnityEngine;
 
 namespace Actor.Player
 {
     public class PlayerController : CharaterController
     {
+        [Header("UI")]
+        public GameObject hpBarPrefab;
+        public GameObject staminaBarPrefab;
+
         private PlayerInputHandler playerInputHandler;
+        
+        private Transform playerUI;
 
         protected override void Awake()
         {
             base.Awake();
 
             playerInputHandler = GetComponent<PlayerInputHandler>();
-
         }
 
         protected override void FixedUpdate()
@@ -25,6 +31,15 @@ namespace Actor.Player
             JumpWithPlayerInput();
             SlidingWithPlayerInput();
             AttackWithPlayerInput();
+        }
+
+        public void CreatePlayerUI()
+        {
+            playerUI = UIManager.Instance.PlayerUI;
+            hpBar = Instantiate(hpBarPrefab, playerUI).GetComponent<GaugeBar>();
+            staminaBar = Instantiate(staminaBarPrefab, playerUI).GetComponent<GaugeBar>();
+
+            hpBar.UpdateGaugeBar(hp, maxHP);
         }
 
         void CalculateVelocity(float vertical)

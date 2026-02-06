@@ -6,6 +6,8 @@ using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
+    public static UIManager Instance;
+
     [Header("Buttons")]
     public Button hostButton;
     public Button clientButton;
@@ -13,6 +15,22 @@ public class UIManager : MonoBehaviour
 
     [Header("Status")]
     public TMP_Text statusText;
+
+    [Header("GameUI")]
+    public Transform PlayerUI;
+
+    void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
 
     void Start()
     {
@@ -37,27 +55,6 @@ public class UIManager : MonoBehaviour
     void OnServerButtonClicked()
     {
         NetworkManager.Singleton.StartServer();
-    }
-
-    void SubmitNewPosition()
-    {
-        if (NetworkManager.Singleton == null) return;
-
-        if (NetworkManager.Singleton.IsServer && !NetworkManager.Singleton.IsClient)
-        {
-            foreach (ulong uid in NetworkManager.Singleton.ConnectedClientsIds)
-            {
-                var playerObject = NetworkManager.Singleton.SpawnManager.GetPlayerNetworkObject(uid);
-                //var player = playerObject.GetComponent<NetworkPlayerController>();
-                //player.Move();
-            }
-        }
-        else if (NetworkManager.Singleton.IsClient)
-        {
-            var playerObject = NetworkManager.Singleton.SpawnManager.GetLocalPlayerObject();
-            //var player = playerObject.GetComponent<NetworkPlayerController>();
-            //player.Move();
-        }
     }
 
     void UpdateUI()

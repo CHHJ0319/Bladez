@@ -21,7 +21,7 @@ namespace Actor.Player
             base.FixedUpdate();
 
             float h = playerInputHandler.Horizontal;
-            float v = playerInputHandler.Vertical;
+            float v = playerInputHandler.Vertical;    
 
             Move(h, v);
             JumpWithPlayerInput();
@@ -72,7 +72,7 @@ namespace Actor.Player
 
         public void Move(float horizontal, float vertical)
         {
-            characterAnimator.UpdateMovementAnimation(horizontal, vertical);
+            characterNetworkAnimator.UpdateMovementAnimation(horizontal, vertical);
 
             CalculateVelocity(vertical);
 

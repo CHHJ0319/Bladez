@@ -15,7 +15,7 @@ namespace Actor
         public bool useCurves = true;
         public float useCurvesHeight = 0.5f;
 
-        public CharacterAnimator characterAnimator;
+        public CharacterNetworkAnimator characterNetworkAnimator;
         public WeaponHandler weaponHandler;
 
         private CapsuleCollider col;
@@ -42,7 +42,7 @@ namespace Actor
             col = GetComponent<CapsuleCollider>();
             rb = GetComponent<Rigidbody>();
 
-            characterAnimator = GetComponent<CharacterAnimator>();
+            characterNetworkAnimator = GetComponent<CharacterNetworkAnimator>();
             weaponHandler = GetComponent<WeaponHandler>();
 
             orgColHeight = col.height;
@@ -75,8 +75,8 @@ namespace Actor
 
         void UpdateAnimationState()
         {
-            currentBaseState = characterAnimator.GetBaseLayerState();
-            currentUpperBodyState = characterAnimator.GetUpperBodyState();
+            currentBaseState = characterNetworkAnimator.GetBaseLayerState();
+            currentUpperBodyState = characterNetworkAnimator.GetUpperBodyState();
         }
 
         void SetGravity(bool active)
@@ -96,12 +96,12 @@ namespace Actor
 
             else if (currentBaseState.fullPathHash == PlayerState.JumpState)
             {
-                if (!characterAnimator.IsTransitioning())
+                if (!characterNetworkAnimator.IsTransitioning())
                 {
                     if (useCurves)
                     {
-                        float jumpHeight = characterAnimator.GetJumpHeight();
-                        float gravityControl = characterAnimator.GetGravityControl();
+                        float jumpHeight = characterNetworkAnimator.GetJumpHeight();
+                        float gravityControl = characterNetworkAnimator.GetGravityControl();
                         if (gravityControl > 0)
                             rb.useGravity = false;
 
@@ -121,15 +121,15 @@ namespace Actor
                             }
                         }
                     }
-                    characterAnimator.SetJump(false);
+                    characterNetworkAnimator.SetJump(false);
                 }
             }
 
             else if (currentBaseState.fullPathHash == PlayerState.SlidingState)
             {
-                if (!characterAnimator.IsTransitioning())
+                if (!characterNetworkAnimator.IsTransitioning())
                 {
-                    characterAnimator.SetSliding(false);
+                    characterNetworkAnimator.SetSliding(false);
                 }
             }
 
@@ -143,9 +143,9 @@ namespace Actor
 
             else if (currentBaseState.fullPathHash == PlayerState.restState)
             {
-                if (!characterAnimator.IsTransitioning())
+                if (!characterNetworkAnimator.IsTransitioning())
                 {
-                    characterAnimator.SetJump(false);
+                    characterNetworkAnimator.SetJump(false);
                 }
             }
         }
@@ -159,20 +159,20 @@ namespace Actor
         public void Jump()
         {
             if (currentBaseState.fullPathHash == PlayerState.LocoState
-                && !characterAnimator.IsTransitioning())
+                && !characterNetworkAnimator.IsTransitioning())
             {
                 rb.AddForce(Vector3.up * jumpPower, ForceMode.VelocityChange);
-                characterAnimator.SetJump(true);
+                characterNetworkAnimator.SetJump(true);
             }
         }
 
         public void Sliding()
         {
             if (currentBaseState.fullPathHash == PlayerState.LocoState
-                && !characterAnimator.IsTransitioning())
+                && !characterNetworkAnimator.IsTransitioning())
             {
                 rb.AddForce(velocity * slidingPower, ForceMode.VelocityChange);
-                characterAnimator.SetSliding(true);
+                characterNetworkAnimator.SetSliding(true);
             }
         }
 
@@ -186,10 +186,38 @@ namespace Actor
 
             if (weaponHandler.GetEquipWeaponType() == Item.Weapon.WeaponType.Melee)
             {
-                characterAnimator.PlayAttack();
+                characterNetworkAnimator.PlayAttack();
             }
 
             weaponHandler.Attack();
+        }
+
+        public void TakeDamage(float damage, Vector3 damageDirection, float knockbackForce)
+        {
+            hp -= damage;
+
+            Debug.Log("hp: " + hp);
+
+            characterNetworkAnimator.PlayTakeDamage();
+            ApplyKnockback(-damageDirection, knockbackForce);
+
+            if (hp < 0)
+            {
+                Die();
+            }
+
+        }
+
+        public void Die()
+        {
+            Destroy(gameObject);
+        }
+
+        private void ApplyKnockback(Vector3 knockbackDirection, float knockbackForce)
+        {
+            knockbackDirection.y = 0.1f;
+
+            rb.AddForce(knockbackDirection * knockbackForce, ForceMode.VelocityChange);
         }
 
         protected void PickUp()
@@ -209,21 +237,6 @@ namespace Actor
         protected void EquipWeapon(int weaponIdx)
         {
             weaponHandler.EquipWeapon(weaponIdx);
-        }
-
-        public virtual void TakeDamage(float damage, Vector3 damageDirection, float knockbackForce)
-        {
-            hp -= damage;
-
-            characterAnimator.PlayTakeDamage();
-            ApplyKnockback(-damageDirection, knockbackForce);
-        }
-
-        private void ApplyKnockback(Vector3 knockbackDirection, float knockbackForce)
-        {
-            knockbackDirection.y = 0.1f;
-
-            rb.AddForce(knockbackDirection * knockbackForce, ForceMode.VelocityChange);
         }
     }
 }

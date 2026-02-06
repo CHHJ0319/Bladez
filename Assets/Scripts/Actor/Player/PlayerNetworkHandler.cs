@@ -1,5 +1,7 @@
+using Unity.Android.Gradle.Manifest;
 using Unity.Cinemachine;
 using Unity.Netcode;
+using Unity.Netcode.Components;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -16,17 +18,15 @@ namespace Actor.Player
         public NetworkVariable<bool> AttackTriggered = new NetworkVariable<bool>();
 
         private PlayerController _playerController;
-        private CharacterAnimator _characterAnimator;
         private WeaponHandler _weaponHandler;
 
         private PlayerInput _playerInput;
 
         public string ownerID;
 
-        private void Awake()
+        void Awake()
         {
             _playerController = GetComponent<PlayerController>();
-            _characterAnimator = GetComponent<CharacterAnimator>();
             _weaponHandler = GetComponent<WeaponHandler>();
 
             _playerInput = GetComponent<PlayerInput>();
@@ -63,7 +63,7 @@ namespace Actor.Player
             Rotation.OnValueChanged -= OnRotationChanged;
 
             JumpTriggered.OnValueChanged -= OnJumpTriggeredChanged;
-            AttackTriggered.OnValueChanged += OnAttackTriggeredChanged;
+            AttackTriggered.OnValueChanged -= OnAttackTriggeredChanged;
         }
 
         public void OnPositionChanged(Vector3 previous, Vector3 current)
@@ -85,8 +85,6 @@ namespace Actor.Player
 
                     if (Mathf.Abs(localDirection.z) > 0.0001f)
                         vertical = localDirection.z > 0 ? 1f : -1f;
-
-                    _characterAnimator.UpdateMovementAnimation(horizontal, vertical);
                 }
             }
         }

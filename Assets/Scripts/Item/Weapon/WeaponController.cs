@@ -1,7 +1,6 @@
 using Actor;
 using Actor.Player;
 using System.Collections;
-using System.Diagnostics;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -9,11 +8,16 @@ namespace Item.Weapon
 {
     public class WeaponController : MonoBehaviour
     {
+        [Header("Type")]
         public WeaponType Type { get; protected set; } = WeaponType.Melee;
+        public ElementType ElementType { get; protected set; } = ElementType.Neutral;
+
+        [Header("Properties")]
         public float damage;
         public float knockbackForce;
         public float rate;
 
+        [Header("Effects")]
         public TrailRenderer trailEffect;
         public ParticleSystem particle;
         public AudioSource audioSource;

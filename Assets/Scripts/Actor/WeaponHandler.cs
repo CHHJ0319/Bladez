@@ -83,8 +83,8 @@ namespace Actor
             if (slottedWeapons.Contains(newWeapon)) return;
 
             newWeapon.transform.SetParent(weaponHolder);
-            newWeapon.transform.localPosition = Vector3.zero;
-            newWeapon.transform.localRotation = Quaternion.identity;
+            //newWeapon.transform.localPosition = Vector3.zero;
+            //newWeapon.transform.localRotation = Quaternion.identity;
 
             slottedWeapons.Add(newWeapon);
             newWeapon.GetComponent<Item.Weapon.WeaponController>().SetOwnerID(gameObject.name);

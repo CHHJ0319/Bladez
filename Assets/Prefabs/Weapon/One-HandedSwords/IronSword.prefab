@@ -10,15 +10,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: eb77a70818dc45c4686c8a13fccc1e94, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: -0.0878
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: eb77a70818dc45c4686c8a13fccc1e94, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: -0.351
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: eb77a70818dc45c4686c8a13fccc1e94, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: -0.0144
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: eb77a70818dc45c4686c8a13fccc1e94, type: 3}
       propertyPath: m_LocalRotation.w
@@ -112,7 +112,7 @@ MonoBehaviour:
   trailEffect: {fileID: 0}
   particle: {fileID: 0}
   audioSource: {fileID: 305423807541744382}
-  ownerName: 
+  ownerID: 
   isEquiped: 0
 --- !u!82 &305423807541744382
 AudioSource:

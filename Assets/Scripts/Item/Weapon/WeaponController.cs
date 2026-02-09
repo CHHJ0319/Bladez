@@ -47,7 +47,7 @@ namespace Item.Weapon
                 newVFX.Play();
                 Destroy(newVFX.gameObject, 1.0f);
             }
-            audioSource.Play();
+            //audioSource.Play();
 
             yield return new WaitForSeconds(0.3f);
 

@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Item.Weapon
 {
-    public class DropWeapon : MonoBehaviour
+    public class DroppedWeapon : MonoBehaviour
     {
         public GameObject weaponPrefab;
 
@@ -10,13 +10,12 @@ namespace Item.Weapon
         {
             GameObject weapon = Instantiate(weaponPrefab, transform);
 
-            weapon.transform.localPosition = Vector3.zero;
+            weapon.transform.localPosition = new Vector3(0, -1.0f, 0);
             weapon.transform.localRotation = Quaternion.identity;
         }
 
         private void Update()
         {
-            transform.Rotate(Vector3.up * 20 * Time.deltaTime);
-        }
+        }    
     }
 }

@@ -2,5 +2,6 @@ using UnityEngine;
 
 namespace Item.Weapon 
 {
-        public enum WeaponType { Melee, Range }
+    [System.Serializable]
+    public enum WeaponType { Melee, Range }
 }

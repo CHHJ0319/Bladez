@@ -2,5 +2,6 @@ using UnityEngine;
 
 namespace Item.Weapon 
 {
-        public enum ElementType { Neutral, Fire, Ice, Lightning }
+    [System.Serializable]
+    public enum ElementType { Fire, Ice, Lightning, Neutral }
 }

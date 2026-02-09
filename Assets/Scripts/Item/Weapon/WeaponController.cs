@@ -10,7 +10,12 @@ namespace Item.Weapon
     {
         [Header("Type")]
         public abstract WeaponType Type { get; protected set; }
-        public ElementType elementType;
+        [SerializeField] private ElementType elementType;
+        public ElementType ElementType
+        {
+            get => elementType;
+            set => elementType = value;
+        }
 
         [Header("Effects")]
         public AudioSource audioSource;

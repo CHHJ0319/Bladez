@@ -1,4 +1,3 @@
-using Item.Weapon;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -30,7 +29,7 @@ namespace Actor
         {
             foreach(var weapon in slottedWeapons)
             {
-                weapon.GetComponent<WeaponController>().SetOwnerID(id);
+                weapon.GetComponent<Item.Weapon.WeaponController>().SetOwnerID(id);
             }
         }
 

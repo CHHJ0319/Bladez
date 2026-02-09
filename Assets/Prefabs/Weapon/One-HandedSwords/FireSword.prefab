@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 3467298240054071258}
   - component: {fileID: 8448929774025319247}
   - component: {fileID: 4312170662271061153}
-  - component: {fileID: 2860094472204799270}
+  - component: {fileID: -14853959657236894}
   - component: {fileID: 6612088660438234695}
   - component: {fileID: 1988179956058340107}
   m_Layer: 0
@@ -89,7 +89,7 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &2860094472204799270
+--- !u!114 &-14853959657236894
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -98,11 +98,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 4392767893562137083}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 96219386e2cb8a64f93b8a923c735f83, type: 3}
+  m_Script: {fileID: 11500000, guid: b4649a8004bf5a747932391237caae1e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  damage: 8
-  knockbackForce: 3
+  damage: 6
+  knockbackForce: 5
   rate: 0.2
   trailEffect: {fileID: 0}
   particle: {fileID: 0}

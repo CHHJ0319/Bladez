@@ -101,14 +101,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4649a8004bf5a747932391237caae1e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  damage: 7
-  knockbackForce: 3
-  rate: 0.4
-  trailEffect: {fileID: 0}
-  particle: {fileID: 0}
+  elementType: 3
   audioSource: {fileID: 0}
+  damage: 7
+  rate: 0.4
+  knockbackForce: 3
   ownerID: 
   isEquiped: 0
+  trailEffect: {fileID: 0}
+  particle: {fileID: 0}
 --- !u!54 &719396641001575100
 Rigidbody:
   m_ObjectHideFlags: 0

@@ -6,84 +6,33 @@ using UnityEngine;
 
 namespace Item.Weapon 
 {
-    public class WeaponController : MonoBehaviour
+    public abstract class WeaponController : MonoBehaviour
     {
         [Header("Type")]
-        public WeaponType Type { get; protected set; } = WeaponType.Melee;
-        public ElementType ElementType { get; protected set; } = ElementType.Neutral;
+        public abstract WeaponType Type { get; protected set; }
+        public ElementType elementType;
+
+        [Header("Effects")]
+        public AudioSource audioSource;
 
         [Header("Properties")]
         public float damage;
-        public float knockbackForce;
         public float rate;
-
-        [Header("Effects")]
-        public TrailRenderer trailEffect;
-        public ParticleSystem particle;
-        public AudioSource audioSource;
+        public float knockbackForce;
 
         public string ownerID;
         public bool isEquiped;
 
-        public virtual void Attack()
+        public void Attack()
         {
             StartCoroutine(AttackProcess());
         }
 
-        IEnumerator AttackProcess()
-        {
-            yield return new WaitForSeconds(0.0f);
-            GetComponent<CapsuleCollider>().enabled = true;
-
-            if (trailEffect != null)
-            {
-                trailEffect.enabled = true;
-            }
-
-            yield return new WaitForSeconds(0.5f);
-
-            if (particle != null)
-            {
-                Vector3 spawnPos = transform.position + (transform.right * 0.5f) + (transform.forward * 0.5f);
-
-                ParticleSystem newVFX = Instantiate(particle, spawnPos, transform.rotation);
-
-                newVFX.Play();
-                Destroy(newVFX.gameObject, 1.0f);
-            }
-            //audioSource.Play();
-
-            yield return new WaitForSeconds(0.3f);
-
-            yield return new WaitForSeconds(0.3f);
-            GetComponent<CapsuleCollider>().enabled = false;
-            if (trailEffect != null)
-            {
-                trailEffect.enabled = false;
-            }
-        }
+        protected abstract IEnumerator AttackProcess();
 
         public void SetOwnerID(string id)
         {
             ownerID = id;
-        }
-
-        private void OnTriggerEnter(Collider other)
-        {
-            GameObject rootGameObject = other.transform.root.gameObject;
-
-            if (rootGameObject.TryGetComponent(out NetworkObject netObj))
-            {
-                if (ownerID == rootGameObject.GetComponent<CharacterNetworkHandler>().ownerID)
-                {
-                    
-                }
-                else
-                {
-                    Vector3 damageDirection = (transform.position - other.transform.position).normalized;
-                    rootGameObject.GetComponent<PlayerController>().TakeDamage(damage, damageDirection, knockbackForce);
-                }
-            }
         }
     }
 }

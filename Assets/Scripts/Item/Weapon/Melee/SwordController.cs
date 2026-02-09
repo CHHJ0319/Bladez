@@ -6,31 +6,16 @@ using UnityEngine;
 
 namespace Item.Weapon.Melee
 {
-    public class SwordController : MonoBehaviour
+    public class SwordController : WeaponController
     {
         [Header("Type")]
-        public WeaponType Type { get; protected set; } = WeaponType.Melee;
-        public ElementType ElementType { get; protected set; } = ElementType.Neutral;
+        public override WeaponType Type { get; protected set; } = WeaponType.Melee;
 
-        [Header("Properties")]
-        public float damage;
-        public float knockbackForce;
-        public float rate;
-
-        [Header("Effects")]
+        [Header("Sword Effects")]
         public TrailRenderer trailEffect;
         public ParticleSystem particle;
-        public AudioSource audioSource;
 
-        public string ownerID;
-        public bool isEquiped;
-
-        public virtual void Attack()
-        {
-            StartCoroutine(AttackProcess());
-        }
-
-        IEnumerator AttackProcess()
+        protected override IEnumerator AttackProcess()
         {
             yield return new WaitForSeconds(0.0f);
             GetComponent<CapsuleCollider>().enabled = true;
@@ -63,10 +48,6 @@ namespace Item.Weapon.Melee
             }
         }
 
-        public void SetOwnerID(string id)
-        {
-            ownerID = id;
-        }
 
         private void OnTriggerEnter(Collider other)
         {

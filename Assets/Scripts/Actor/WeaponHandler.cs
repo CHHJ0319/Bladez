@@ -51,7 +51,7 @@ namespace Actor
             if (!isAttackReady)
                 return;
 
-            if (equipWeapon.Type == Item.Weapon.WeaponType.Range && equipWeapon.GetComponent<Item.Weapon.GunController>().curAmmo <= 0)
+            if (equipWeapon.Type == Item.Weapon.WeaponType.Range && equipWeapon.GetComponent<Item.Weapon.Range.GunController>().curAmmo <= 0)
                 return;
 
             equipWeapon.Attack();

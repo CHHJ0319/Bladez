@@ -1,10 +1,13 @@
 using System.Collections;
 using UnityEngine;
 
-namespace Item.Weapon 
+namespace Item.Weapon.Range
 {
     public class GunController : WeaponController
     {
+        [Header("Type")]
+        public override WeaponType Type { get; protected set; } = WeaponType.Range;
+
         public int maxAmmo;
         public int curAmmo;
 
@@ -14,20 +17,10 @@ namespace Item.Weapon
 
         public GameObject shotEffect;
 
-        public void Start()
+        protected override IEnumerator AttackProcess()
         {
-            Type = WeaponType.Range;
-        }
-
-        public override void Attack()
-        {
-            StartCoroutine("AttackProcess");
             curAmmo--;
-        }
 
-
-        IEnumerator AttackProcess()
-        {
             audioSource.Play();
 
             GameObject effect = Instantiate(shotEffect, bulletPos.position, bulletPos.rotation);

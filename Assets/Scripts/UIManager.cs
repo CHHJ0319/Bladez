@@ -47,15 +47,17 @@ public class UIManager : MonoBehaviour
     void OnHostButtonClicked()
     {
         NetworkManager.Singleton.StartHost();
-        ActorManager.Instance.DropItems();
+        ActorManager.Instance.DropItemsServer();
     }
     void OnClientButtonClicked()
     {
         NetworkManager.Singleton.StartClient();
+        ActorManager.Instance.DropItemsClinet();
     }
     void OnServerButtonClicked()
     {
         NetworkManager.Singleton.StartServer();
+        ActorManager.Instance.DropItemsServer();
     }
 
     void UpdateUI()

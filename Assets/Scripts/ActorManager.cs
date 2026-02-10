@@ -24,8 +24,19 @@ public class ActorManager : MonoBehaviour
         }
     }
 
-    public void DropItems()
+    public void DropItemsServer()
     {
-        droppedItemSpawner.SpawnWeapon();
+        droppedItemSpawner.InitializeWeaponListsRandomly();
+        droppedItemSpawner.SpawnDroppedWeapons();
+        networkActorManager.SubmitDroppedWeaponsInfoServerRpc(droppedItemSpawner.WeaponIndexList, droppedItemSpawner.WeaponPositionList);
+    }
+
+    public void DropItemsClinet()
+    {
+        //int[] indexList = networkActorManager.GetWeaponIndexList();
+        //Vector3[] positionList = networkActorManager.GetWeaponPositionList();
+
+        //droppedItemSpawner.InitializeWeaponLists(indexList, positionList);
+        //droppedItemSpawner.SpawnDroppedWeapons();
     }
 }

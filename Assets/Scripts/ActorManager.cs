@@ -26,9 +26,12 @@ public class ActorManager : MonoBehaviour
 
     public void DropItemsServer()
     {
-        droppedItemSpawner.InitializeWeaponListsRandomly();
-        droppedItemSpawner.SpawnDroppedWeapons();
-        networkActorManager.SubmitDroppedWeaponsInfoServerRpc(droppedItemSpawner.WeaponIndexList, droppedItemSpawner.WeaponPositionList);
+        if(droppedItemSpawner != null)
+        {
+            droppedItemSpawner.InitializeWeaponListsRandomly();
+            droppedItemSpawner.SpawnDroppedWeapons();
+            networkActorManager.SubmitDroppedWeaponsInfoServerRpc(droppedItemSpawner.WeaponIndexList, droppedItemSpawner.WeaponPositionList);
+        }
     }
 
     public void DropItemsClinet()

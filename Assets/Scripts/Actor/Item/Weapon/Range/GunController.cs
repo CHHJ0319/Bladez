@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-namespace Item.Weapon.Range
+namespace Actor.Item.Weapon.Range
 {
     public class GunController : WeaponController
     {

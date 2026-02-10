@@ -1,9 +1,31 @@
+using Actor.Item;
 using UnityEngine;
 
-public static class ActorManager
+public class ActorManager : MonoBehaviour
 {
-    public static void Init()
+    public static ActorManager Instance;
+
+    public DroppedItemSpawner droppedItemSpawner;
+
+    private NetworkActorManager networkActorManager;
+
+    void Awake()
     {
-        
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+
+            networkActorManager = GetComponent<NetworkActorManager>();
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
+
+    public void DropItems()
+    {
+        droppedItemSpawner.SpawnWeapon();
     }
 }

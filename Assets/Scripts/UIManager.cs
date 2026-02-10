@@ -47,6 +47,7 @@ public class UIManager : MonoBehaviour
     void OnHostButtonClicked()
     {
         NetworkManager.Singleton.StartHost();
+        ActorManager.Instance.DropItems();
     }
     void OnClientButtonClicked()
     {

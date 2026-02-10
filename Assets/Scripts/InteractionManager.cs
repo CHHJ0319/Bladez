@@ -3,7 +3,22 @@ using UnityEngine;
 
 public class InteractionManager : MonoBehaviour
 {
+    public static InteractionManager Instance;
+
     public CinemachineInputAxisController inputController;
+
+    void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
 
     void Update()
     {

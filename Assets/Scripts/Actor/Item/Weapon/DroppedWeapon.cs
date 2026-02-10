@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Item.Weapon
+namespace Actor.Item.Weapon
 {
     public class DroppedWeapon : MonoBehaviour
     {
@@ -19,13 +19,10 @@ namespace Item.Weapon
 
         private WeaponController weapon;
         private ElementType elementType;
-        
 
         private void Start()
         {
-            Initialize();
-            ApplyItemEffects();
-            CreateWeapon();
+            //Initialize();
         }
 
         private void Update()
@@ -33,10 +30,13 @@ namespace Item.Weapon
             CheckForDroppedWeapons();
         }
 
-        private void Initialize()
+        public  void Initialize()
         {
             weapon = weaponPrefab.GetComponent<WeaponController>();
             elementType = weapon.ElementType;
+
+            ApplyItemEffects();
+            CreateWeapon();
         }
 
         private void ApplyItemEffects()
@@ -60,6 +60,14 @@ namespace Item.Weapon
         private void CheckForDroppedWeapons()
         {
             if (transform.childCount < 3)
+            {
+                if(elementType != ElementType.Neutral)
+                {
+                    Destroy(gameObject);
+                }
+            }
+
+            if (transform.childCount < 2)
             {
                 Destroy(gameObject);
             }

@@ -1,8 +1,7 @@
 using System.Collections;
-using System.Xml.Serialization;
 using UnityEngine;
 
-namespace Item.Weapon 
+namespace Actor.Item.Weapon 
 {
     public abstract class WeaponController : MonoBehaviour
     {

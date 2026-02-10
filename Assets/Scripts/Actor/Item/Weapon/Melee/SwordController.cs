@@ -4,7 +4,7 @@ using System.Collections;
 using Unity.Netcode;
 using UnityEngine;
 
-namespace Item.Weapon.Melee
+namespace Actor.Item.Weapon.Melee
 {
     public class SwordController : WeaponController
     {

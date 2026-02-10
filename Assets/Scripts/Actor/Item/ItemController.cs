@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Item
+namespace Actor.Item
 {
     public class ItemController : MonoBehaviour
     {

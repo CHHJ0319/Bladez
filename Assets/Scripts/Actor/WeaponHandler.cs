@@ -6,7 +6,7 @@ namespace Actor
     public class WeaponHandler : MonoBehaviour
     {
         public Transform weaponHolder;
-        public Item.Weapon.WeaponController EquippedWeapon { get; private set; }
+        public Actor.Item.Weapon.WeaponController EquippedWeapon { get; private set; }
 
         public List<GameObject> slottedWeapons = new List<GameObject>();
         private int maxWeaponSlots = 3;
@@ -107,7 +107,7 @@ namespace Actor
             }
         }
 
-        public Item.Weapon.WeaponType GetEquipWeaponType()
+        public Actor.Item.Weapon.WeaponType GetEquipWeaponType()
         {
             return EquippedWeapon.Type;
         }

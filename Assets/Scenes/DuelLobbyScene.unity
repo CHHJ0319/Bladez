@@ -454,8 +454,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 436080759}
+  - component: {fileID: 436080760}
   m_Layer: 0
-  m_Name: Players
+  m_Name: LobbyPlayerSpawner
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -480,6 +481,18 @@ Transform:
   - {fileID: 1212726099}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &436080760
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 436080758}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4f582aab893caee4d9daca5e8703909a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &439922137
 GameObject:
   m_ObjectHideFlags: 0
@@ -489,9 +502,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 439922138}
-  - component: {fileID: 439922141}
+  - component: {fileID: 439922142}
   - component: {fileID: 439922140}
-  - component: {fileID: 439922139}
+  - component: {fileID: 439922141}
   m_Layer: 0
   m_Name: ActorManager
   m_TagString: Untagged
@@ -514,19 +527,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 939112119}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &439922139
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 439922137}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cdcc5a5d036a5fb408e966742db28ece, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ShowTopMostFoldoutHeaderGroup: 1
 --- !u!114 &439922140
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -561,7 +561,20 @@ MonoBehaviour:
   m_GameObject: {fileID: 439922137}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fc42c27db76e82d4bba409c1f1385409, type: 3}
+  m_Script: {fileID: 11500000, guid: fb240e85c7dd800409bb217ea878832d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
+--- !u!114 &439922142
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 439922137}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 95994dc9c027b044f8d620e146a594e3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   droppedItemSpawner: {fileID: 0}
@@ -821,7 +834,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 706861334}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bb7d607ae72439844aad25a9faab70df, type: 3}
+  m_Script: {fileID: 11500000, guid: 52587cab16aeaff42af64c5203e50699, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   hostButton: {fileID: 1359713958}

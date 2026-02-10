@@ -188,13 +188,16 @@ namespace Actor
             weaponHandler.Attack();
         }
 
-        protected void PickUp()
+        public void PickUp()
         {
             GameObject item = itemPicker.GetPickedUpItem();
 
             if (item == null) return;
 
-            if(item.tag == "Weapon")
+            if(characterNetworkHandler.IsOwner)
+                characterNetworkHandler.SubmitPickUpRequestServerRpc();
+
+            if (item.tag == "Weapon")
             {
                 if (weaponHandler.CanAddWeapon())
                 {

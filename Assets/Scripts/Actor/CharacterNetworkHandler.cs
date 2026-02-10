@@ -15,6 +15,7 @@ namespace Actor
         public NetworkVariable<bool> JumpTriggered = new NetworkVariable<bool>();
         public NetworkVariable<bool> SlidingTriggered = new NetworkVariable<bool>();
         public NetworkVariable<bool> AttackTriggered = new NetworkVariable<bool>();
+        public NetworkVariable<bool> PickUpTriggered = new NetworkVariable<bool>();
 
         public NetworkVariable<float> HP = new NetworkVariable<float>();
 
@@ -44,6 +45,7 @@ namespace Actor
             JumpTriggered.OnValueChanged += OnJumpTriggeredChanged;
             SlidingTriggered.OnValueChanged += OnSlidingTriggeredChanged;
             AttackTriggered.OnValueChanged += OnAttackTriggeredChanged;
+            PickUpTriggered.OnValueChanged += OnPickUpTriggeredChanged;
 
             HP.OnValueChanged += OnHPChanged;
 
@@ -71,6 +73,7 @@ namespace Actor
             JumpTriggered.OnValueChanged -= OnJumpTriggeredChanged;
             SlidingTriggered.OnValueChanged -= OnSlidingTriggeredChanged;
             AttackTriggered.OnValueChanged -= OnAttackTriggeredChanged;
+            PickUpTriggered.OnValueChanged -= OnPickUpTriggeredChanged;
 
             HP.OnValueChanged -= OnHPChanged;
         }
@@ -126,6 +129,14 @@ namespace Actor
             }
         }
 
+        public void OnPickUpTriggeredChanged(bool previous, bool current)
+        {
+            if (PickUpTriggered.Value != previous && !IsOwner)
+            {
+                _playerController.PickUp();
+            }
+        }
+
         public void OnHPChanged(float previous, float current)
         {
             if (HP.Value != previous && !IsOwner)
@@ -157,6 +168,12 @@ namespace Actor
         public void SubmitAttackRequestServerRpc(RpcParams rpcParams = default)
         {
             AttackTriggered.Value = !AttackTriggered.Value;
+        }
+
+        [Rpc(SendTo.Server)]
+        public void SubmitPickUpRequestServerRpc(RpcParams rpcParams = default)
+        {
+            PickUpTriggered.Value = !PickUpTriggered.Value;
         }
 
         [Rpc(SendTo.Server)]

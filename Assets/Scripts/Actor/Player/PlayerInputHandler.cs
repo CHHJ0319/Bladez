@@ -50,6 +50,20 @@ namespace Actor.Player
             }
         }
 
+        private bool _interactTriggered;
+        public bool InteractTriggered
+        {
+            get
+            {
+                if (_interactTriggered)
+                {
+                    _interactTriggered = false;
+                    return true;
+                }
+                return false;
+            }
+        }
+
         void OnMove(InputValue value)
         {
             Vector2 movement = value.Get<Vector2>();
@@ -78,6 +92,13 @@ namespace Actor.Player
             if (value.isPressed)
             {
                 _attackTriggered = true;
+            }
+        }
+        void OnInteract(InputValue value)
+        {
+            if (value.isPressed)
+            {
+                _interactTriggered = true;
             }
         }
     }

@@ -4,15 +4,15 @@ namespace Actor
 {
     public class ItemPicker : MonoBehaviour
     {
-        GameObject nearObj;
+        GameObject targetObject;
 
-        public bool IsItemDetected { get; set; }
+        public bool IsItemDetected { get; private set; }
 
         private void OnTriggerEnter(Collider other)
         {
             if (other.tag == "Weapon")
             {
-                nearObj = other.gameObject;
+                targetObject = other.gameObject;
 
                 IsItemDetected = true;
             }
@@ -22,7 +22,7 @@ namespace Actor
         {
             if (other.tag == "Weapon")
             {
-                nearObj = null;
+                targetObject = null;
 
                 IsItemDetected = false;
             }
@@ -30,7 +30,14 @@ namespace Actor
 
         public GameObject GetPickedUpItem()
         {
-            return nearObj;
+            return targetObject;
+        }
+
+        public void Clear()
+        {
+            targetObject = null;
+
+            IsItemDetected = false;
         }
     }
 }

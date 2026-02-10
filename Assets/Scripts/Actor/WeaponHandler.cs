@@ -6,7 +6,7 @@ namespace Actor
     public class WeaponHandler : MonoBehaviour
     {
         public Transform weaponHolder;
-        public Item.Weapon.WeaponController equipWeapon;
+        public Item.Weapon.WeaponController EquippedWeapon { get; private set; }
 
         public List<GameObject> slottedWeapons = new List<GameObject>();
         private int maxWeaponSlots = 3;
@@ -37,24 +37,24 @@ namespace Actor
         {
             attackReady += Time.deltaTime;
 
-            if(equipWeapon != null)
+            if(EquippedWeapon != null)
             {
-                isAttackReady = equipWeapon.rate < attackReady;
+                isAttackReady = EquippedWeapon.rate < attackReady;
             }
         }
 
         public void Attack()
         {
-            if (equipWeapon == null)
+            if (EquippedWeapon == null)
                 return;
 
             if (!isAttackReady)
                 return;
 
-            if (equipWeapon.Type == Item.Weapon.WeaponType.Range && equipWeapon.GetComponent<Item.Weapon.Range.GunController>().curAmmo <= 0)
+            if (EquippedWeapon.Type == Item.Weapon.WeaponType.Range && EquippedWeapon.GetComponent<Item.Weapon.Range.GunController>().curAmmo <= 0)
                 return;
 
-            equipWeapon.Attack();
+            EquippedWeapon.Attack();
             attackReady = 0;
         }
 
@@ -63,13 +63,13 @@ namespace Actor
             foreach(var weapon in slottedWeapons)
             {
                 weapon.SetActive(false);
-                weapon.GetComponent<Item.Weapon.WeaponController>().isEquiped = false;
+                weapon.GetComponent<Item.Weapon.WeaponController>().IsEquiped = false;
             }
 
             slottedWeapons[idx].GetComponent<CapsuleCollider>().enabled = false;
             slottedWeapons[idx].SetActive(true);
-            equipWeapon = slottedWeapons[idx].GetComponent<Item.Weapon.WeaponController>();
-            equipWeapon.isEquiped = true;
+            EquippedWeapon = slottedWeapons[idx].GetComponent<Item.Weapon.WeaponController>();
+            EquippedWeapon.IsEquiped = true;
         }
 
         public bool CanAddWeapon()
@@ -82,13 +82,14 @@ namespace Actor
             if (slottedWeapons.Contains(newWeapon)) return;
 
             newWeapon.transform.SetParent(weaponHolder);
-            //newWeapon.transform.localPosition = Vector3.zero;
-            //newWeapon.transform.localRotation = Quaternion.identity;
 
             slottedWeapons.Add(newWeapon);
-            newWeapon.GetComponent<Item.Weapon.WeaponController>().SetOwnerID(gameObject.name);
+            if (TryGetComponent<CharacterNetworkHandler>(out var handler))
+            {
+                handler.AssignWeaponOwnerID();
+            }
 
-            if (equipWeapon == null)
+            if (EquippedWeapon == null)
             {
                 EquipWeapon(0);
             }
@@ -108,7 +109,7 @@ namespace Actor
 
         public Item.Weapon.WeaponType GetEquipWeaponType()
         {
-            return equipWeapon.Type;
+            return EquippedWeapon.Type;
         }
     }
 }

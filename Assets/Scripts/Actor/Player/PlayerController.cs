@@ -31,6 +31,7 @@ namespace Actor.Player
             JumpWithPlayerInput();
             SlidingWithPlayerInput();
             AttackWithPlayerInput();
+            PickUpWithPlayerInput();
         }
 
         public void CreatePlayerUI()
@@ -81,6 +82,14 @@ namespace Actor.Player
             {
                 characterNetworkHandler.SubmitAttackRequestServerRpc();
                 Attack();
+            }
+        }
+
+        protected void PickUpWithPlayerInput()
+        {
+            if (playerInputHandler.InteractTriggered)
+            {
+                PickUp();
             }
         }
 

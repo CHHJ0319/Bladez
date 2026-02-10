@@ -36,7 +36,7 @@ namespace Actor
         public override void OnNetworkSpawn()
         {
             ownerID = OwnerClientId.ToString();
-            _weaponHandler.AssignOwnerId(ownerID);
+            AssignWeaponOwnerID();
 
             Position.OnValueChanged += OnPositionChanged;
             Rotation.OnValueChanged += OnRotationChanged;
@@ -73,6 +73,11 @@ namespace Actor
             AttackTriggered.OnValueChanged -= OnAttackTriggeredChanged;
 
             HP.OnValueChanged -= OnHPChanged;
+        }
+
+        public void AssignWeaponOwnerID()
+        {
+            _weaponHandler.AssignOwnerId(ownerID);
         }
 
         public void OnPositionChanged(Vector3 previous, Vector3 current)
@@ -160,12 +165,12 @@ namespace Actor
             HP.Value = hp;
         }
 
-        static Vector3 GetRandomPositionOnPlane()
+        private static Vector3 GetRandomPositionOnPlane()
         {
             return new Vector3(Random.Range(-3f, 3f), 1f, Random.Range(-3f, 3f));
         }
 
-        void MoveToRandomPosition()
+        private void MoveToRandomPosition()
         {
             Vector3 pos = GetRandomPositionOnPlane();
             transform.position = pos;

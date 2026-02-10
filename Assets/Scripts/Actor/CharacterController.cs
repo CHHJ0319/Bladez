@@ -19,7 +19,8 @@ namespace Actor
         protected CharacterNetworkHandler characterNetworkHandler;
         protected CharacterNetworkAnimator characterNetworkAnimator;
 
-        public WeaponHandler weaponHandler;
+        private WeaponHandler weaponHandler;
+        private ItemPicker itemPicker;
 
         private CapsuleCollider col;
         private Rigidbody rb;
@@ -37,11 +38,6 @@ namespace Actor
         protected GaugeBar hpBar;
         protected GaugeBar staminaBar;
 
-        /// <summary>
-        /// //////////////////////////////////////////////////////
-        /// </summary>
-
-        public ItemPicker itemPicker;
 
 
         protected virtual void Awake()
@@ -50,6 +46,7 @@ namespace Actor
             rb = GetComponent<Rigidbody>();
             
             weaponHandler = GetComponent<WeaponHandler>();
+            itemPicker = GetComponent<ItemPicker>();
 
             orgColHeight = col.height;
             orgVectColCenter = col.center;
@@ -61,8 +58,6 @@ namespace Actor
         protected virtual void Update()
         {
             weaponHandler.UpdateAttackTimer();
-
-            DetectDroppedItems();
         }
 
         protected virtual void FixedUpdate()
@@ -70,17 +65,6 @@ namespace Actor
             UpdateAnimationState();
             SetGravity(true);
             UpdateStateBehavior();
-        }
-
-        void DetectDroppedItems()
-        {
-            if(itemPicker != null)
-            {
-                if(itemPicker.IsItemDetected)
-                {
-                    PickUp();
-                }
-            }
         }
 
         void UpdateAnimationState()
@@ -193,6 +177,8 @@ namespace Actor
                 currentBaseState.fullPathHash == PlayerState.ReloadingState)
                 return;
 
+            if (weaponHandler.EquippedWeapon == null)
+                return;
 
             if (weaponHandler.GetEquipWeaponType() == Item.Weapon.WeaponType.Melee)
             {
@@ -200,6 +186,22 @@ namespace Actor
             }
 
             weaponHandler.Attack();
+        }
+
+        protected void PickUp()
+        {
+            GameObject item = itemPicker.GetPickedUpItem();
+
+            if (item == null) return;
+
+            if(item.tag == "Weapon")
+            {
+                if (weaponHandler.CanAddWeapon())
+                {
+                    weaponHandler.AddWeapon(item);
+                    itemPicker.Clear();
+                }
+            }
         }
 
         public void TakeDamage(float damage, Vector3 damageDirection, float knockbackForce)
@@ -240,20 +242,6 @@ namespace Actor
             knockbackDirection.y = 0.1f;
 
             rb.AddForce(knockbackDirection * knockbackForce, ForceMode.VelocityChange);
-        }
-
-        protected void PickUp()
-        {
-            GameObject item = itemPicker.GetPickedUpItem();
-
-            if (item != null && item.tag == "Weapon")
-            {
-                if (weaponHandler.CanAddWeapon())
-                {
-                    weaponHandler.AddWeapon(item);
-                    itemPicker.IsItemDetected = false;
-                }
-            }
         }
 
         protected void EquipWeapon(int weaponIdx)

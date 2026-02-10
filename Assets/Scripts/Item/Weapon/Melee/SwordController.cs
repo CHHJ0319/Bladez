@@ -51,11 +51,13 @@ namespace Item.Weapon.Melee
 
         private void OnTriggerEnter(Collider other)
         {
+            if (!IsEquiped) return;
+
             GameObject rootGameObject = other.transform.root.gameObject;
 
             if (rootGameObject.TryGetComponent(out NetworkObject netObj))
             {
-                if (ownerID == rootGameObject.GetComponent<CharacterNetworkHandler>().ownerID)
+                if (OwnerID == rootGameObject.GetComponent<CharacterNetworkHandler>().ownerID)
                 {
                     
                 }

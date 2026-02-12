@@ -1,9 +1,11 @@
 using System.Collections;
+using Unity.Netcode;
+using Unity.Netcode.Components;
 using UnityEngine;
 
 namespace Actor
 {
-    public class CharacterAnimator : MonoBehaviour
+    public class CharacterAnimator : NetworkAnimator
     {
         public float animSpeed = 1.5f;
 
@@ -20,18 +22,25 @@ namespace Actor
         private int _comboCount = 0;
         private bool _canCombo = false;
 
-        void Awake()
+        private readonly int m_AnimIDSpeed = Animator.StringToHash("Speed");
+        private readonly int m_AnimIDDirection = Animator.StringToHash("Direction");
+
+        protected override void Awake()
         {
+            base.Awake();
             anim = GetComponent<Animator>();
             audioSource = GetComponent<AudioSource>();
         }
 
         public void UpdateMovementAnimation(float horizontal, float vertical)
         {
-            anim.SetFloat("Speed", vertical);
-            anim.SetFloat("Direction", horizontal);
+            var networkBehaviour = GetComponent<NetworkBehaviour>();
+            if (networkBehaviour != null && !networkBehaviour.IsOwner) return;
 
-            //Debug.Log("h : " + horizontal + "v :" + vertical);
+            anim.SetFloat(m_AnimIDSpeed, vertical);
+            anim.SetFloat(m_AnimIDDirection, horizontal);
+
+            //Debug.Log("h : " + horizontal + "v:" + vertical);
 
             anim.speed = animSpeed;
         }
@@ -55,19 +64,13 @@ namespace Actor
         public void SetJump(bool isJump)
         {
             anim.SetBool("Jump", isJump);
-            if (isJump)
-            {
-                //audioSource.PlayOneShot(jumpSound);
-            }
+            //audioSource.PlayOneShot(jumpSound);
         }
 
         public void SetSliding(bool isSliding)
         {
             anim.SetBool("Sliding", isSliding);
-            if(isSliding)
-            {
-                //audioSource.PlayOneShot(slidingSound);
-            }
+            //audioSource.PlayOneShot(slidingSound);
         }
 
         public void PlayAttack()
@@ -86,6 +89,12 @@ namespace Actor
         public void PlayTakeDamage()
         {
             anim.SetTrigger("TakeDamage");
+        }
+
+        public void SetRest(bool isRest)
+        {
+            anim.SetBool("Rest", isRest);
+            //audioSource.PlayOneShot(jumpSound);
         }
 
         public float GetJumpHeight()

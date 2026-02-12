@@ -18,7 +18,7 @@ namespace Actor
         public float useCurvesHeight = 0.5f;
 
         protected NetworkCharacterHandler NetworkCharacterHandler;
-        protected NetworkCharacterAnimator networkCharacterAnimator;
+        protected CharacterAnimator CharacterAnimator;
 
         private WeaponHandler weaponHandler;
         private ItemPicker itemPicker;
@@ -51,7 +51,7 @@ namespace Actor
             orgVectColCenter = col.center;
 
             NetworkCharacterHandler = GetComponent<NetworkCharacterHandler>();
-            networkCharacterAnimator = GetComponent<NetworkCharacterAnimator>();
+            CharacterAnimator = GetComponent<CharacterAnimator>();
         }
 
         protected virtual void Update()
@@ -68,8 +68,8 @@ namespace Actor
 
         void UpdateAnimationState()
         {
-            currentBaseState = networkCharacterAnimator.GetBaseLayerState();
-            currentUpperBodyState = networkCharacterAnimator.GetUpperBodyState();
+            currentBaseState = CharacterAnimator.GetBaseLayerState();
+            currentUpperBodyState = CharacterAnimator.GetUpperBodyState();
         }
 
         void SetGravity(bool active)
@@ -89,12 +89,12 @@ namespace Actor
 
             else if (currentBaseState.fullPathHash == PlayerState.JumpState)
             {
-                if (!networkCharacterAnimator.IsTransitioning())
+                if (!CharacterAnimator.IsTransitioning())
                 {
                     if (useCurves)
                     {
-                        float jumpHeight = networkCharacterAnimator.GetJumpHeight();
-                        float gravityControl = networkCharacterAnimator.GetGravityControl();
+                        float jumpHeight = CharacterAnimator.GetJumpHeight();
+                        float gravityControl = CharacterAnimator.GetGravityControl();
                         if (gravityControl > 0)
                             rb.useGravity = false;
 
@@ -114,15 +114,15 @@ namespace Actor
                             }
                         }
                     }
-                    networkCharacterAnimator.SetJump(false);
+                    CharacterAnimator.SetJump(false);
                 }
             }
 
             else if (currentBaseState.fullPathHash == PlayerState.SlidingState)
             {
-                if (!networkCharacterAnimator.IsTransitioning())
+                if (!CharacterAnimator.IsTransitioning())
                 {
-                    networkCharacterAnimator.SetSliding(false);
+                    CharacterAnimator.SetSliding(false);
                 }
             }
 
@@ -136,9 +136,9 @@ namespace Actor
 
             else if (currentBaseState.fullPathHash == PlayerState.restState)
             {
-                if (!networkCharacterAnimator.IsTransitioning())
+                if (!CharacterAnimator.IsTransitioning())
                 {
-                    networkCharacterAnimator.SetRest(false);
+                    CharacterAnimator.SetRest(false);
                 }
             }
         }
@@ -152,20 +152,20 @@ namespace Actor
         public void Jump()
         {
             if (currentBaseState.fullPathHash == PlayerState.LocoState
-                && !networkCharacterAnimator.IsTransitioning())
+                && !CharacterAnimator.IsTransitioning())
             {
                 rb.AddForce(Vector3.up * jumpPower, ForceMode.VelocityChange);
-                networkCharacterAnimator.SetJump(true);
+                CharacterAnimator.SetJump(true);
             }
         }
 
         public void Sliding()
         {
             if (currentBaseState.fullPathHash == PlayerState.LocoState
-                && !networkCharacterAnimator.IsTransitioning())
+                && !CharacterAnimator.IsTransitioning())
             {
                 rb.AddForce(velocity * slidingPower, ForceMode.VelocityChange);
-                networkCharacterAnimator.SetSliding(true);
+                CharacterAnimator.SetSliding(true);
             }
         }
 
@@ -181,7 +181,7 @@ namespace Actor
 
             if (weaponHandler.GetEquipWeaponType() == Item.Weapon.WeaponType.Melee)
             {
-                networkCharacterAnimator.PlayAttack();
+                CharacterAnimator.PlayAttack();
             }
 
             weaponHandler.Attack();
@@ -220,15 +220,15 @@ namespace Actor
                 }
             }
 
-            networkCharacterAnimator.PlayTakeDamage();
+            CharacterAnimator.PlayTakeDamage();
             ApplyKnockback(-damageDirection, knockbackForce);
         }
 
         public void Rest()
         {
-            if (!networkCharacterAnimator.IsTransitioning())
+            if (!CharacterAnimator.IsTransitioning())
             {
-                networkCharacterAnimator.SetRest(true);
+                CharacterAnimator.SetRest(true);
             }
         }
 

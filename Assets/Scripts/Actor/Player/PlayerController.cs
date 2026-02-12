@@ -118,7 +118,7 @@ namespace Actor.Player
         {
             NetworkCharacterHandler.SubmitTransfromRequestServerRpc(transform.localPosition, transform.localRotation);
 
-            networkCharacterAnimator.UpdateMovementAnimation(horizontal, vertical);
+            CharacterAnimator.UpdateMovementAnimation(horizontal, vertical);
 
             CalculateVelocity(vertical);
             if(currentScene != "DuelLobbyScene")

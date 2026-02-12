@@ -1108,6 +1108,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 706861335}
+  - component: {fileID: 706861337}
   - component: {fileID: 706861336}
   m_Layer: 0
   m_Name: UIManager
@@ -1148,6 +1149,25 @@ MonoBehaviour:
   serverButton: {fileID: 977068790}
   statusText: {fileID: 1838333337}
   StartButton: {fileID: 0}
+--- !u!114 &706861337
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 706861334}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bb7d607ae72439844aad25a9faab70df, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
+  hostButton: {fileID: 1359713958}
+  clientButton: {fileID: 1706261900}
+  serverButton: {fileID: 977068790}
+  statusText: {fileID: 1838333337}
+  PlayerUI: {fileID: 1092408916}
+  StartButton: {fileID: 516846121}
 --- !u!1 &799732214
 GameObject:
   m_ObjectHideFlags: 0
@@ -1331,6 +1351,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 18a605daace85c84cb40745ce5cfb7af, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
 --- !u!1 &977068788
 GameObject:
   m_ObjectHideFlags: 0

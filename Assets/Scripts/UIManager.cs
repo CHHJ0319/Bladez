@@ -1,10 +1,9 @@
-using Actor.Player;
 using TMPro;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class UIManager : MonoBehaviour
+public class UIManager : NetworkBehaviour
 {
     public static UIManager Instance;
 
@@ -18,6 +17,7 @@ public class UIManager : MonoBehaviour
 
     [Header("GameUI")]
     public Transform PlayerUI;
+    public Button StartButton;
 
     void Awake()
     {
@@ -47,41 +47,41 @@ public class UIManager : MonoBehaviour
     void OnHostButtonClicked()
     {
         NetworkManager.Singleton.StartHost();
-        ActorManager.Instance.DropItemsServer();
+        //ActorManager.Instance.DropItemsServer();
     }
     void OnClientButtonClicked()
     {
         NetworkManager.Singleton.StartClient();
-        ActorManager.Instance.DropItemsClinet();
+        //ActorManager.Instance.DropItemsClinet();
     }
     void OnServerButtonClicked()
     {
         NetworkManager.Singleton.StartServer();
-        ActorManager.Instance.DropItemsServer();
+        //ActorManager.Instance.DropItemsServer();
     }
 
     void UpdateUI()
     {
         if (NetworkManager.Singleton == null)
         {
-            SetStartButtons(false);
+            SetNetworkButtons(false);
             SetStatusText("NetworkManager not found");
             return;
         }
 
         if (!NetworkManager.Singleton.IsClient && !NetworkManager.Singleton.IsServer)
         {
-            SetStartButtons(true);
+            SetNetworkButtons(true);
             SetStatusText("Not connected");
         }
         else
         {
-            SetStartButtons(false);
+            SetNetworkButtons(false);
             UpdateStatusLabels();
         }
     }
 
-    void SetStartButtons(bool state)
+    void SetNetworkButtons(bool state)
     {
         hostButton.gameObject.SetActive(state);
         clientButton.gameObject.SetActive(state);

@@ -2,6 +2,7 @@ using Actor.UI;
 using TMPro;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class UIManager : NetworkBehaviour
@@ -17,6 +18,7 @@ public class UIManager : NetworkBehaviour
     public TMP_Text statusText;
 
     [Header("PlayerUI")]
+    public Transform playerUI;
     public Button duelStartButton;
     public GaugeBar hpBar;
     public GaugeBar staminaBar;
@@ -110,7 +112,7 @@ public class UIManager : NetworkBehaviour
             UpdateStatusLabels();
         }
 
-        if (duelStartButton.GetComponentInChildren<TextMeshProUGUI>().text == "Start")
+        if (duelStartButton != null && duelStartButton.GetComponentInChildren<TextMeshProUGUI>().text == "Start")
         {
             if (GameManager.Instance.CanStartDuel)
             {
@@ -125,7 +127,9 @@ public class UIManager : NetworkBehaviour
 
     private void SetNetworkButtons(bool state)
     {
-        hostButton.gameObject.SetActive(state);
+        if (SceneManager.GetActiveScene().name != "DuelLobbyScene") return;
+        
+            hostButton.gameObject.SetActive(state);
         clientButton.gameObject.SetActive(state);
         serverButton.gameObject.SetActive(state);
     }
@@ -147,7 +151,7 @@ public class UIManager : NetworkBehaviour
     {
         if(isDuelHost)
         {
-            GameManager.Instance.RequestStartGameServerRpc("TestScene");
+            GameManager.Instance.RequestStartGameServerRpc("DuelScene");
         }
         else
         {

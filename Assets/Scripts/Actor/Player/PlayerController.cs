@@ -18,8 +18,6 @@ namespace Actor.Player
 
         private PlayerInputHandler playerInputHandler;
   
-		private string currentScene;
-
         public bool IsDuelHost { get; private set; } = false;
 
 		public override void OnNetworkSpawn()
@@ -39,17 +37,9 @@ namespace Actor.Player
             if (IsOwner)
             {
                 playerInput.enabled = true;
-
-                UIManager.Instance.UpdatePlayerHPBar(HP.Value, maxHP);
-
-                if (SceneManager.GetActiveScene().name == "TestScene")
-                {
-                    MoveToRandomPosition();
-                }
             }
             else
             {
-                tpsCamera.gameObject.SetActive(false);
                 playerInput.enabled = false;
             }
         }
@@ -74,8 +64,6 @@ namespace Actor.Player
 
             playerInput = GetComponent<PlayerInput>();
             playerInputHandler = GetComponent<PlayerInputHandler>();
-
-            currentScene = SceneManager.GetActiveScene().name;
 
             if (currentScene == "DuelLobbyScene")
             {
@@ -142,6 +130,23 @@ namespace Actor.Player
                 else
                 {
                     PickUp();
+                }
+            }
+        }
+
+        protected override void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+        {
+            base.OnSceneLoaded(scene, mode);
+
+            MoveToRandomPosition();
+
+            if (IsOwner)
+            {
+                if (SceneManager.GetActiveScene().name == "DuelScene")
+                {
+                    UIManager.Instance.UpdatePlayerHPBar(HP.Value, maxHP);
+
+                    tpsCamera.gameObject.SetActive(true);
                 }
             }
         }

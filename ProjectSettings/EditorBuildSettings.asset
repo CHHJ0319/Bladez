@@ -12,7 +12,7 @@ EditorBuildSettings:
     path: Assets/Scenes/MainScene.unity
     guid: 7c429075bc6739c47b71f10adcc1e91b
   - enabled: 1
-    path: Assets/Scenes/TestScene.unity
+    path: Assets/Scenes/DuelScene.unity
     guid: f05739a42da07fb40ac0ccfc9bf79e30
   - enabled: 1
     path: Assets/Scenes/DuelLobbyScene.unity

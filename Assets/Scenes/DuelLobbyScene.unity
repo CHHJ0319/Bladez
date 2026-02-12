@@ -1150,6 +1150,7 @@ MonoBehaviour:
   clientButton: {fileID: 1706261900}
   serverButton: {fileID: 977068790}
   statusText: {fileID: 1838333337}
+  playerUI: {fileID: 1092408916}
   duelStartButton: {fileID: 516846121}
   hpBar: {fileID: 0}
   staminaBar: {fileID: 0}

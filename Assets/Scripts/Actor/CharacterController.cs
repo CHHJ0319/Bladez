@@ -2,6 +2,7 @@ using Actor.Player;
 using Actor.UI;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace Actor
 {
@@ -33,6 +34,8 @@ namespace Actor
         protected Vector3 velocity;
 
         protected float maxHP = 100f;
+
+        protected string currentScene;
 
         public NetworkVariable<Vector3> Position = new NetworkVariable<Vector3>();
         public NetworkVariable<Quaternion> Rotation = new NetworkVariable<Quaternion>();
@@ -186,10 +189,14 @@ namespace Actor
             OwnerID = OwnerClientId.ToString();
 
             SubmitHPRequestServerRpc(maxHP);
+
+            currentScene = SceneManager.GetActiveScene().name;
         }
 
         protected void SubscribeNetworkVariables()
         {
+            SceneManager.sceneLoaded += OnSceneLoaded;
+
             Position.OnValueChanged += OnPositionChanged;
             Rotation.OnValueChanged += OnRotationChanged;
 
@@ -200,6 +207,8 @@ namespace Actor
 
         private void UnubscribeNetworkVariables()
         {
+            SceneManager.sceneLoaded -= OnSceneLoaded;
+
             Position.OnValueChanged -= OnPositionChanged;
             Rotation.OnValueChanged -= OnRotationChanged;
 
@@ -331,6 +340,12 @@ namespace Actor
             {
                 SetHP();
             }
+        }
+
+        protected virtual void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+        {
+            currentScene = SceneManager.GetActiveScene().name;
+
         }
 
         private void ApplyKnockback(Vector3 knockbackDirection, float knockbackForce)

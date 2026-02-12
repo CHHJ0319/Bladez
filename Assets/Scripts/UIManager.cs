@@ -147,7 +147,7 @@ public class UIManager : NetworkBehaviour
     {
         if(isDuelHost)
         {
-            GameManager.Instance.SubmitStartDuelServerRpc();
+            GameManager.Instance.RequestStartGameServerRpc("TestScene");
         }
         else
         {

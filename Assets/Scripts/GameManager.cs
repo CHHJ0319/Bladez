@@ -1,5 +1,6 @@
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
 
 public class GameManager : NetworkBehaviour
@@ -41,6 +42,15 @@ public class GameManager : NetworkBehaviour
     }
 
     [Rpc(SendTo.Server)]
+    public void RequestStartGameServerRpc(string sceneName)
+    {
+        if (IsServer)
+        {
+            NetworkManager.Singleton.SceneManager.LoadScene(sceneName, LoadSceneMode.Single);
+        }
+    }
+
+    [Rpc(SendTo.Server)]
     public void SubmitReadyPlayerServerRpc(RpcParams rpcParams = default)
     {
         readyPlayerCount.Value++;
@@ -50,12 +60,6 @@ public class GameManager : NetworkBehaviour
     public void SubmitUnReadyPlayerServerRpc(RpcParams rpcParams = default)
     {
         readyPlayerCount.Value--;
-    }
-
-    [Rpc(SendTo.Server)]
-    public void SubmitStartDuelServerRpc(RpcParams rpcParams = default)
-    {
-        int a = 1;
     }
 
     private void OnReadyPlayerCountChanged(int previous, int current)

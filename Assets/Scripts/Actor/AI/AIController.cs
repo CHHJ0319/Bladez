@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Actor.AI
 {
-    public class AIController : CharaterController
+    public class AIController : CharacterController
     {
         
     }

@@ -1,5 +1,3 @@
-using Actor;
-using Actor.Player;
 using System.Collections;
 using Unity.Netcode;
 using UnityEngine;
@@ -57,14 +55,14 @@ namespace Actor.Item.Weapon.Melee
 
             if (rootGameObject.TryGetComponent(out NetworkObject netObj))
             {
-                if (OwnerID == rootGameObject.GetComponent<NetworkCharacterHandler>().OwnerID)
+                if (OwnerID == rootGameObject.GetComponent<Actor.CharacterController>().OwnerID)
                 {
                     
                 }
                 else
                 {
                     Vector3 damageDirection = (transform.position - other.transform.position).normalized;
-                    rootGameObject.GetComponent<PlayerController>().TakeDamage(damage, damageDirection, knockbackForce);
+                    rootGameObject.GetComponent<Actor.Player.PlayerController>().TakeDamage(damage, damageDirection, knockbackForce);
                 }
             }
         }

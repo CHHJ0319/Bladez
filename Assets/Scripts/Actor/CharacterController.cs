@@ -1,13 +1,13 @@
 using Actor.Player;
 using Actor.UI;
+using Unity.Netcode;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 namespace Actor
 {
-    public abstract class CharaterController : MonoBehaviour
+    public abstract class CharacterController : NetworkBehaviour
     {
-        [Header("Settings")]
+        [Header("Properties")]
         public float forwardSpeed = 7.0f;
         public float backwardSpeed = 2.0f;
         public float rotateSpeed = 2.0f;
@@ -17,9 +17,7 @@ namespace Actor
         public bool useCurves = true;
         public float useCurvesHeight = 0.5f;
 
-        protected NetworkCharacterHandler NetworkCharacterHandler;
-        protected CharacterAnimator CharacterAnimator;
-
+        protected CharacterAnimator characterAnimator;
         private WeaponHandler weaponHandler;
         private ItemPicker itemPicker;
 
@@ -28,30 +26,32 @@ namespace Actor
 
         private float orgColHeight;
         private Vector3 orgVectColCenter;
+
         private AnimatorStateInfo currentBaseState;
         private AnimatorStateInfo currentUpperBodyState;
 
         protected Vector3 velocity;
 
-        protected float hp = 100f;
         protected float maxHP = 100f;
 
-        protected GaugeBar hpBar;
-        protected GaugeBar staminaBar;
+        public NetworkVariable<Vector3> Position = new NetworkVariable<Vector3>();
+        public NetworkVariable<Quaternion> Rotation = new NetworkVariable<Quaternion>();
 
-        protected virtual void Awake()
+        public NetworkVariable<bool> PickUpTriggered = new NetworkVariable<bool>();
+
+        protected NetworkVariable<float> HP = new NetworkVariable<float>();
+
+        public string OwnerID { get; private set; }
+
+        public override void OnNetworkSpawn()
         {
-            col = GetComponent<CapsuleCollider>();
-            rb = GetComponent<Rigidbody>();
-            
-            weaponHandler = GetComponent<WeaponHandler>();
-            itemPicker = GetComponent<ItemPicker>();
+            SubscribeNetworkVariables();
+            Initialize();
+        }
 
-            orgColHeight = col.height;
-            orgVectColCenter = col.center;
-
-            NetworkCharacterHandler = GetComponent<NetworkCharacterHandler>();
-            CharacterAnimator = GetComponent<CharacterAnimator>();
+        public override void OnNetworkDespawn()
+        {
+            UnubscribeNetworkVariables();
         }
 
         protected virtual void Update()
@@ -66,18 +66,170 @@ namespace Actor
             UpdateStateBehavior();
         }
 
-        void UpdateAnimationState()
+        public void Jump()
         {
-            currentBaseState = CharacterAnimator.GetBaseLayerState();
-            currentUpperBodyState = CharacterAnimator.GetUpperBodyState();
+            if (currentBaseState.fullPathHash == PlayerState.LocoState
+                && !characterAnimator.IsTransitioning())
+            {
+                rb.AddForce(Vector3.up * jumpPower, ForceMode.VelocityChange);
+
+                if (IsOwner)
+                {
+                    characterAnimator.SetJump(true);
+                    SubmitTransfromRequestServerRpc(transform.localPosition, transform.localRotation);
+                }
+            }
         }
 
-        void SetGravity(bool active)
+        public void Sliding()
+        {
+            if (currentBaseState.fullPathHash == PlayerState.LocoState
+                && !characterAnimator.IsTransitioning())
+            {
+                rb.AddForce(velocity * slidingPower, ForceMode.VelocityChange);
+
+                if (IsOwner)
+                {
+                    characterAnimator.SetSliding(true);
+                    SubmitTransfromRequestServerRpc(transform.localPosition, transform.localRotation);
+                }
+            }
+        }
+
+        public void Attack()
+        {
+            if (currentBaseState.fullPathHash == PlayerState.JumpState &&
+                currentBaseState.fullPathHash == PlayerState.SlidingState &&
+                currentBaseState.fullPathHash == PlayerState.ReloadingState)
+                return;
+
+            if (weaponHandler.EquippedWeapon == null)
+                return;
+
+            if (weaponHandler.GetEquipWeaponType() == Item.Weapon.WeaponType.Melee)
+            {
+                characterAnimator.PlayAttack();
+            }
+
+            weaponHandler.Attack();
+        }
+
+        public void PickUp()
+        {
+            GameObject item = itemPicker.GetPickedUpItem();
+
+            if (item == null) return;
+
+            if (IsOwner)
+                SubmitPickUpRequestServerRpc();
+
+            if (item.tag == "Weapon")
+            {
+                if (weaponHandler.CanAddWeapon())
+                {
+                    weaponHandler.AddWeapon(item);
+                    itemPicker.Clear();
+                }
+            }
+        }
+
+        public void TakeDamage(float damage, Vector3 damageDirection, float knockbackForce)
+        {
+            if (!IsOwner)
+            {
+                HP.Value -= damage;
+                SubmitHPRequestServerRpc(HP.Value);
+
+                if (HP.Value < 0)
+                {
+                    Die();
+                }
+            }
+
+            characterAnimator.PlayTakeDamage();
+            ApplyKnockback(-damageDirection, knockbackForce);
+        }
+
+        public void Rest()
+        {
+            if (!characterAnimator.IsTransitioning())
+            {
+                characterAnimator.SetRest(true);
+            }
+        }
+
+        public void SetHP()
+        {
+            if (IsOwner)
+            {
+                UIManager.Instance.UpdatePlayerHPBar(HP.Value, maxHP);
+            }
+        }
+
+        public void Die()
+        {
+            Destroy(gameObject);
+        }
+
+        public void AssignWeaponOwnerID()
+        {
+            weaponHandler.AssignOwnerId(OwnerID);
+        }
+
+        protected virtual void Initialize()
+        {
+            SetupComponents();
+
+            orgColHeight = col.height;
+            orgVectColCenter = col.center;
+
+            OwnerID = OwnerClientId.ToString();
+
+            SubmitHPRequestServerRpc(maxHP);
+        }
+
+        protected void SubscribeNetworkVariables()
+        {
+            Position.OnValueChanged += OnPositionChanged;
+            Rotation.OnValueChanged += OnRotationChanged;
+
+            PickUpTriggered.OnValueChanged += OnPickUpTriggeredChanged;
+
+            HP.OnValueChanged += OnHPChanged;
+        }
+
+        private void UnubscribeNetworkVariables()
+        {
+            Position.OnValueChanged -= OnPositionChanged;
+            Rotation.OnValueChanged -= OnRotationChanged;
+
+            PickUpTriggered.OnValueChanged -= OnPickUpTriggeredChanged;
+
+            HP.OnValueChanged -= OnHPChanged;
+        }
+
+        private void SetupComponents()
+        {
+            col = GetComponent<CapsuleCollider>();
+            rb = GetComponent<Rigidbody>();
+
+            weaponHandler = GetComponent<WeaponHandler>();
+            itemPicker = GetComponent<ItemPicker>();
+            characterAnimator = GetComponent<CharacterAnimator>();
+        }
+
+        private void UpdateAnimationState()
+        {
+            currentBaseState = characterAnimator.GetBaseLayerState();
+            currentUpperBodyState = characterAnimator.GetUpperBodyState();
+        }
+
+        private void SetGravity(bool active)
         {
             rb.useGravity = active;
         }
 
-        void UpdateStateBehavior()
+        private void UpdateStateBehavior()
         {
             if (currentBaseState.fullPathHash == PlayerState.LocoState)
             {
@@ -89,12 +241,12 @@ namespace Actor
 
             else if (currentBaseState.fullPathHash == PlayerState.JumpState)
             {
-                if (!CharacterAnimator.IsTransitioning())
+                if (!characterAnimator.IsTransitioning())
                 {
                     if (useCurves)
                     {
-                        float jumpHeight = CharacterAnimator.GetJumpHeight();
-                        float gravityControl = CharacterAnimator.GetGravityControl();
+                        float jumpHeight = characterAnimator.GetJumpHeight();
+                        float gravityControl = characterAnimator.GetGravityControl();
                         if (gravityControl > 0)
                             rb.useGravity = false;
 
@@ -114,15 +266,15 @@ namespace Actor
                             }
                         }
                     }
-                    CharacterAnimator.SetJump(false);
+                    characterAnimator.SetJump(false);
                 }
             }
 
             else if (currentBaseState.fullPathHash == PlayerState.SlidingState)
             {
-                if (!CharacterAnimator.IsTransitioning())
+                if (!characterAnimator.IsTransitioning())
                 {
-                    CharacterAnimator.SetSliding(false);
+                    characterAnimator.SetSliding(false);
                 }
             }
 
@@ -136,115 +288,49 @@ namespace Actor
 
             else if (currentBaseState.fullPathHash == PlayerState.restState)
             {
-                if (!CharacterAnimator.IsTransitioning())
+                if (!characterAnimator.IsTransitioning())
                 {
-                    CharacterAnimator.SetRest(false);
+                    characterAnimator.SetRest(false);
                 }
             }
         }
 
-        void ResetCollider()
+        private void OnPositionChanged(Vector3 previous, Vector3 current)
         {
-            col.height = orgColHeight;
-            col.center = orgVectColCenter;
-        }
-
-        public void Jump()
-        {
-            if (currentBaseState.fullPathHash == PlayerState.LocoState
-                && !CharacterAnimator.IsTransitioning())
+            if (Position.Value != previous)
             {
-                rb.AddForce(Vector3.up * jumpPower, ForceMode.VelocityChange);
-                CharacterAnimator.SetJump(true);
-            }
-        }
-
-        public void Sliding()
-        {
-            if (currentBaseState.fullPathHash == PlayerState.LocoState
-                && !CharacterAnimator.IsTransitioning())
-            {
-                rb.AddForce(velocity * slidingPower, ForceMode.VelocityChange);
-                CharacterAnimator.SetSliding(true);
-            }
-        }
-
-        public void Attack()
-        {
-            if (currentBaseState.fullPathHash == PlayerState.JumpState &&
-                currentBaseState.fullPathHash == PlayerState.SlidingState &&
-                currentBaseState.fullPathHash == PlayerState.ReloadingState)
-                return;
-
-            if (weaponHandler.EquippedWeapon == null)
-                return;
-
-            if (weaponHandler.GetEquipWeaponType() == Item.Weapon.WeaponType.Melee)
-            {
-                CharacterAnimator.PlayAttack();
-            }
-
-            weaponHandler.Attack();
-        }
-
-        public void PickUp()
-        {
-            GameObject item = itemPicker.GetPickedUpItem();
-
-            if (item == null) return;
-
-            if(NetworkCharacterHandler.IsOwner)
-                NetworkCharacterHandler.SubmitPickUpRequestServerRpc();
-
-            if (item.tag == "Weapon")
-            {
-                if (weaponHandler.CanAddWeapon())
+                if (!IsOwner)
                 {
-                    weaponHandler.AddWeapon(item);
-                    itemPicker.Clear();
+                    transform.position = Position.Value;
                 }
             }
         }
 
-        public void TakeDamage(float damage, Vector3 damageDirection, float knockbackForce)
+        private void OnRotationChanged(Quaternion previous, Quaternion current)
         {
-            if(NetworkCharacterHandler.IsOwner)
+            if (Rotation.Value != previous)
             {
-                hp -= damage;
-                SetHP(hp);
-                NetworkCharacterHandler.SubmitHPRequestServerRpc(hp);
-
-                if (hp < 0)
+                if (!IsOwner)
                 {
-                    Die();
+                    transform.rotation = Rotation.Value;
                 }
             }
-
-            CharacterAnimator.PlayTakeDamage();
-            ApplyKnockback(-damageDirection, knockbackForce);
         }
 
-        public void Rest()
+        private void OnPickUpTriggeredChanged(bool previous, bool current)
         {
-            if (!CharacterAnimator.IsTransitioning())
+            if (PickUpTriggered.Value != previous && !IsOwner)
             {
-                CharacterAnimator.SetRest(true);
+                PickUp();
             }
         }
 
-        public void SetHP(float hp)
+        private void OnHPChanged(float previous, float current)
         {
-            this.hp = hp;
-
-            if(NetworkCharacterHandler.IsOwner)
+            if (HP.Value != previous && !IsOwner)
             {
-                hpBar.UpdateGaugeBar(hp, maxHP);
+                SetHP();
             }
-        }
-
-        public void Die()
-        {
-            Destroy(gameObject);
         }
 
         private void ApplyKnockback(Vector3 knockbackDirection, float knockbackForce)
@@ -254,9 +340,46 @@ namespace Actor
             rb.AddForce(knockbackDirection * knockbackForce, ForceMode.VelocityChange);
         }
 
+        private void ResetCollider()
+        {
+            col.height = orgColHeight;
+            col.center = orgVectColCenter;
+        }
+
+        [Rpc(SendTo.Server)]
+        protected void SubmitTransfromRequestServerRpc(Vector3 position, Quaternion rotation = default, RpcParams rpcParams = default)
+        {
+            Position.Value = position;
+            Rotation.Value = rotation;
+        }
+
+        [Rpc(SendTo.Server)]
+        protected void SubmitPickUpRequestServerRpc(RpcParams rpcParams = default)
+        {
+            PickUpTriggered.Value = !PickUpTriggered.Value;
+        }
+
+        [Rpc(SendTo.Server)]
+        protected void SubmitHPRequestServerRpc(float hp, RpcParams rpcParams = default)
+        {
+            this.HP.Value = hp;
+        }
+
         protected void EquipWeapon(int weaponIdx)
         {
             weaponHandler.EquipWeapon(weaponIdx);
+        }
+
+        private static Vector3 GetRandomPositionOnPlane()
+        {
+            return new Vector3(Random.Range(-3f, 3f), 1f, Random.Range(-3f, 3f));
+        }
+
+        protected void MoveToRandomPosition()
+        {
+            Vector3 pos = GetRandomPositionOnPlane();
+            transform.position = pos;
+            SubmitTransfromRequestServerRpc(pos);
         }
     }
 }

@@ -1,3 +1,4 @@
+using Actor.UI;
 using TMPro;
 using Unity.Netcode;
 using UnityEngine;
@@ -5,7 +6,7 @@ using UnityEngine.UI;
 
 public class UIManager : NetworkBehaviour
 {
-    public static UIManager Instance;
+    public static UIManager Instance { get; private set; }
 
     [Header("Buttons")]
     public Button hostButton;
@@ -15,9 +16,10 @@ public class UIManager : NetworkBehaviour
     [Header("Status")]
     public TMP_Text statusText;
 
-    [Header("GameUI")]
-    public Transform PlayerUI;
+    [Header("PlayerUI")]
     public Button StartButton;
+    public GaugeBar hpBar;
+    public GaugeBar staminaBar;
 
     void Awake()
     {
@@ -44,23 +46,31 @@ public class UIManager : NetworkBehaviour
         UpdateUI();
     }
 
-    void OnHostButtonClicked()
+    public void UpdatePlayerHPBar(float hp, float maxHP)
+    {
+        if (hpBar != null)
+        {
+            hpBar.UpdateGaugeBar(hp, maxHP);
+        }
+    }
+
+    private void OnHostButtonClicked()
     {
         NetworkManager.Singleton.StartHost();
         //ActorManager.Instance.DropItemsServer();
     }
-    void OnClientButtonClicked()
+    private void OnClientButtonClicked()
     {
         NetworkManager.Singleton.StartClient();
         //ActorManager.Instance.DropItemsClinet();
     }
-    void OnServerButtonClicked()
+    private void OnServerButtonClicked()
     {
         NetworkManager.Singleton.StartServer();
         //ActorManager.Instance.DropItemsServer();
     }
 
-    void UpdateUI()
+    private void UpdateUI()
     {
         if (NetworkManager.Singleton == null)
         {
@@ -81,19 +91,19 @@ public class UIManager : NetworkBehaviour
         }
     }
 
-    void SetNetworkButtons(bool state)
+    private void SetNetworkButtons(bool state)
     {
         hostButton.gameObject.SetActive(state);
         clientButton.gameObject.SetActive(state);
         serverButton.gameObject.SetActive(state);
     }
 
-    void SetStatusText(string text)
+    private void SetStatusText(string text)
     {
         if (statusText != null) statusText.text = text;
     }
 
-    void UpdateStatusLabels()
+    private void UpdateStatusLabels()
     {
         var mode = NetworkManager.Singleton.IsHost ? "Host" : NetworkManager.Singleton.IsServer ? "Server" : "Client";
         string transport = "Transport: " + NetworkManager.Singleton.NetworkConfig.NetworkTransport.GetType().Name;

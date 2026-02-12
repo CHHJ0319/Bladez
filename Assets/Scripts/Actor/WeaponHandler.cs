@@ -84,7 +84,7 @@ namespace Actor
             newWeapon.transform.SetParent(weaponHolder);
 
             slottedWeapons.Add(newWeapon);
-            if (TryGetComponent<NetworkCharacterHandler>(out var handler))
+            if (TryGetComponent<Actor.CharacterController>(out var handler))
             {
                 handler.AssignWeaponOwnerID();
             }

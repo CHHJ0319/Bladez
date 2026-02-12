@@ -238,16 +238,13 @@ PrefabInstance:
       addedObject: {fileID: -2389109992988116160}
     - targetCorrespondingSourceObject: {fileID: 100326, guid: 8f0565f23a2b58541a475bd3c1393052, type: 3}
       insertIndex: -1
+      addedObject: {fileID: -8344656349350210775}
+    - targetCorrespondingSourceObject: {fileID: 100326, guid: 8f0565f23a2b58541a475bd3c1393052, type: 3}
+      insertIndex: -1
       addedObject: {fileID: -2710880212031533601}
     - targetCorrespondingSourceObject: {fileID: 100326, guid: 8f0565f23a2b58541a475bd3c1393052, type: 3}
       insertIndex: -1
       addedObject: {fileID: -1727386698250687990}
-    - targetCorrespondingSourceObject: {fileID: 100326, guid: 8f0565f23a2b58541a475bd3c1393052, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: -8344656349350210775}
-    - targetCorrespondingSourceObject: {fileID: 100326, guid: 8f0565f23a2b58541a475bd3c1393052, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 6454593490238742898}
     - targetCorrespondingSourceObject: {fileID: 100326, guid: 8f0565f23a2b58541a475bd3c1393052, type: 3}
       insertIndex: -1
       addedObject: {fileID: 7061884872998588291}
@@ -359,39 +356,6 @@ MonoBehaviour:
   m_DefaultActionMap: 
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
---- !u!114 &-2710880212031533601
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 202232820513539697}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9adac3d0e437e8a4e94c684fde4cc624, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  forwardSpeed: 7
-  backwardSpeed: 2
-  rotateSpeed: 2
-  jumpPower: 3
-  slidingPower: 1
-  useCurves: 1
-  useCurvesHeight: 0.5
-  hpBarPrefab: {fileID: 6620614952732356700, guid: 3d5c996a743c28441aed8687c6c8af95, type: 3}
-  staminaBarPrefab: {fileID: 3800545974895629330, guid: 59dc203c87c0f7b41ae4e4c8d7c25fb0, type: 3}
---- !u!114 &-1727386698250687990
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 202232820513539697}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3d656dd7f7dcb6d4a8f1e34b4f927422, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &-8344656349350210775
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -417,7 +381,7 @@ MonoBehaviour:
   AutoObjectParentSync: 1
   SyncOwnerTransformWhenParented: 1
   AllowOwnerToParent: 0
---- !u!114 &6454593490238742898
+--- !u!114 &-2710880212031533601
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -426,11 +390,17 @@ MonoBehaviour:
   m_GameObject: {fileID: 202232820513539697}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f96eeebf71d27c74cbc8d4f908411eba, type: 3}
+  m_Script: {fileID: 11500000, guid: 9adac3d0e437e8a4e94c684fde4cc624, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  tpsCamera: {fileID: 7879378588841631257}
+  forwardSpeed: 7
+  backwardSpeed: 2
+  rotateSpeed: 2
+  jumpPower: 3
+  slidingPower: 1
+  useCurves: 1
+  useCurvesHeight: 0.5
   Position:
     m_InternalValue: {x: 0, y: 0, z: 0}
   Rotation:
@@ -443,8 +413,21 @@ MonoBehaviour:
     m_InternalValue: 0
   PickUpTriggered:
     m_InternalValue: 0
-  HP:
-    m_InternalValue: 0
+  tpsCamera: {fileID: 7879378588841631257}
+  hpBarPrefab: {fileID: 6620614952732356700, guid: 3d5c996a743c28441aed8687c6c8af95, type: 3}
+  staminaBarPrefab: {fileID: 3800545974895629330, guid: 59dc203c87c0f7b41ae4e4c8d7c25fb0, type: 3}
+--- !u!114 &-1727386698250687990
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 202232820513539697}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3d656dd7f7dcb6d4a8f1e34b4f927422, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &7061884872998588291
 MonoBehaviour:
   m_ObjectHideFlags: 0

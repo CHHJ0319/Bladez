@@ -1,63 +1,139 @@
 using Actor.UI;
+using Unity.Cinemachine;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 
 namespace Actor.Player
 {
-    public class PlayerController : CharaterController
+    public class PlayerController : CharacterController
     {
+        public CinemachineCamera tpsCamera;
+
         [Header("UI")]
         public GameObject hpBarPrefab;
         public GameObject staminaBarPrefab;
 
+        private PlayerInput playerInput;
+
         private PlayerInputHandler playerInputHandler;
-        
-        private Transform playerUI;
+  
 		private string currentScene;
 
 		public bool IsDuelHost { get; private set; }
 
-		protected override void Awake()
+		public override void OnNetworkSpawn()
         {
-            base.Awake();
+            Initialize();
+            SubscribeNetworkVariables();
 
-            playerInputHandler = GetComponent<PlayerInputHandler>();
-        
-            currentScene = SceneManager.GetActiveScene().name;
-		}
+            if (SceneManager.GetActiveScene().name == "DuelLobbyScene")
+            {
+                tpsCamera.gameObject.SetActive(false);
+
+                Transform lobbyTransform = ActorManager.Instance.GetLobbyPlayerTransform();
+                transform.localPosition = lobbyTransform.localPosition;
+                transform.localRotation = lobbyTransform.rotation;
+            }
+
+            if (IsOwner)
+            {
+                playerInput.enabled = true;
+
+                UIManager.Instance.UpdatePlayerHPBar(HP.Value, maxHP);
+
+                if (SceneManager.GetActiveScene().name == "TestScene")
+                {
+                    MoveToRandomPosition();
+                }
+            }
+            else
+            {
+                tpsCamera.gameObject.SetActive(false);
+                playerInput.enabled = false;
+            }
+        }
 
 		protected override void FixedUpdate()
         {
             base.FixedUpdate();
 
             float h = playerInputHandler.Horizontal;
-            float v = playerInputHandler.Vertical;    
+            float v = playerInputHandler.Vertical;
 
-            Move(h, v);
+            MoveWithPlayerInput(h, v);
             JumpWithPlayerInput();
             SlidingWithPlayerInput();
             AttackWithPlayerInput();
 			InteractWithPlayerInput();
         }
 
-        public void CreatePlayerUI()
+        protected override void Initialize()
         {
-            if (currentScene == "DuelLobbyScene")
-            {
+            base.Initialize();
 
-            }
-            else if (currentScene == "TestScene")
-            {
-                playerUI = UIManager.Instance.PlayerUI;
-                hpBar = Instantiate(hpBarPrefab, playerUI).GetComponent<GaugeBar>();
-                staminaBar = Instantiate(staminaBarPrefab, playerUI).GetComponent<GaugeBar>();
+            playerInput = GetComponent<PlayerInput>();
+            playerInputHandler = GetComponent<PlayerInputHandler>();
 
-                hpBar.UpdateGaugeBar(hp, maxHP);
-            }
-                
+            currentScene = SceneManager.GetActiveScene().name;
         }
 
-        void CalculateVelocity(float vertical)
+        private void MoveWithPlayerInput(float horizontal, float vertical)
+        {
+            CalculateVelocity(vertical);
+            if(currentScene != "DuelLobbyScene")
+            {
+                transform.localPosition += velocity * Time.fixedDeltaTime;
+            }
+            transform.Rotate(0, horizontal * rotateSpeed, 0);
+
+            if (IsOwner)
+            {
+                characterAnimator.UpdateMovementAnimation(horizontal, vertical);
+                SubmitTransfromRequestServerRpc(transform.localPosition, transform.localRotation);
+            }
+        }
+
+        private void JumpWithPlayerInput()
+        {
+            if (playerInputHandler.JumpTriggered)
+            {
+                Jump();
+            }
+        }
+
+        private void SlidingWithPlayerInput()
+        {
+            if (playerInputHandler.SlidingTriggered)
+            {
+                Sliding();
+            }
+        }
+
+        private void AttackWithPlayerInput()
+        {
+            if (playerInputHandler.AttackTriggered)
+            {
+                Attack();
+            }
+        }
+
+        private void InteractWithPlayerInput()
+        {
+            if (playerInputHandler.InteractTriggered)
+            {
+                if (currentScene == "DuelLobbyScene")
+                {
+                    Rest();
+                }
+                else
+                {
+                    PickUp();
+                }
+            }
+        }
+
+        private void CalculateVelocity(float vertical)
         {
             velocity = new Vector3(0, 0, vertical);
             velocity = transform.TransformDirection(velocity);
@@ -70,63 +146,6 @@ namespace Actor.Player
             {
                 velocity *= backwardSpeed;
             }
-        }
-
-        void JumpWithPlayerInput()
-        {
-            if (playerInputHandler.JumpTriggered)
-            {
-                NetworkCharacterHandler.SubmitJumpRequestServerRpc();
-                Jump();
-            }
-        }
-
-        void SlidingWithPlayerInput()
-        {
-            if (playerInputHandler.SlidingTriggered)
-            {
-                NetworkCharacterHandler.SubmitslidingRequestServerRpc();
-                Sliding();
-            }
-        }
-
-        void AttackWithPlayerInput()
-        {
-            if (playerInputHandler.AttackTriggered)
-            {
-                NetworkCharacterHandler.SubmitAttackRequestServerRpc();
-                Attack();
-            }
-        }
-
-        protected void InteractWithPlayerInput()
-        {
-            if (playerInputHandler.InteractTriggered)
-            {
-                if(currentScene == "DuelLobbyScene")
-                {
-                    Rest();
-				}
-                else
-                {
-					PickUp();
-				}
-			}
-        }
-
-        public void Move(float horizontal, float vertical)
-        {
-            NetworkCharacterHandler.SubmitTransfromRequestServerRpc(transform.localPosition, transform.localRotation);
-
-            CharacterAnimator.UpdateMovementAnimation(horizontal, vertical);
-
-            CalculateVelocity(vertical);
-            if(currentScene != "DuelLobbyScene")
-            {
-                transform.localPosition += velocity * Time.fixedDeltaTime;
-            }
-            transform.Rotate(0, horizontal * rotateSpeed, 0);
-
         }
     }
 }

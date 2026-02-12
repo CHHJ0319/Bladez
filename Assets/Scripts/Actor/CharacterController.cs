@@ -39,8 +39,6 @@ namespace Actor
         protected GaugeBar hpBar;
         protected GaugeBar staminaBar;
 
-        protected string currentScene;
-
         protected virtual void Awake()
         {
             col = GetComponent<CapsuleCollider>();
@@ -54,8 +52,6 @@ namespace Actor
 
             NetworkCharacterHandler = GetComponent<NetworkCharacterHandler>();
             networkCharacterAnimator = GetComponent<NetworkCharacterAnimator>();
-        
-            currentScene = SceneManager.GetActiveScene().name;
         }
 
         protected virtual void Update()

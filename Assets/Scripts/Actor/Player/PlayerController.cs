@@ -13,15 +13,20 @@ namespace Actor.Player
         private PlayerInputHandler playerInputHandler;
         
         private Transform playerUI;
+		private string currentScene;
 
-        protected override void Awake()
+		public bool IsDuelHost { get; private set; }
+
+		protected override void Awake()
         {
             base.Awake();
 
             playerInputHandler = GetComponent<PlayerInputHandler>();
-        }
+        
+            currentScene = SceneManager.GetActiveScene().name;
+		}
 
-        protected override void FixedUpdate()
+		protected override void FixedUpdate()
         {
             base.FixedUpdate();
 
@@ -37,11 +42,11 @@ namespace Actor.Player
 
         public void CreatePlayerUI()
         {
-            if (SceneManager.GetActiveScene().name == "DuelLobbyScene")
+            if (currentScene == "DuelLobbyScene")
             {
-                playerUI = DualLobbyScene.UIManager.Instance.PlayerUI;
+
             }
-            else if (SceneManager.GetActiveScene().name == "TestScene")
+            else if (currentScene == "TestScene")
             {
                 playerUI = UIManager.Instance.PlayerUI;
                 hpBar = Instantiate(hpBarPrefab, playerUI).GetComponent<GaugeBar>();
@@ -98,7 +103,7 @@ namespace Actor.Player
         {
             if (playerInputHandler.InteractTriggered)
             {
-                if(SceneManager.GetActiveScene().name == "DuelLobbyScene")
+                if(currentScene == "DuelLobbyScene")
                 {
                     Rest();
 				}
@@ -116,7 +121,7 @@ namespace Actor.Player
             networkCharacterAnimator.UpdateMovementAnimation(horizontal, vertical);
 
             CalculateVelocity(vertical);
-            if(SceneManager.GetActiveScene().name != "DuelLobbyScene")
+            if(currentScene != "DuelLobbyScene")
             {
                 transform.localPosition += velocity * Time.fixedDeltaTime;
             }

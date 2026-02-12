@@ -1,13 +1,19 @@
-using Actor.Item;
+using Unity.Netcode;
 using UnityEngine;
 
-public class ActorManager : MonoBehaviour
+public class ActorManager : NetworkBehaviour
 {
-    public static ActorManager Instance;
+    public static ActorManager Instance { get; private set; }
 
-    public DroppedItemSpawner droppedItemSpawner;
+    [Header("DuelLobbyScene")]
+    public Transform[] lobbyPlayers;
 
-    private NetworkActorManager networkActorManager;
+    [Header("DuelScene")]
+    public Actor.Item.DroppedItemSpawner droppedItemSpawner;
+    public NetworkList<int> WeaponIndexList = new NetworkList<int>();
+    public NetworkList<Vector3> WeaponPositionList = new NetworkList<Vector3>();
+
+    private NetworkVariable<int> playerCount = new NetworkVariable<int>();
 
     void Awake()
     {
@@ -16,11 +22,59 @@ public class ActorManager : MonoBehaviour
             Instance = this;
             DontDestroyOnLoad(gameObject);
 
-            networkActorManager = GetComponent<NetworkActorManager>();
+            Initialize();
         }
         else
         {
             Destroy(gameObject);
+        }
+    }
+
+    private void Initialize()
+    {
+        WeaponIndexList = new NetworkList<int>();
+        WeaponPositionList = new NetworkList<Vector3>();
+
+        playerCount.Value = 0;
+    }
+
+    public Transform GetLobbyPlayerTransform()
+    {
+        int index = playerCount.Value;
+        if (IsClient)
+        {
+            RequestAddPlayerServerRpc();
+        }
+        else
+        {
+            AddPlayer();
+        }
+
+        return lobbyPlayers[index];
+    }
+
+    private void AddPlayer()
+    {
+        playerCount.Value++;
+    }
+
+    [Rpc(SendTo.Server)]
+    private void RequestAddPlayerServerRpc()
+    {
+        AddPlayer();
+    }
+
+    [Rpc(SendTo.Server)]
+    public void SubmitDroppedWeaponsInfoServerRpc(int[] indexList, Vector3[] positionList, RpcParams rpcParams = default)
+    {
+        foreach (var i in indexList)
+        {
+            WeaponIndexList.Add(i);
+        }
+
+        foreach (var pos in positionList)
+        {
+            WeaponPositionList.Add(pos);
         }
     }
 
@@ -30,16 +84,40 @@ public class ActorManager : MonoBehaviour
         {
             droppedItemSpawner.InitializeWeaponListsRandomly();
             droppedItemSpawner.SpawnDroppedWeapons();
-            networkActorManager.SubmitDroppedWeaponsInfoServerRpc(droppedItemSpawner.WeaponIndexList, droppedItemSpawner.WeaponPositionList);
+            SubmitDroppedWeaponsInfoServerRpc(droppedItemSpawner.WeaponIndexList, droppedItemSpawner.WeaponPositionList);
         }
     }
 
     public void DropItemsClinet()
     {
-        //int[] indexList = networkActorManager.GetWeaponIndexList();
-        //Vector3[] positionList = networkActorManager.GetWeaponPositionList();
+        //int[] indexList = GetWeaponIndexList();
+        //Vector3[] positionList = GetWeaponPositionList();
 
         //droppedItemSpawner.InitializeWeaponLists(indexList, positionList);
         //droppedItemSpawner.SpawnDroppedWeapons();
+    }
+
+    public int[] GetWeaponIndexList()
+    {
+        int[] indexList = new int[WeaponIndexList.Count];
+
+        for (int i = 0; i < WeaponIndexList.Count; i++)
+        {
+            indexList[i] = WeaponIndexList[i];
+        }
+
+        return indexList;
+    }
+
+    public Vector3[] GetWeaponPositionList()
+    {
+        Vector3[] positionList = new Vector3[WeaponPositionList.Count];
+
+        for (int i = 0; i < WeaponPositionList.Count; i++)
+        {
+            positionList[i] = WeaponPositionList[i];
+        }
+
+        return positionList;
     }
 }

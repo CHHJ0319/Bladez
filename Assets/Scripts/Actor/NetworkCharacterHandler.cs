@@ -59,7 +59,7 @@ namespace Actor
                 {
                     tpsCamera.gameObject.SetActive(false);
 
-                    Transform lobbyTransform = DualLobbyScene.ActorManager.Instance.GetLobbyPlayerTransform();
+                    Transform lobbyTransform = ActorManager.Instance.GetLobbyPlayerTransform();
                     transform.localPosition = lobbyTransform.localPosition;
                     transform.localRotation = lobbyTransform.rotation;
                 }

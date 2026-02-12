@@ -18,7 +18,7 @@ namespace DualLobbyScene
         public TMP_Text statusText;
 
         [Header("GameUI")]
-        public Transform PlayerUI;
+        public Button StartButton;
 
         void Awake()
         {

@@ -7,7 +7,7 @@ namespace DualLobbyScene
     {
         public static ActorManager Instance;
 
-        public DroppedItemSpawner droppedItemSpawner;
+        public Transform[] lobbyPlayers;
 
         private NetworkActorManager networkActorManager;
 
@@ -26,24 +26,22 @@ namespace DualLobbyScene
             }
         }
 
-        public void DropItemsServer()
+        public Transform GetLobbyPlayerTransform()
         {
-            if (droppedItemSpawner != null)
+            int playerCount = networkActorManager.GetPlayerCount();
+            if(networkActorManager.IsClient)
             {
-                droppedItemSpawner.InitializeWeaponListsRandomly();
-                droppedItemSpawner.SpawnDroppedWeapons();
-                networkActorManager.SubmitDroppedWeaponsInfoServerRpc(droppedItemSpawner.WeaponIndexList, droppedItemSpawner.WeaponPositionList);
+                networkActorManager.RequestAddPlayerServerRpc();
             }
+            else
+            {
+                networkActorManager.AddPlayer();
+            }
+
+                return lobbyPlayers[playerCount];
         }
 
-        public void DropItemsClinet()
-        {
-            //int[] indexList = networkActorManager.GetWeaponIndexList();
-            //Vector3[] positionList = networkActorManager.GetWeaponPositionList();
-
-            //droppedItemSpawner.InitializeWeaponLists(indexList, positionList);
-            //droppedItemSpawner.SpawnDroppedWeapons();
-        }
+        
     }
 }
 

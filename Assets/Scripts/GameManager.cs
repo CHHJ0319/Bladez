@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -23,8 +24,8 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    void Update()
+    public string GetCurrentSceneName()
     {
-        
+        return SceneManager.GetActiveScene().name;
     }
 }

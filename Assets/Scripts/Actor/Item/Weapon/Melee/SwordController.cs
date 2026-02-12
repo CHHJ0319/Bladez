@@ -57,7 +57,7 @@ namespace Actor.Item.Weapon.Melee
 
             if (rootGameObject.TryGetComponent(out NetworkObject netObj))
             {
-                if (OwnerID == rootGameObject.GetComponent<CharacterNetworkHandler>().ownerID)
+                if (OwnerID == rootGameObject.GetComponent<NetworkCharacterHandler>().OwnerID)
                 {
                     
                 }

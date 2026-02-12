@@ -1,5 +1,6 @@
 using Actor.UI;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace Actor.Player
 {
@@ -36,11 +37,19 @@ namespace Actor.Player
 
         public void CreatePlayerUI()
         {
-            playerUI = UIManager.Instance.PlayerUI;
-            hpBar = Instantiate(hpBarPrefab, playerUI).GetComponent<GaugeBar>();
-            staminaBar = Instantiate(staminaBarPrefab, playerUI).GetComponent<GaugeBar>();
+            if (SceneManager.GetActiveScene().name == "DuelLobbyScene")
+            {
+                playerUI = DualLobbyScene.UIManager.Instance.PlayerUI;
+            }
+            else if (SceneManager.GetActiveScene().name == "TestScene")
+            {
+                playerUI = UIManager.Instance.PlayerUI;
+                hpBar = Instantiate(hpBarPrefab, playerUI).GetComponent<GaugeBar>();
+                staminaBar = Instantiate(staminaBarPrefab, playerUI).GetComponent<GaugeBar>();
 
-            hpBar.UpdateGaugeBar(hp, maxHP);
+                hpBar.UpdateGaugeBar(hp, maxHP);
+            }
+                
         }
 
         void CalculateVelocity(float vertical)
@@ -62,7 +71,7 @@ namespace Actor.Player
         {
             if (playerInputHandler.JumpTriggered)
             {
-                characterNetworkHandler.SubmitJumpRequestServerRpc();
+                NetworkCharacterHandler.SubmitJumpRequestServerRpc();
                 Jump();
             }
         }
@@ -71,7 +80,7 @@ namespace Actor.Player
         {
             if (playerInputHandler.SlidingTriggered)
             {
-                characterNetworkHandler.SubmitslidingRequestServerRpc();
+                NetworkCharacterHandler.SubmitslidingRequestServerRpc();
                 Sliding();
             }
         }
@@ -80,7 +89,7 @@ namespace Actor.Player
         {
             if (playerInputHandler.AttackTriggered)
             {
-                characterNetworkHandler.SubmitAttackRequestServerRpc();
+                NetworkCharacterHandler.SubmitAttackRequestServerRpc();
                 Attack();
             }
         }
@@ -95,7 +104,7 @@ namespace Actor.Player
 
         public void Move(float horizontal, float vertical)
         {
-            characterNetworkHandler.SubmitTransfromRequestServerRpc(transform.localPosition, transform.localRotation);
+            NetworkCharacterHandler.SubmitTransfromRequestServerRpc(transform.localPosition, transform.localRotation);
 
             characterNetworkAnimator.UpdateMovementAnimation(horizontal, vertical);
 

@@ -2,10 +2,11 @@ using Unity.Cinemachine;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 namespace Actor
 {
-    public class CharacterNetworkHandler : NetworkBehaviour
+    public class NetworkCharacterHandler : NetworkBehaviour
     {
         public CinemachineCamera tpsCamera;
 
@@ -24,7 +25,7 @@ namespace Actor
 
         private PlayerInput _playerInput;
 
-        public string ownerID;
+        public string OwnerID { get; private set; }
 
         void Awake()
         {
@@ -36,7 +37,7 @@ namespace Actor
 
         public override void OnNetworkSpawn()
         {
-            ownerID = OwnerClientId.ToString();
+            OwnerID = OwnerClientId.ToString();
             AssignWeaponOwnerID();
 
             Position.OnValueChanged += OnPositionChanged;
@@ -52,11 +53,21 @@ namespace Actor
             if (IsOwner)
             {
                 _playerInput.enabled = true;
-                tpsCamera.gameObject.SetActive(true);
-
                 _playerController.CreatePlayerUI();
 
-                MoveToRandomPosition();
+                if (SceneManager.GetActiveScene().name == "DuelLobbyScene")
+                {
+                    tpsCamera.gameObject.SetActive(false);
+
+                    Transform lobbyTransform = DualLobbyScene.ActorManager.Instance.GetLobbyPlayerTransform();
+                    transform.localPosition = lobbyTransform.localPosition;
+                    transform.localRotation = lobbyTransform.rotation;
+                }
+                else if (SceneManager.GetActiveScene().name == "TestScene")
+                {
+                    tpsCamera.gameObject.SetActive(true);
+                    MoveToRandomPosition();
+                }
             }
             else
             {
@@ -80,7 +91,7 @@ namespace Actor
 
         public void AssignWeaponOwnerID()
         {
-            _weaponHandler.AssignOwnerId(ownerID);
+            _weaponHandler.AssignOwnerId(OwnerID);
         }
 
         public void OnPositionChanged(Vector3 previous, Vector3 current)

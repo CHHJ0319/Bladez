@@ -328,7 +328,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   weaponHolder: {fileID: 3386290807216925629}
-  equipWeapon: {fileID: 0}
   slottedWeapons: []
 --- !u!114 &-2389109992988116160
 MonoBehaviour:
@@ -442,9 +441,10 @@ MonoBehaviour:
     m_InternalValue: 0
   AttackTriggered:
     m_InternalValue: 0
+  PickUpTriggered:
+    m_InternalValue: 0
   HP:
     m_InternalValue: 0
-  ownerID: 
 --- !u!114 &7061884872998588291
 MonoBehaviour:
   m_ObjectHideFlags: 0

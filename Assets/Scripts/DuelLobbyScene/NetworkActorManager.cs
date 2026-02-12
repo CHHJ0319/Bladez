@@ -8,10 +8,14 @@ namespace DualLobbyScene
         public NetworkList<int> WeaponIndexList = new NetworkList<int>();
         public NetworkList<Vector3> WeaponPositionList = new NetworkList<Vector3>();
 
+        private NetworkVariable<int> playerCount = new NetworkVariable<int>();
+
         void Awake()
         {
             WeaponIndexList = new NetworkList<int>();
             WeaponPositionList = new NetworkList<Vector3>();
+
+            playerCount.Value = 0;
         }
 
         [Rpc(SendTo.Server)]
@@ -50,6 +54,22 @@ namespace DualLobbyScene
             }
 
             return positionList;
+        }
+
+        public int GetPlayerCount()
+        {
+            return playerCount.Value;
+        }
+
+        public void AddPlayer()
+        {
+            playerCount.Value++;
+        }
+
+        [Rpc(SendTo.Server)]
+        public void RequestAddPlayerServerRpc()
+        {
+            AddPlayer();
         }
     }
 

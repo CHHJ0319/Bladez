@@ -16,7 +16,7 @@ namespace Actor
         public bool useCurves = true;
         public float useCurvesHeight = 0.5f;
 
-        protected CharacterNetworkHandler characterNetworkHandler;
+        protected NetworkCharacterHandler NetworkCharacterHandler;
         protected CharacterNetworkAnimator characterNetworkAnimator;
 
         private WeaponHandler weaponHandler;
@@ -51,7 +51,7 @@ namespace Actor
             orgColHeight = col.height;
             orgVectColCenter = col.center;
 
-            characterNetworkHandler = GetComponent<CharacterNetworkHandler>();
+            NetworkCharacterHandler = GetComponent<NetworkCharacterHandler>();
             characterNetworkAnimator = GetComponent<CharacterNetworkAnimator>();
         }
 
@@ -194,8 +194,8 @@ namespace Actor
 
             if (item == null) return;
 
-            if(characterNetworkHandler.IsOwner)
-                characterNetworkHandler.SubmitPickUpRequestServerRpc();
+            if(NetworkCharacterHandler.IsOwner)
+                NetworkCharacterHandler.SubmitPickUpRequestServerRpc();
 
             if (item.tag == "Weapon")
             {
@@ -209,11 +209,11 @@ namespace Actor
 
         public void TakeDamage(float damage, Vector3 damageDirection, float knockbackForce)
         {
-            if(characterNetworkHandler.IsOwner)
+            if(NetworkCharacterHandler.IsOwner)
             {
                 hp -= damage;
                 SetHP(hp);
-                characterNetworkHandler.SubmitHPRequestServerRpc(hp);
+                NetworkCharacterHandler.SubmitHPRequestServerRpc(hp);
 
                 if (hp < 0)
                 {
@@ -229,7 +229,7 @@ namespace Actor
         {
             this.hp = hp;
 
-            if(characterNetworkHandler.IsOwner)
+            if(NetworkCharacterHandler.IsOwner)
             {
                 hpBar.UpdateGaugeBar(hp, maxHP);
             }

@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Actor
 {
-    public class CharacterNetworkAnimator : NetworkAnimator
+    public class NetworkCharacterAnimator : NetworkAnimator
     {
         public float animSpeed = 1.5f;
 
@@ -64,19 +64,13 @@ namespace Actor
         public void SetJump(bool isJump)
         {
             anim.SetBool("Jump", isJump);
-            if (isJump)
-            {
-                //audioSource.PlayOneShot(jumpSound);
-            }
+            //audioSource.PlayOneShot(jumpSound);
         }
 
         public void SetSliding(bool isSliding)
         {
             anim.SetBool("Sliding", isSliding);
-            if(isSliding)
-            {
-                //audioSource.PlayOneShot(slidingSound);
-            }
+            //audioSource.PlayOneShot(slidingSound);
         }
 
         public void PlayAttack()
@@ -95,6 +89,12 @@ namespace Actor
         public void PlayTakeDamage()
         {
             anim.SetTrigger("TakeDamage");
+        }
+
+        public void SetRest(bool isRest)
+        {
+            anim.SetBool("Rest", isRest);
+            //audioSource.PlayOneShot(jumpSound);
         }
 
         public float GetJumpHeight()

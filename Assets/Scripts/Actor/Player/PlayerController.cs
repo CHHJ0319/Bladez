@@ -32,7 +32,7 @@ namespace Actor.Player
             JumpWithPlayerInput();
             SlidingWithPlayerInput();
             AttackWithPlayerInput();
-            PickUpWithPlayerInput();
+			InteractWithPlayerInput();
         }
 
         public void CreatePlayerUI()
@@ -94,22 +94,32 @@ namespace Actor.Player
             }
         }
 
-        protected void PickUpWithPlayerInput()
+        protected void InteractWithPlayerInput()
         {
             if (playerInputHandler.InteractTriggered)
             {
-                PickUp();
-            }
+                if(SceneManager.GetActiveScene().name == "DuelLobbyScene")
+                {
+                    Rest();
+				}
+                else
+                {
+					PickUp();
+				}
+			}
         }
 
         public void Move(float horizontal, float vertical)
         {
             NetworkCharacterHandler.SubmitTransfromRequestServerRpc(transform.localPosition, transform.localRotation);
 
-            characterNetworkAnimator.UpdateMovementAnimation(horizontal, vertical);
+            networkCharacterAnimator.UpdateMovementAnimation(horizontal, vertical);
 
             CalculateVelocity(vertical);
-            transform.localPosition += velocity * Time.fixedDeltaTime;
+            if(SceneManager.GetActiveScene().name != "DuelLobbyScene")
+            {
+                transform.localPosition += velocity * Time.fixedDeltaTime;
+            }
             transform.Rotate(0, horizontal * rotateSpeed, 0);
 
         }

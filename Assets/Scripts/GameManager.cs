@@ -23,9 +23,4 @@ public class GameManager : MonoBehaviour
             Destroy(gameObject);
         }
     }
-
-    public string GetCurrentSceneName()
-    {
-        return SceneManager.GetActiveScene().name;
-    }
 }

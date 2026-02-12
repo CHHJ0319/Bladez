@@ -765,6 +765,8 @@ MonoBehaviour:
   - {fileID: 1719711427}
   - {fileID: 1212726099}
   droppedItemSpawner: {fileID: 0}
+  PlayerCount:
+    m_InternalValue: 0
 --- !u!1 &485706489
 GameObject:
   m_ObjectHideFlags: 0
@@ -886,7 +888,7 @@ GameObject:
   - component: {fileID: 516846122}
   - component: {fileID: 516846121}
   m_Layer: 5
-  m_Name: StartButton
+  m_Name: DuelStartButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1109,7 +1111,6 @@ GameObject:
   m_Component:
   - component: {fileID: 706861335}
   - component: {fileID: 706861337}
-  - component: {fileID: 706861336}
   m_Layer: 0
   m_Name: UIManager
   m_TagString: Untagged
@@ -1132,23 +1133,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 939112119}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &706861336
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 706861334}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 52587cab16aeaff42af64c5203e50699, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  hostButton: {fileID: 1359713958}
-  clientButton: {fileID: 1706261900}
-  serverButton: {fileID: 977068790}
-  statusText: {fileID: 1838333337}
-  StartButton: {fileID: 0}
 --- !u!114 &706861337
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1166,8 +1150,9 @@ MonoBehaviour:
   clientButton: {fileID: 1706261900}
   serverButton: {fileID: 977068790}
   statusText: {fileID: 1838333337}
-  PlayerUI: {fileID: 1092408916}
-  StartButton: {fileID: 516846121}
+  duelStartButton: {fileID: 516846121}
+  hpBar: {fileID: 0}
+  staminaBar: {fileID: 0}
 --- !u!1 &799732214
 GameObject:
   m_ObjectHideFlags: 0
@@ -1313,6 +1298,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 939112119}
+  - component: {fileID: 939112121}
   - component: {fileID: 939112120}
   m_Layer: 0
   m_Name: GameManager
@@ -1352,6 +1338,33 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
+  readyPlayerCount:
+    m_InternalValue: 0
+--- !u!114 &939112121
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 939112118}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 3377174592
+  InScenePlacedSourceGlobalObjectIdHash: 0
+  DeferredDespawnTick: 0
+  Ownership: 1
+  AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 1
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 0
+  SpawnWithObservers: 1
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
+  SyncOwnerTransformWhenParented: 1
+  AllowOwnerToParent: 0
 --- !u!1 &977068788
 GameObject:
   m_ObjectHideFlags: 0

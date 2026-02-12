@@ -17,7 +17,7 @@ public class UIManager : NetworkBehaviour
     public TMP_Text statusText;
 
     [Header("PlayerUI")]
-    public Button StartButton;
+    public Button duelStartButton;
     public GaugeBar hpBar;
     public GaugeBar staminaBar;
 
@@ -54,16 +54,36 @@ public class UIManager : NetworkBehaviour
         }
     }
 
+    public void UpdateLobbyPlayerUI(bool isDuelHost)
+    {
+        duelStartButton.onClick.AddListener(() => OnDuelStartButtonClicked(isDuelHost));
+
+        var buttonTitle = duelStartButton.GetComponentInChildren<TextMeshProUGUI>();
+        if (isDuelHost)
+        {
+
+            buttonTitle.text = "Start";
+            duelStartButton.interactable = false;
+        }
+        else
+        {
+            buttonTitle.text = "Ready";
+        }
+
+    }
+
     private void OnHostButtonClicked()
     {
         NetworkManager.Singleton.StartHost();
         //ActorManager.Instance.DropItemsServer();
     }
+
     private void OnClientButtonClicked()
     {
         NetworkManager.Singleton.StartClient();
         //ActorManager.Instance.DropItemsClinet();
     }
+
     private void OnServerButtonClicked()
     {
         NetworkManager.Singleton.StartServer();
@@ -89,6 +109,18 @@ public class UIManager : NetworkBehaviour
             SetNetworkButtons(false);
             UpdateStatusLabels();
         }
+
+        if (duelStartButton.GetComponentInChildren<TextMeshProUGUI>().text == "Start")
+        {
+            if (GameManager.Instance.CanStartDuel)
+            {
+                duelStartButton.interactable = true;
+            }
+            else
+            {
+                duelStartButton.interactable = false;
+            }
+        }
     }
 
     private void SetNetworkButtons(bool state)
@@ -109,5 +141,26 @@ public class UIManager : NetworkBehaviour
         string transport = "Transport: " + NetworkManager.Singleton.NetworkConfig.NetworkTransport.GetType().Name;
         string modeText = "Mode: " + mode;
         SetStatusText($"{transport}\n{modeText}");
+    }
+
+    private void OnDuelStartButtonClicked(bool isDuelHost)
+    {
+        if(isDuelHost)
+        {
+            GameManager.Instance.SubmitStartDuelServerRpc();
+        }
+        else
+        {
+            if(duelStartButton.GetComponentInChildren<TextMeshProUGUI>().text == "Ready")
+            {
+                GameManager.Instance.SubmitReadyPlayerServerRpc();
+                duelStartButton.GetComponentInChildren<TextMeshProUGUI>().text = "Cancel";
+            }
+            else
+            {
+                GameManager.Instance.SubmitUnReadyPlayerServerRpc();
+                duelStartButton.GetComponentInChildren<TextMeshProUGUI>().text = "Ready";
+            }
+        }
     }
 }

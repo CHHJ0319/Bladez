@@ -13,7 +13,7 @@ public class ActorManager : NetworkBehaviour
     public NetworkList<int> WeaponIndexList = new NetworkList<int>();
     public NetworkList<Vector3> WeaponPositionList = new NetworkList<Vector3>();
 
-    private NetworkVariable<int> playerCount = new NetworkVariable<int>();
+    public NetworkVariable<int> PlayerCount = new NetworkVariable<int>();
 
     void Awake()
     {
@@ -35,33 +35,42 @@ public class ActorManager : NetworkBehaviour
         WeaponIndexList = new NetworkList<int>();
         WeaponPositionList = new NetworkList<Vector3>();
 
-        playerCount.Value = 0;
+        PlayerCount.Value = 0;
     }
 
-    public Transform GetLobbyPlayerTransform()
+    public Transform GetLobbyPlayerTransform(bool isOwner)
     {
-        int index = playerCount.Value;
-        if (IsClient)
-        {
-            RequestAddPlayerServerRpc();
-        }
-        else
-        {
-            AddPlayer();
-        }
+        int index = PlayerCount.Value;
 
+        if (isOwner)
+        {
+            if (IsClient)
+            {
+                RequestAddPlayerServerRpc();
+            }
+            else
+            {
+                AddPlayer();
+            }
+        }
+        
         return lobbyPlayers[index];
     }
 
     private void AddPlayer()
     {
-        playerCount.Value++;
+        PlayerCount.Value++;
     }
 
     [Rpc(SendTo.Server)]
     private void RequestAddPlayerServerRpc()
     {
-        AddPlayer();
+            AddPlayer();
+    }
+
+    public int GetCurrentPlayerCount()
+    {
+        return PlayerCount.Value;
     }
 
     [Rpc(SendTo.Server)]

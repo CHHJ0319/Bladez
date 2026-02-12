@@ -20,7 +20,7 @@ namespace Actor.Player
   
 		private string currentScene;
 
-		public bool IsDuelHost { get; private set; }
+        public bool IsDuelHost { get; private set; } = false;
 
 		public override void OnNetworkSpawn()
         {
@@ -31,7 +31,7 @@ namespace Actor.Player
             {
                 tpsCamera.gameObject.SetActive(false);
 
-                Transform lobbyTransform = ActorManager.Instance.GetLobbyPlayerTransform();
+                Transform lobbyTransform = ActorManager.Instance.GetLobbyPlayerTransform(IsOwner);
                 transform.localPosition = lobbyTransform.localPosition;
                 transform.localRotation = lobbyTransform.rotation;
             }
@@ -76,6 +76,19 @@ namespace Actor.Player
             playerInputHandler = GetComponent<PlayerInputHandler>();
 
             currentScene = SceneManager.GetActiveScene().name;
+
+            if (currentScene == "DuelLobbyScene")
+            {
+                if (ActorManager.Instance.GetCurrentPlayerCount() == 0)
+                {
+                    IsDuelHost = true;
+                }
+
+                if(IsOwner)
+                {
+                    UIManager.Instance.UpdateLobbyPlayerUI(IsDuelHost);
+                }
+            }
         }
 
         private void MoveWithPlayerInput(float horizontal, float vertical)

@@ -1,4 +1,3 @@
-using System.Globalization;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -10,13 +9,17 @@ public class ActorManager : NetworkBehaviour
     public Transform[] lobbyPlayers;
 
     [Header("DuelScene")]
-    public Actor.Item.DroppedItemSpawner droppedItemSpawner;
+    public GameObject[] weaponList;
     public NetworkList<int> WeaponIndexList = new NetworkList<int>();
     public NetworkList<Vector3> WeaponPositionList = new NetworkList<Vector3>();
+
+    private Actor.Item.DroppedItemSpawner droppedItemSpawner;
 
     private int playerCount = 0;
 
     private Actor.Player.PlayerController[] playerList = new Actor.Player.PlayerController[4];
+
+    private int droppedWeaponCount = 10;
 
     void Awake()
     {
@@ -62,61 +65,56 @@ public class ActorManager : NetworkBehaviour
         return playerCount;
     }
 
+    
+    public void GenerateRandomWeaponList()
+    {
+        for (int i = 0; i < droppedWeaponCount; i++)
+        {
+            int randomIndex = Random.Range(0, weaponList.Length);
+            Vector3 randomPosition = GetRandomWeaponPosition();
+            WeaponIndexList.Add(randomIndex);
+            WeaponPositionList.Add(randomPosition);
+        }
+    }
+
+    private Vector3 GetRandomWeaponPosition(Vector3 center = default, float range = 30.0f, float fixedY = 0.3f)
+    {
+        Vector2 randomPoint = Random.insideUnitCircle * range;
+
+        return new Vector3(center.x + randomPoint.x, fixedY, center.z + randomPoint.y);
+    }
+
     [Rpc(SendTo.Server)]
-    public void SubmitDroppedWeaponsInfoServerRpc(int[] indexList, Vector3[] positionList, RpcParams rpcParams = default)
+    private void SubmitGenerateRandomWeaponListServerRpc(RpcParams rpcParams = default)
     {
-        foreach (var i in indexList)
+        GenerateRandomWeaponList();
+    }
+
+    private void SpawnWeapon()
+    {
+        if (WeaponIndexList == null || WeaponIndexList.Count == 0)
         {
-            WeaponIndexList.Add(i);
+            return;
         }
 
-        foreach (var pos in positionList)
+        if (WeaponPositionList == null || WeaponPositionList.Count == 0)
         {
-            WeaponPositionList.Add(pos);
+            return;
+        }
+
+        for (int i = 0; i < droppedWeaponCount; i++)
+        {
+            int index = WeaponIndexList[i];
+            Vector3 position = WeaponPositionList[i];
+
+            GameObject newWeapon = weaponList[index];
+            droppedItemSpawner.SpawnDroppedWeapons(newWeapon, position);
         }
     }
 
-    public void DropItemsServer()
+    public void SetDroppedItemSpawner(Actor.Item.DroppedItemSpawner spawner)
     {
-        if(droppedItemSpawner != null)
-        {
-            droppedItemSpawner.InitializeWeaponListsRandomly();
-            droppedItemSpawner.SpawnDroppedWeapons();
-            SubmitDroppedWeaponsInfoServerRpc(droppedItemSpawner.WeaponIndexList, droppedItemSpawner.WeaponPositionList);
-        }
-    }
-
-    public void DropItemsClinet()
-    {
-        //int[] indexList = GetWeaponIndexList();
-        //Vector3[] positionList = GetWeaponPositionList();
-
-        //droppedItemSpawner.InitializeWeaponLists(indexList, positionList);
-        //droppedItemSpawner.SpawnDroppedWeapons();
-    }
-
-    public int[] GetWeaponIndexList()
-    {
-        int[] indexList = new int[WeaponIndexList.Count];
-
-        for (int i = 0; i < WeaponIndexList.Count; i++)
-        {
-            indexList[i] = WeaponIndexList[i];
-        }
-
-        return indexList;
-    }
-
-    public Vector3[] GetWeaponPositionList()
-    {
-        Vector3[] positionList = new Vector3[WeaponPositionList.Count];
-
-        for (int i = 0; i < WeaponPositionList.Count; i++)
-        {
-            positionList[i] = WeaponPositionList[i];
-        }
-
-        return positionList;
+        droppedItemSpawner = spawner;
     }
 
     public void OnSceneLoaded()
@@ -127,6 +125,15 @@ public class ActorManager : NetworkBehaviour
             {
                 player.OnSceneLoaded();
             }
+        }
+
+        if (GameManager.Instance.CurrentScene == "DuelScene")
+        {
+            if (IsServer)
+            {
+                SubmitGenerateRandomWeaponListServerRpc();
+            }
+            SpawnWeapon();
         }
     }
 }

@@ -35,8 +35,6 @@ namespace Actor
 
         protected float maxHP = 100f;
 
-        protected string currentScene;
-
         public NetworkVariable<Vector3> Position = new NetworkVariable<Vector3>();
         public NetworkVariable<Quaternion> Rotation = new NetworkVariable<Quaternion>();
 
@@ -189,14 +187,10 @@ namespace Actor
             OwnerID = OwnerClientId.ToString();
 
             SubmitHPRequestServerRpc(maxHP);
-
-            currentScene = SceneManager.GetActiveScene().name;
         }
 
-        protected void SubscribeNetworkVariables()
+        protected virtual void SubscribeNetworkVariables()
         {
-            SceneManager.sceneLoaded += OnSceneLoaded;
-
             Position.OnValueChanged += OnPositionChanged;
             Rotation.OnValueChanged += OnRotationChanged;
 
@@ -205,10 +199,8 @@ namespace Actor
             HP.OnValueChanged += OnHPChanged;
         }
 
-        private void UnubscribeNetworkVariables()
+        protected virtual void UnubscribeNetworkVariables()
         {
-            SceneManager.sceneLoaded -= OnSceneLoaded;
-
             Position.OnValueChanged -= OnPositionChanged;
             Rotation.OnValueChanged -= OnRotationChanged;
 
@@ -342,12 +334,6 @@ namespace Actor
             }
         }
 
-        protected virtual void OnSceneLoaded(Scene scene, LoadSceneMode mode)
-        {
-            currentScene = SceneManager.GetActiveScene().name;
-
-        }
-
         private void ApplyKnockback(Vector3 knockbackDirection, float knockbackForce)
         {
             knockbackDirection.y = 0.1f;
@@ -389,6 +375,7 @@ namespace Actor
         {
             return new Vector3(Random.Range(-3f, 3f), 1f, Random.Range(-3f, 3f));
         }
+
 
         protected void MoveToRandomPosition()
         {

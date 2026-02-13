@@ -1,3 +1,4 @@
+using System.Globalization;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -13,7 +14,9 @@ public class ActorManager : NetworkBehaviour
     public NetworkList<int> WeaponIndexList = new NetworkList<int>();
     public NetworkList<Vector3> WeaponPositionList = new NetworkList<Vector3>();
 
-    public NetworkVariable<int> PlayerCount = new NetworkVariable<int>();
+    private int playerCount = 0;
+
+    private Actor.Player.PlayerController[] playerList = new Actor.Player.PlayerController[4];
 
     void Awake()
     {
@@ -34,43 +37,29 @@ public class ActorManager : NetworkBehaviour
     {
         WeaponIndexList = new NetworkList<int>();
         WeaponPositionList = new NetworkList<Vector3>();
-
-        PlayerCount.Value = 0;
     }
 
-    public Transform GetLobbyPlayerTransform(bool isOwner)
+    public Transform GetLobbyPlayerTransform()
     {
-        int index = PlayerCount.Value;
-
-        if (isOwner)
-        {
-            if (IsClient)
-            {
-                RequestAddPlayerServerRpc();
-            }
-            else
-            {
-                AddPlayer();
-            }
-        }
-        
+        int index = playerCount;
         return lobbyPlayers[index];
     }
 
-    private void AddPlayer()
+    public int GetPlayerCount()
     {
-        PlayerCount.Value++;
+        return playerCount;
     }
 
-    [Rpc(SendTo.Server)]
-    private void RequestAddPlayerServerRpc()
+    public void AddPlayer(Actor.Player.PlayerController player)
     {
-            AddPlayer();
+        playerList[playerCount] = player;
+        playerCount++;
+        
     }
 
     public int GetCurrentPlayerCount()
     {
-        return PlayerCount.Value;
+        return playerCount;
     }
 
     [Rpc(SendTo.Server)]
@@ -128,5 +117,16 @@ public class ActorManager : NetworkBehaviour
         }
 
         return positionList;
+    }
+
+    public void OnSceneLoaded()
+    {
+        foreach(var player in playerList)
+        {
+            if(player != null)
+            {
+                player.OnSceneLoaded();
+            }
+        }
     }
 }

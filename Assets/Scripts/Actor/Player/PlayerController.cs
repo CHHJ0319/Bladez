@@ -25,26 +25,21 @@ namespace Actor.Player
             Initialize();
             SubscribeNetworkVariables();
 
-            if (SceneManager.GetActiveScene().name == "DuelLobbyScene")
-            {
-                tpsCamera.gameObject.SetActive(false);
-
-                Transform lobbyTransform = ActorManager.Instance.GetLobbyPlayerTransform(IsOwner);
-                transform.localPosition = lobbyTransform.localPosition;
-                transform.localRotation = lobbyTransform.rotation;
-            }
-
             if (IsOwner)
             {
+
                 playerInput.enabled = true;
             }
             else
             {
                 playerInput.enabled = false;
             }
+
+            int currentPlayerCount = ActorManager.Instance.GetPlayerCount();
+            ActorManager.Instance.AddPlayer(this);
         }
 
-		protected override void FixedUpdate()
+        protected override void FixedUpdate()
         {
             base.FixedUpdate();
 
@@ -65,24 +60,23 @@ namespace Actor.Player
             playerInput = GetComponent<PlayerInput>();
             playerInputHandler = GetComponent<PlayerInputHandler>();
 
-            if (currentScene == "DuelLobbyScene")
-            {
-                if (ActorManager.Instance.GetCurrentPlayerCount() == 0)
-                {
-                    IsDuelHost = true;
-                }
+            OnSceneLoaded();
+        }
 
-                if(IsOwner)
-                {
-                    UIManager.Instance.UpdateLobbyPlayerUI(IsDuelHost);
-                }
-            }
+        protected override void SubscribeNetworkVariables()
+        {
+            base.SubscribeNetworkVariables();
+        }
+
+        protected override void UnubscribeNetworkVariables()
+        {
+            base.UnubscribeNetworkVariables();
         }
 
         private void MoveWithPlayerInput(float horizontal, float vertical)
         {
             CalculateVelocity(vertical);
-            if(currentScene != "DuelLobbyScene")
+            if(GameManager.Instance.GetCurrentScene() != "DuelLobbyScene")
             {
                 transform.localPosition += velocity * Time.fixedDeltaTime;
             }
@@ -123,7 +117,7 @@ namespace Actor.Player
         {
             if (playerInputHandler.InteractTriggered)
             {
-                if (currentScene == "DuelLobbyScene")
+                if (GameManager.Instance.GetCurrentScene() == "DuelLobbyScene")
                 {
                     Rest();
                 }
@@ -134,21 +128,40 @@ namespace Actor.Player
             }
         }
 
-        protected override void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+        public void OnSceneLoaded()
         {
-            base.OnSceneLoaded(scene, mode);
-
-            MoveToRandomPosition();
-
-            if (IsOwner)
+            if (GameManager.Instance.GetCurrentScene() == "DuelLobbyScene")
             {
-                if (SceneManager.GetActiveScene().name == "DuelScene")
-                {
-                    UIManager.Instance.UpdatePlayerHPBar(HP.Value, maxHP);
+                tpsCamera.gameObject.SetActive(false);
 
-                    tpsCamera.gameObject.SetActive(true);
+                Transform lobbyTransform = ActorManager.Instance.GetLobbyPlayerTransform();
+                transform.localPosition = lobbyTransform.localPosition;
+                transform.localRotation = lobbyTransform.rotation;
+
+                if (ActorManager.Instance.GetCurrentPlayerCount() == 0)
+                {
+                    IsDuelHost = true;
+                }
+
+                if (IsOwner)
+                {
+                    UIManager.Instance.UpdateLobbyPlayerUI(IsDuelHost);
                 }
             }
+            else if(GameManager.Instance.GetCurrentScene() == "DuelScene")
+            {
+                MoveToRandomPosition();
+
+                if (IsOwner)
+                {
+                    if (GameManager.Instance.GetCurrentScene() == "DuelScene")
+                    {
+                        UIManager.Instance.UpdatePlayerHPBar(HP.Value, maxHP);
+
+                        tpsCamera.gameObject.SetActive(true);
+                    }
+                }
+            }  
         }
 
         private void CalculateVelocity(float vertical)

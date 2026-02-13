@@ -1,7 +1,6 @@
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.UIElements;
 
 public class GameManager : NetworkBehaviour
 {
@@ -9,6 +8,7 @@ public class GameManager : NetworkBehaviour
 
     public NetworkVariable<int> readyPlayerCount = new NetworkVariable<int>();
 
+    public string CurrentScene { get; private set; }
     public bool CanStartDuel { get; private set; }
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
@@ -24,6 +24,7 @@ public class GameManager : NetworkBehaviour
             Instance = this;
             DontDestroyOnLoad(gameObject);
 
+            CurrentScene = SceneManager.GetActiveScene().name;
         }
         else
         {
@@ -33,11 +34,15 @@ public class GameManager : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+
         readyPlayerCount.OnValueChanged += OnReadyPlayerCountChanged;
     }
 
     public override void OnNetworkDespawn()
     {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+
         readyPlayerCount.OnValueChanged -= OnReadyPlayerCountChanged;
     }
 
@@ -64,7 +69,7 @@ public class GameManager : NetworkBehaviour
 
     private void OnReadyPlayerCountChanged(int previous, int current)
     {
-        if (readyPlayerCount.Value == ActorManager.Instance.PlayerCount.Value - 1)
+        if (readyPlayerCount.Value == ActorManager.Instance.GetPlayerCount() - 1)
         {
             CanStartDuel = true;
         }
@@ -72,5 +77,17 @@ public class GameManager : NetworkBehaviour
         {
             CanStartDuel = false;
         }
+    }
+
+    public string GetCurrentScene()
+    {
+        return CurrentScene;
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        CurrentScene = SceneManager.GetActiveScene().name;
+
+        ActorManager.Instance.OnSceneLoaded();
     }
 }

@@ -11,6 +11,7 @@ public class UIManager : NetworkBehaviour
 
     [Header("Buttons")]
     public Button hostButton;
+    public TMP_InputField joinCodeInputfiled;
     public Button clientButton;
     public Button serverButton;
 
@@ -37,12 +38,15 @@ public class UIManager : NetworkBehaviour
     {
         hostButton.onClick.AddListener(OnHostButtonClicked);
         clientButton.onClick.AddListener(OnClientButtonClicked);
-        serverButton.onClick.AddListener(OnServerButtonClicked);
+        //serverButton.onClick.AddListener(OnServerButtonClicked);
     }
 
     void Update()
     {
-        UpdateUI();
+        if (GameManager.Instance.CurrentScene == "DuelLobbyScene")
+        {
+            UpdateUI();
+        }
     }
 
     public void UpdatePlayerHPBar(float hp, float maxHP)
@@ -73,20 +77,21 @@ public class UIManager : NetworkBehaviour
 
     private void OnHostButtonClicked()
     {
-        NetworkManager.Singleton.StartHost();
-        //ActorManager.Instance.DropItemsServer();
+        StartCoroutine(GameManager.Instance.ConfigureTransportAndStartNgoAsHost());
     }
 
     private void OnClientButtonClicked()
     {
-        NetworkManager.Singleton.StartClient();
-        //ActorManager.Instance.DropItemsClinet();
+        if (joinCodeInputfiled.text == "")
+            return;
+
+        string joinCode = joinCodeInputfiled.text;
+        StartCoroutine(GameManager.Instance.ConfigureTransportAndStartNgoAsConnectingPlayer(joinCode));
     }
 
     private void OnServerButtonClicked()
     {
         NetworkManager.Singleton.StartServer();
-        //ActorManager.Instance.DropItemsServer();
     }
 
     private void UpdateUI()
@@ -94,19 +99,19 @@ public class UIManager : NetworkBehaviour
         if (NetworkManager.Singleton == null)
         {
             SetNetworkButtons(false);
-            SetStatusText("NetworkManager not found");
+            //SetStatusText("NetworkManager not found");
             return;
         }
 
         if (!NetworkManager.Singleton.IsClient && !NetworkManager.Singleton.IsServer)
         {
             SetNetworkButtons(true);
-            SetStatusText("Not connected");
+            //SetStatusText("Not connected");
         }
         else
         {
             SetNetworkButtons(false);
-            UpdateStatusLabels();
+            //UpdateStatusLabels();
         }
 
         if (playerUI.duelStartButton != null)
@@ -129,12 +134,14 @@ public class UIManager : NetworkBehaviour
     {
         if (SceneManager.GetActiveScene().name != "DuelLobbyScene") return;
         
-            hostButton.gameObject.SetActive(state);
+        hostButton.gameObject.SetActive(state);
         clientButton.gameObject.SetActive(state);
-        serverButton.gameObject.SetActive(state);
+        //serverButton.gameObject.SetActive(state);
+
+        joinCodeInputfiled.gameObject.SetActive(state);
     }
 
-    private void SetStatusText(string text)
+    public void SetStatusText(string text)
     {
         if (statusText != null) statusText.text = text;
     }

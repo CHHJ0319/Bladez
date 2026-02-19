@@ -1,7 +1,7 @@
+using System;
 using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.SceneManagement;
 
 namespace Actor.Player
 {

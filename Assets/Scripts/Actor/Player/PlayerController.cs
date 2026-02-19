@@ -84,7 +84,7 @@ namespace Actor.Player
             if (IsOwner)
             {
                 characterAnimator.UpdateMovementAnimation(horizontal, vertical);
-                SubmitTransfromRequestServerRpc(transform.localPosition, transform.localRotation);
+                SubmitTransformRequestServerRpc(transform.localPosition, transform.localRotation);
             }
         }
 

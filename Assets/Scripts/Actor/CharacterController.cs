@@ -38,6 +38,7 @@ namespace Actor
         public NetworkVariable<Quaternion> Rotation = new NetworkVariable<Quaternion>();
 
         public NetworkVariable<bool> PickUpTriggered = new NetworkVariable<bool>();
+        public NetworkVariable<bool> TakeDamageTriggered = new NetworkVariable<bool>();
 
         protected NetworkVariable<float> HP = new NetworkVariable<float>();
 
@@ -76,7 +77,7 @@ namespace Actor
                 if (IsOwner)
                 {
                     characterAnimator.SetJump(true);
-                    SubmitTransfromRequestServerRpc(transform.localPosition, transform.localRotation);
+                    SubmitTransformRequestServerRpc(transform.localPosition, transform.localRotation);
                 }
             }
         }
@@ -91,7 +92,7 @@ namespace Actor
                 if (IsOwner)
                 {
                     characterAnimator.SetSliding(true);
-                    SubmitTransfromRequestServerRpc(transform.localPosition, transform.localRotation);
+                    SubmitTransformRequestServerRpc(transform.localPosition, transform.localRotation);
                 }
             }
         }
@@ -137,16 +138,19 @@ namespace Actor
 
         public void TakeDamage(float damage, Vector3 damageDirection, float knockbackForce)
         {
-            characterAnimator.SetTakeDamage(true);
-
-            HP.Value -= damage;
-            SubmitHPRequestServerRpc(HP.Value);
+            if(IsOwner)
+            {
+                float hp = HP.Value;
+                hp -= damage;
+                SubmitHPRequestServerRpc(hp);
+            }
 
             if (HP.Value < 0)
             {
                 Die();
             }
 
+            characterAnimator.SetTakeDamage(true);
             ApplyKnockback(-damageDirection, knockbackForce);
         }
 
@@ -194,6 +198,7 @@ namespace Actor
             Rotation.OnValueChanged += OnRotationChanged;
 
             PickUpTriggered.OnValueChanged += OnPickUpTriggeredChanged;
+            TakeDamageTriggered.OnValueChanged += OnTakeDamageTriggeredChanged;
 
             HP.OnValueChanged += OnHPChanged;
         }
@@ -204,6 +209,7 @@ namespace Actor
             Rotation.OnValueChanged -= OnRotationChanged;
 
             PickUpTriggered.OnValueChanged -= OnPickUpTriggeredChanged;
+            TakeDamageTriggered.OnValueChanged -= OnTakeDamageTriggeredChanged;
 
             HP.OnValueChanged -= OnHPChanged;
         }
@@ -341,6 +347,14 @@ namespace Actor
             }
         }
 
+        private void OnTakeDamageTriggeredChanged(bool previous, bool current)
+        {
+            if (TakeDamageTriggered.Value != previous)
+            {
+                characterAnimator.SetTakeDamage(true);
+            }
+        }
+
         private void OnHPChanged(float previous, float current)
         {
             if (HP.Value != previous && !IsOwner)
@@ -363,7 +377,7 @@ namespace Actor
         }
 
         [Rpc(SendTo.Server)]
-        protected void SubmitTransfromRequestServerRpc(Vector3 position, Quaternion rotation = default, RpcParams rpcParams = default)
+        protected void SubmitTransformRequestServerRpc(Vector3 position, Quaternion rotation = default, RpcParams rpcParams = default)
         {
             Position.Value = position;
             Rotation.Value = rotation;
@@ -373,6 +387,12 @@ namespace Actor
         protected void SubmitPickUpRequestServerRpc(RpcParams rpcParams = default)
         {
             PickUpTriggered.Value = !PickUpTriggered.Value;
+        }
+
+        [Rpc(SendTo.Server)]
+        public void SubmitTakeDamageRequestServerRpc(RpcParams rpcParams = default)
+        {
+            TakeDamageTriggered.Value = !TakeDamageTriggered.Value;
         }
 
         [Rpc(SendTo.Server)]
@@ -396,7 +416,7 @@ namespace Actor
         {
             Vector3 pos = GetRandomPositionOnPlane();
             transform.position = pos;
-            SubmitTransfromRequestServerRpc(pos);
+            SubmitTransformRequestServerRpc(pos);
         }
     }
 }

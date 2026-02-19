@@ -62,7 +62,9 @@ namespace Actor.Item.Weapon.Melee
                 else
                 {
                     Vector3 damageDirection = (transform.position - other.transform.position).normalized;
-                    rootGameObject.GetComponent<Actor.Player.PlayerController>().TakeDamage(damage, damageDirection, knockbackForce);
+                    Actor.Player.PlayerController targetPlayer = rootGameObject.GetComponent<Actor.Player.PlayerController>();
+                    targetPlayer.TakeDamage(damage, damageDirection, knockbackForce);
+                    targetPlayer.SubmitTakeDamageRequestServerRpc();
                 }
             }
         }

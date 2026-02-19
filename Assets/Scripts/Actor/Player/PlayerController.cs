@@ -1,4 +1,3 @@
-using Actor.UI;
 using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -154,12 +153,9 @@ namespace Actor.Player
 
                 if (IsOwner)
                 {
-                    if (GameManager.Instance.GetCurrentScene() == "DuelScene")
-                    {
-                        UIManager.Instance.UpdatePlayerHPBar(HP.Value, maxHP);
+                    UIManager.Instance.UpdatePlayerHPBar(HP.Value, maxHP);
 
-                        tpsCamera.gameObject.SetActive(true);
-                    }
+                    tpsCamera.gameObject.SetActive(true);
                 }
             }  
         }

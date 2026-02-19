@@ -1,5 +1,4 @@
 using Actor.Player;
-using Actor.UI;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -100,8 +99,7 @@ namespace Actor
         public void Attack()
         {
             if (currentBaseState.fullPathHash == PlayerState.JumpState &&
-                currentBaseState.fullPathHash == PlayerState.SlidingState &&
-                currentBaseState.fullPathHash == PlayerState.ReloadingState)
+                currentBaseState.fullPathHash == PlayerState.SlidingState)
                 return;
 
             if (weaponHandler.EquippedWeapon == null)
@@ -109,7 +107,10 @@ namespace Actor
 
             if (weaponHandler.GetEquipWeaponType() == Item.Weapon.WeaponType.Melee)
             {
-                characterAnimator.PlayAttack();
+                if (IsOwner)
+                {
+                    characterAnimator.PlayAttack();
+                }
             }
 
             weaponHandler.Attack();
@@ -136,18 +137,16 @@ namespace Actor
 
         public void TakeDamage(float damage, Vector3 damageDirection, float knockbackForce)
         {
-            if (!IsOwner)
-            {
-                HP.Value -= damage;
-                SubmitHPRequestServerRpc(HP.Value);
+            characterAnimator.SetTakeDamage(true);
 
-                if (HP.Value < 0)
-                {
-                    Die();
-                }
+            HP.Value -= damage;
+            SubmitHPRequestServerRpc(HP.Value);
+
+            if (HP.Value < 0)
+            {
+                Die();
             }
 
-            characterAnimator.PlayTakeDamage();
             ApplyKnockback(-damageDirection, knockbackForce);
         }
 
@@ -286,12 +285,28 @@ namespace Actor
                     ResetCollider();
                 }
             }
-
-            else if (currentBaseState.fullPathHash == PlayerState.restState)
+            else if (currentBaseState.fullPathHash == PlayerState.RestState)
             {
                 if (!characterAnimator.IsTransitioning())
                 {
                     characterAnimator.SetRest(false);
+                }
+            }
+            else if (currentBaseState.fullPathHash == PlayerState.TakeDamageState)
+            {
+                if (!characterAnimator.IsTransitioning())
+                {
+                    characterAnimator.SetTakeDamage(false);
+                }
+            }
+
+            if (currentUpperBodyState.fullPathHash == PlayerState.AttackState1 
+                || currentUpperBodyState.fullPathHash == PlayerState.AttackState2
+                )
+            {
+                if (!characterAnimator.IsTransitioning())
+                {
+                    characterAnimator.StopAttack();
                 }
             }
         }

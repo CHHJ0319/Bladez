@@ -1,5 +1,5 @@
-using Actor.UI;
 using TMPro;
+using UI;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -17,11 +17,8 @@ public class UIManager : NetworkBehaviour
     [Header("Status")]
     public TMP_Text statusText;
 
-    [Header("PlayerUI")]
-    public Transform playerUI;
-    public Button duelStartButton;
-    public GaugeBar hpBar;
-    public GaugeBar staminaBar;
+    private PlayerUI playerUI;
+    
 
     void Awake()
     {
@@ -50,22 +47,22 @@ public class UIManager : NetworkBehaviour
 
     public void UpdatePlayerHPBar(float hp, float maxHP)
     {
-        if (hpBar != null)
+        if (playerUI != null)
         {
-            hpBar.UpdateGaugeBar(hp, maxHP);
+            playerUI.hpBar.UpdateGaugeBar(hp, maxHP);
         }
     }
 
     public void UpdateLobbyPlayerUI(bool isDuelHost)
     {
-        duelStartButton.onClick.AddListener(() => OnDuelStartButtonClicked(isDuelHost));
+        playerUI.duelStartButton.onClick.AddListener(() => OnDuelStartButtonClicked(isDuelHost));
 
-        var buttonTitle = duelStartButton.GetComponentInChildren<TextMeshProUGUI>();
+        var buttonTitle = playerUI.duelStartButton.GetComponentInChildren<TextMeshProUGUI>();
         if (isDuelHost)
         {
 
             buttonTitle.text = "Start";
-            duelStartButton.interactable = false;
+            playerUI.duelStartButton.interactable = false;
         }
         else
         {
@@ -112,15 +109,18 @@ public class UIManager : NetworkBehaviour
             UpdateStatusLabels();
         }
 
-        if (duelStartButton != null && duelStartButton.GetComponentInChildren<TextMeshProUGUI>().text == "Start")
+        if (playerUI.duelStartButton != null)
         {
-            if (GameManager.Instance.CanStartDuel)
+            if (playerUI.duelStartButton.GetComponentInChildren<TextMeshProUGUI>().text == "Start")
             {
-                duelStartButton.interactable = true;
-            }
-            else
-            {
-                duelStartButton.interactable = false;
+                if (GameManager.Instance.CanStartDuel)
+                {
+                    playerUI.duelStartButton.interactable = true;
+                }
+                else
+                {
+                    playerUI.duelStartButton.interactable = false;
+                }
             }
         }
     }
@@ -155,16 +155,21 @@ public class UIManager : NetworkBehaviour
         }
         else
         {
-            if(duelStartButton.GetComponentInChildren<TextMeshProUGUI>().text == "Ready")
+            if(playerUI.duelStartButton.GetComponentInChildren<TextMeshProUGUI>().text == "Ready")
             {
                 GameManager.Instance.SubmitReadyPlayerServerRpc();
-                duelStartButton.GetComponentInChildren<TextMeshProUGUI>().text = "Cancel";
+                playerUI.duelStartButton.GetComponentInChildren<TextMeshProUGUI>().text = "Cancel";
             }
             else
             {
                 GameManager.Instance.SubmitUnReadyPlayerServerRpc();
-                duelStartButton.GetComponentInChildren<TextMeshProUGUI>().text = "Ready";
+                playerUI.duelStartButton.GetComponentInChildren<TextMeshProUGUI>().text = "Ready";
             }
         }
+    }
+
+    public void SetPlayerUI(UI.PlayerUI playerUI)
+    {
+        this.playerUI = playerUI;
     }
 }

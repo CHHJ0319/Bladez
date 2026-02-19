@@ -86,9 +86,14 @@ namespace Actor
             }
         }
 
-        public void PlayTakeDamage()
+        public void StopAttack()
         {
-            anim.SetTrigger("TakeDamage");
+            anim.SetBool("Attack", false);
+        }
+
+        public void SetTakeDamage(bool isTakeDamage)
+        {
+            anim.SetBool("TakeDamage", isTakeDamage);
         }
 
         public void SetRest(bool isRest)
@@ -116,7 +121,8 @@ namespace Actor
                 int currentStep = _comboCount;
 
                 anim.SetInteger("ComboCount", currentStep);
-                anim.SetTrigger("Attack");
+                
+                anim.SetBool("Attack", true);
 
                 _canCombo = true;
                 yield return new WaitForSeconds(0.4f);

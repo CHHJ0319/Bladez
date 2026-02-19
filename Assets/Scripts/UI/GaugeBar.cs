@@ -1,8 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
-using Unity.Netcode;
 
-namespace Actor.UI
+namespace UI
 {
     public class GaugeBar : MonoBehaviour
     {

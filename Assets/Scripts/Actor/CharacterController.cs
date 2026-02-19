@@ -138,12 +138,9 @@ namespace Actor
 
         public void TakeDamage(float damage, Vector3 damageDirection, float knockbackForce)
         {
-            if(IsOwner)
-            {
-                float hp = HP.Value;
-                hp -= damage;
-                SubmitHPRequestServerRpc(hp);
-            }
+            float hp = HP.Value;
+            hp -= damage;
+            SubmitHPRequestServerRpc(hp);
 
             if (HP.Value < 0)
             {
@@ -357,7 +354,7 @@ namespace Actor
 
         private void OnHPChanged(float previous, float current)
         {
-            if (HP.Value != previous && !IsOwner)
+            if (HP.Value != previous && IsOwner)
             {
                 SetHP();
             }
@@ -368,6 +365,7 @@ namespace Actor
             knockbackDirection.y = 0.1f;
 
             rb.AddForce(knockbackDirection * knockbackForce, ForceMode.VelocityChange);
+            SubmitTransformRequestServerRpc(transform.localPosition, transform.localRotation);
         }
 
         private void ResetCollider()

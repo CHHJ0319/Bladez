@@ -47,7 +47,7 @@ public class UIManager : NetworkBehaviour
 
     public void UpdatePlayerHPBar(float hp, float maxHP)
     {
-        if (playerUI != null)
+        if (playerUI != null && playerUI.hpBar != null)
         {
             playerUI.hpBar.UpdateGaugeBar(hp, maxHP);
         }

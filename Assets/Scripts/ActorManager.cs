@@ -129,7 +129,7 @@ public class ActorManager : NetworkBehaviour
 
         if (GameManager.Instance.CurrentScene == "DuelScene")
         {
-            if (IsServer)
+            if (WeaponIndexList.Count == 0)
             {
                 SubmitGenerateRandomWeaponListServerRpc();
             }

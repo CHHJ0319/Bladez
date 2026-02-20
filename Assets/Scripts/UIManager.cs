@@ -51,28 +51,30 @@ public class UIManager : NetworkBehaviour
 
     public void UpdatePlayerHPBar(float hp, float maxHP)
     {
-        if (playerUI != null && playerUI.hpBar != null)
+        if (playerUI != null)
         {
-            playerUI.hpBar.UpdateGaugeBar(hp, maxHP);
+            playerUI.UpdateHPBar(hp, maxHP);
         }
     }
 
-    public void UpdateLobbyPlayerUI(bool isDuelHost)
+    public void InitializePlayerUI(bool isDuelHost)
     {
-        playerUI.duelStartButton.onClick.AddListener(() => OnDuelStartButtonClicked(isDuelHost));
-
-        var buttonTitle = playerUI.duelStartButton.GetComponentInChildren<TextMeshProUGUI>();
-        if (isDuelHost)
+        if (playerUI != null)
         {
+            playerUI.Initialize(isDuelHost);
+        }
+    }
 
-            buttonTitle.text = "Start";
-            playerUI.duelStartButton.interactable = false;
+    public void ShowPlayerResultUI(bool isWinner)
+    {
+        if (isWinner)
+        {
+            playerUI.ShowWinUI();
         }
         else
         {
-            buttonTitle.text = "Ready";
+            playerUI.ShowDefeatUI();
         }
-
     }
 
     private void OnHostButtonClicked()
@@ -154,26 +156,7 @@ public class UIManager : NetworkBehaviour
         SetStatusText($"{transport}\n{modeText}");
     }
 
-    private void OnDuelStartButtonClicked(bool isDuelHost)
-    {
-        if(isDuelHost)
-        {
-            GameManager.Instance.RequestStartGameServerRpc("DuelScene");
-        }
-        else
-        {
-            if(playerUI.duelStartButton.GetComponentInChildren<TextMeshProUGUI>().text == "Ready")
-            {
-                GameManager.Instance.SubmitReadyPlayerServerRpc();
-                playerUI.duelStartButton.GetComponentInChildren<TextMeshProUGUI>().text = "Cancel";
-            }
-            else
-            {
-                GameManager.Instance.SubmitUnReadyPlayerServerRpc();
-                playerUI.duelStartButton.GetComponentInChildren<TextMeshProUGUI>().text = "Ready";
-            }
-        }
-    }
+    
 
     public void SetPlayerUI(UI.PlayerUI playerUI)
     {

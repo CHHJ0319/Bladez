@@ -41,6 +41,7 @@ namespace Actor
         public NetworkVariable<bool> TakeDamageTriggered = new NetworkVariable<bool>();
 
         protected NetworkVariable<float> HP = new NetworkVariable<float>();
+        public NetworkVariable<bool> IsDie = new NetworkVariable<bool>();
 
         public string OwnerID { get; private set; }
 
@@ -144,7 +145,7 @@ namespace Actor
 
             if (HP.Value < 0)
             {
-                Die();
+                SubmitDieRequestServerRpc();
             }
 
             characterAnimator.SetTakeDamage(true);
@@ -167,9 +168,24 @@ namespace Actor
             }
         }
 
-        public void Die()
+        [Rpc(SendTo.Server)]
+        private void SubmitDieRequestServerRpc()
         {
-            Destroy(gameObject);
+            if (IsOwner)
+            {
+                UIManager.Instance.ShowPlayerResultUI(false);
+            }
+
+            IsDie.Value = !IsDie.Value;
+        }
+            
+
+        private void OnDie(bool previous, bool current)
+        {
+            if (IsDie.Value != previous)
+            {
+                gameObject.SetActive(false);
+            }
         }
 
         public void AssignWeaponOwnerID()
@@ -198,6 +214,7 @@ namespace Actor
             TakeDamageTriggered.OnValueChanged += OnTakeDamageTriggeredChanged;
 
             HP.OnValueChanged += OnHPChanged;
+            IsDie.OnValueChanged += OnDie;
         }
 
         protected virtual void UnubscribeNetworkVariables()
@@ -209,6 +226,7 @@ namespace Actor
             TakeDamageTriggered.OnValueChanged -= OnTakeDamageTriggeredChanged;
 
             HP.OnValueChanged -= OnHPChanged;
+            IsDie.OnValueChanged -= OnDie;
         }
 
         private void SetupComponents()

@@ -144,7 +144,7 @@ namespace Actor.Player
 
                 if (IsOwner)
                 {
-                    UIManager.Instance.UpdateLobbyPlayerUI(IsDuelHost);
+                    UIManager.Instance.InitializePlayerUI(IsDuelHost);
                 }
             }
             else if(GameManager.Instance.GetCurrentScene() == "DuelScene")

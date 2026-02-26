@@ -20,9 +20,8 @@ public class GameManager : NetworkBehaviour
     public NetworkVariable<int> readyPlayerCount = new NetworkVariable<int>();
 
     public string CurrentScene { get; private set; }
-    public bool CanStartDuel { get; private set; }
 
-    const int m_MaxConnections = 4;
+    private const int m_MaxConnections = 4;
 
     async void Awake()
     {
@@ -67,24 +66,22 @@ public class GameManager : NetworkBehaviour
     }
 
     [Rpc(SendTo.Server)]
-    public void RequestStartGameServerRpc(string sceneName)
+    public void RequestStartDuelServerRpc(string sceneName)
     {
-        if (IsServer)
+        NetworkManager.Singleton.SceneManager.LoadScene(sceneName, LoadSceneMode.Single);
+    }
+
+    [Rpc(SendTo.Server)]
+    public void SubmitReadyPlayerServerRpc(bool isReady, RpcParams rpcParams = default)
+    {
+        if(isReady)
         {
-            NetworkManager.Singleton.SceneManager.LoadScene(sceneName, LoadSceneMode.Single);
+            readyPlayerCount.Value++;
         }
-    }
-
-    [Rpc(SendTo.Server)]
-    public void SubmitReadyPlayerServerRpc(RpcParams rpcParams = default)
-    {
-        readyPlayerCount.Value++;
-    }
-
-    [Rpc(SendTo.Server)]
-    public void SubmitUnReadyPlayerServerRpc(RpcParams rpcParams = default)
-    {
-        readyPlayerCount.Value--;
+        else
+        {
+            readyPlayerCount.Value--;
+        }
     }
 
     private void Initialize()
@@ -96,11 +93,11 @@ public class GameManager : NetworkBehaviour
     {
         if (readyPlayerCount.Value == ActorManager.Instance.GetPlayerCount() - 1)
         {
-            CanStartDuel = true;
+            UIManager.Instance.SetDuelStartButtonInteractable(true);
         }
         else
         {
-            CanStartDuel = false;
+            UIManager.Instance.SetDuelStartButtonInteractable(false);
         }
     }
 

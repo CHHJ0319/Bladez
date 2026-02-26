@@ -1,4 +1,5 @@
 using TMPro;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -6,17 +7,15 @@ namespace UI.DuelLobbyScene
 {
     public class UIController : MonoBehaviour
     {
-        [Header("Network UI")]
         public Transform networkPanel;
-
         private Button hostButton;
         private TMP_InputField joinCodeInputfiled;
         private Button clientButton;
 
         public TMP_Text joinCode;
-
-        [Header("Duel UI")]
         public Button duelStartButton;
+
+        public TMP_Text statusText;
 
         private void Awake()
         {
@@ -55,8 +54,26 @@ namespace UI.DuelLobbyScene
             }
         }
 
-        public void UpdateUI(bool state)
+        public void UpdateUI()
         {
+            if (NetworkManager.Singleton == null)
+            {
+                SetActiveNetworkPanel(false);
+                SetStatusText("NetworkManager not found");
+                return;
+            }
+
+            if (!NetworkManager.Singleton.IsClient && !NetworkManager.Singleton.IsServer)
+            {
+                SetActiveNetworkPanel(true);
+                SetStatusText("Not connected");
+            }
+            else
+            {
+                SetActiveNetworkPanel(false);
+                UpdateStatusLabels();
+            }
+
             if (duelStartButton.GetComponentInChildren<TextMeshProUGUI>().text == "Start")
             {
                 if (GameManager.Instance.CanStartDuel)
@@ -69,7 +86,7 @@ namespace UI.DuelLobbyScene
                 }
             }
 
-            SetActiveNetworkPanel(state);
+            
         }
 
         public void SetJoinCode(string code)
@@ -116,6 +133,19 @@ namespace UI.DuelLobbyScene
                     duelStartButton.GetComponentInChildren<TextMeshProUGUI>().text = "Ready";
                 }
             }
+        }
+
+        private void SetStatusText(string text)
+        {
+            if (statusText != null) statusText.text = text;
+        }
+
+        private void UpdateStatusLabels()
+        {
+            var mode = NetworkManager.Singleton.IsHost ? "Host" : NetworkManager.Singleton.IsServer ? "Server" : "Client";
+            string transport = "Transport: " + NetworkManager.Singleton.NetworkConfig.NetworkTransport.GetType().Name;
+            string modeText = "Mode: " + mode;
+            SetStatusText($"{transport}\n{modeText}");
         }
     }
 }

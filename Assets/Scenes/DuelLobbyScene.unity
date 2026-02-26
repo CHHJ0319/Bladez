@@ -1468,7 +1468,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  statusText: {fileID: 1838333337}
 --- !u!1 &766195903
 GameObject:
   m_ObjectHideFlags: 0
@@ -2303,6 +2302,7 @@ MonoBehaviour:
   networkPanel: {fileID: 113966451}
   joinCode: {fileID: 766195905}
   duelStartButton: {fileID: 516846121}
+  statusText: {fileID: 1838333337}
 --- !u!1 &1719711426
 GameObject:
   m_ObjectHideFlags: 0

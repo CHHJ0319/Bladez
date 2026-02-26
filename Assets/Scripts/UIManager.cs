@@ -7,12 +7,8 @@ public class UIManager : NetworkBehaviour
 {
     public static UIManager Instance { get; private set; }
 
-    [Header("Status")]
-    public TMP_Text statusText;
-
     private PlayerUI playerUI;
     private UI.DuelLobbyScene.UIController duelLobbySceneUIController;
-
 
     void Awake()
     {
@@ -31,7 +27,7 @@ public class UIManager : NetworkBehaviour
     {
         if (GameManager.Instance.CurrentScene == "DuelLobbyScene")
         {
-            UpdateDuelLobbySceneUI();
+            duelLobbySceneUIController.UpdateUI();
         }
         else
         {
@@ -80,43 +76,9 @@ public class UIManager : NetworkBehaviour
         }
     }
 
-    private void UpdateDuelLobbySceneUI()
-    {
-        if (NetworkManager.Singleton == null)
-        {
-            duelLobbySceneUIController.UpdateUI(false);
-            SetStatusText("NetworkManager not found");
-            return;
-        }
-
-        if (!NetworkManager.Singleton.IsClient && !NetworkManager.Singleton.IsServer)
-        {
-            duelLobbySceneUIController.UpdateUI(true);
-            SetStatusText("Not connected");
-        }
-        else
-        {
-            duelLobbySceneUIController.UpdateUI(false);
-            UpdateStatusLabels();
-        }
-    }
-
-    private void SetStatusText(string text)
-    {
-        if (statusText != null) statusText.text = text;
-    }
-
     public void SetJoinCode(string code)
     {
         duelLobbySceneUIController.SetJoinCode(code);
-    }
-
-    private void UpdateStatusLabels()
-    {
-        var mode = NetworkManager.Singleton.IsHost ? "Host" : NetworkManager.Singleton.IsServer ? "Server" : "Client";
-        string transport = "Transport: " + NetworkManager.Singleton.NetworkConfig.NetworkTransport.GetType().Name;
-        string modeText = "Mode: " + mode;
-        SetStatusText($"{transport}\n{modeText}");
     }
 
     public void SetPlayerUI(UI.PlayerUI playerUI)

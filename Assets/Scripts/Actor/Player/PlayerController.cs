@@ -50,6 +50,7 @@ namespace Actor.Player
             SlidingWithPlayerInput();
             AttackWithPlayerInput();
 			InteractWithPlayerInput();
+            QuiclSlotWithPlayerInput();
         }
 
         protected override void Initialize()
@@ -124,6 +125,24 @@ namespace Actor.Player
                 {
                     PickUp();
                 }
+            }
+        }
+
+        private void QuiclSlotWithPlayerInput()
+        {
+            if (playerInputHandler.Quiick1Triggered)
+            {
+                EquipWeapon(0);
+            }
+            
+            if (playerInputHandler.Quiick2Triggered)
+            {
+                EquipWeapon(1);
+            }
+            
+            if (playerInputHandler.Quiick3Triggered)
+            {
+                EquipWeapon(2);
             }
         }
 

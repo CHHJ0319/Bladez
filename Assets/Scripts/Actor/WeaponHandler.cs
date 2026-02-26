@@ -60,6 +60,8 @@ namespace Actor
 
         public void EquipWeapon(int idx)
         {
+            if(slottedWeapons.Count <= idx) return;
+
             foreach(var weapon in slottedWeapons)
             {
                 weapon.SetActive(false);

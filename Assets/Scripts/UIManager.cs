@@ -13,7 +13,6 @@ public class UIManager : NetworkBehaviour
     public Button hostButton;
     public TMP_InputField joinCodeInputfiled;
     public Button clientButton;
-    public Button serverButton;
 
     [Header("Status")]
     public TMP_Text statusText;
@@ -38,7 +37,6 @@ public class UIManager : NetworkBehaviour
     {
         hostButton.onClick.AddListener(OnHostButtonClicked);
         clientButton.onClick.AddListener(OnClientButtonClicked);
-        //serverButton.onClick.AddListener(OnServerButtonClicked);
     }
 
     void Update()
@@ -91,29 +89,24 @@ public class UIManager : NetworkBehaviour
         StartCoroutine(GameManager.Instance.ConfigureTransportAndStartNgoAsConnectingPlayer(joinCode));
     }
 
-    private void OnServerButtonClicked()
-    {
-        NetworkManager.Singleton.StartServer();
-    }
-
     private void UpdateUI()
     {
         if (NetworkManager.Singleton == null)
         {
             SetNetworkButtons(false);
-            //SetStatusText("NetworkManager not found");
+            SetStatusText("NetworkManager not found");
             return;
         }
 
         if (!NetworkManager.Singleton.IsClient && !NetworkManager.Singleton.IsServer)
         {
             SetNetworkButtons(true);
-            //SetStatusText("Not connected");
+            SetStatusText("Not connected");
         }
         else
         {
             SetNetworkButtons(false);
-            //UpdateStatusLabels();
+            UpdateStatusLabels();
         }
 
         if (playerUI.duelStartButton != null)
@@ -138,7 +131,6 @@ public class UIManager : NetworkBehaviour
         
         hostButton.gameObject.SetActive(state);
         clientButton.gameObject.SetActive(state);
-        //serverButton.gameObject.SetActive(state);
 
         joinCodeInputfiled.gameObject.SetActive(state);
     }

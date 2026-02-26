@@ -37,6 +37,8 @@ public class GameManager : NetworkBehaviour
             Instance = this;
             DontDestroyOnLoad(gameObject);
 
+            CurrentScene = SceneManager.GetActiveScene().name;
+
             try
             {
                 await UnityServices.InitializeAsync();
@@ -47,8 +49,6 @@ public class GameManager : NetworkBehaviour
             {
                 Debug.LogException(e);
             }
-
-            CurrentScene = SceneManager.GetActiveScene().name;
         }
         else
         {

@@ -33,7 +33,10 @@ public class UIManager : NetworkBehaviour
         {
             UpdateDuelLobbySceneUI();
         }
-        playerUI.UpdateUI(GameManager.Instance.CurrentScene);
+        else
+        {
+            playerUI.UpdateUI();
+        }
     }
 
     public void UpdatePlayerHPBar(float hp, float maxHP)
@@ -49,11 +52,19 @@ public class UIManager : NetworkBehaviour
         duelLobbySceneUIController = controller;
     }
 
-    public void InitializePlayerUI(bool isDuelHost, string sceneName)
+    public void InitializDuelLobbySceneUI(bool isDuelHost)
+    {
+        if (duelLobbySceneUIController != null)
+        {
+            duelLobbySceneUIController.Initialize(isDuelHost);
+        }
+    }
+
+    public void InitializePlayerUI()
     {
         if (playerUI != null)
         {
-            playerUI.Initialize(isDuelHost, sceneName);
+            playerUI.Initialize();
         }
     }
 
@@ -97,7 +108,7 @@ public class UIManager : NetworkBehaviour
 
     public void SetJoinCode(string code)
     {
-        playerUI.SetJoinCode(code);
+        duelLobbySceneUIController.SetJoinCode(code);
     }
 
     private void UpdateStatusLabels()

@@ -1,6 +1,7 @@
 using System.Collections;
 using Unity.Netcode;
 using UnityEngine;
+using static UnityEngine.ParticleSystem;
 
 namespace Actor.Item.Weapon.Melee
 {
@@ -23,17 +24,13 @@ namespace Actor.Item.Weapon.Melee
                 trailEffect.enabled = true;
             }
 
+            if(particle != null)
+            {
+                particle.gameObject.SetActive(true);
+            }
+
             yield return new WaitForSeconds(0.5f);
 
-            if (particle != null)
-            {
-                Vector3 spawnPos = transform.position + (transform.right * 0.5f) + (transform.forward * 0.5f);
-
-                ParticleSystem newVFX = Instantiate(particle, spawnPos, transform.rotation);
-
-                newVFX.Play();
-                Destroy(newVFX.gameObject, 1.0f);
-            }
             //audioSource.Play();
 
             yield return new WaitForSeconds(0.3f);
@@ -43,6 +40,11 @@ namespace Actor.Item.Weapon.Melee
             if (trailEffect != null)
             {
                 trailEffect.enabled = false;
+            }
+
+            if (particle != null)
+            {
+                particle.gameObject.SetActive(false);
             }
         }
 

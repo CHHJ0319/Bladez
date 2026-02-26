@@ -9,7 +9,7 @@ namespace Events
         public static event Action OnJump;
         public static event Action OnSliding;
         public static event Action OnReload;
-        public static event Action<int, Vector3> OnBulletHit;
+        public static event Action<float, float> OnHPChaneged;
         public static event Action<int> OnQuickSlotPressed;
 
         public static void Clear()
@@ -18,7 +18,7 @@ namespace Events
             OnJump = null;
             OnSliding = null;
             OnReload = null;
-            OnBulletHit = null;
+            OnHPChaneged = null;
 
             OnQuickSlotPressed = null;
         }
@@ -43,9 +43,9 @@ namespace Events
             OnReload?.Invoke();
         }
 
-        public static void OnAttackHit(int damage, Vector3 bulletPos)
+        public static void UpdateHPBar(float hp, float maxHP)
         {
-            OnBulletHit?.Invoke(damage, bulletPos);
+            OnHPChaneged?.Invoke(hp, maxHP);
         }
 
         public static void ChangeWeapon(int weaponIdx)

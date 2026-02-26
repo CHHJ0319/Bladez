@@ -31,15 +31,7 @@ public class UIManager : NetworkBehaviour
         }
         else
         {
-            playerUI.UpdateUI();
-        }
-    }
 
-    public void UpdatePlayerHPBar(float hp, float maxHP)
-    {
-        if (playerUI != null)
-        {
-            playerUI.UpdateHPBar(hp, maxHP);
         }
     }
 
@@ -56,12 +48,14 @@ public class UIManager : NetworkBehaviour
         }
     }
 
-    public void InitializePlayerUI()
+    public void SetJoinCode(string code)
     {
-        if (playerUI != null)
-        {
-            playerUI.Initialize();
-        }
+        duelLobbySceneUIController.SetJoinCode(code);
+    }
+
+    public void SetPlayerUI(UI.PlayerUI playerUI)
+    {
+        this.playerUI = playerUI;
     }
 
     public void ShowPlayerResultUI(bool isWinner)
@@ -74,15 +68,5 @@ public class UIManager : NetworkBehaviour
         {
             playerUI.ShowDefeatUI();
         }
-    }
-
-    public void SetJoinCode(string code)
-    {
-        duelLobbySceneUIController.SetJoinCode(code);
-    }
-
-    public void SetPlayerUI(UI.PlayerUI playerUI)
-    {
-        this.playerUI = playerUI;
     }
 }

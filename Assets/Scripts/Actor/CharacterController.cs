@@ -141,6 +141,7 @@ namespace Actor
         {
             float hp = HP.Value;
             hp -= damage;
+
             SubmitHPRequestServerRpc(hp);
 
             if (HP.Value < 0)
@@ -164,7 +165,7 @@ namespace Actor
         {
             if (IsOwner)
             {
-                UIManager.Instance.UpdatePlayerHPBar(HP.Value, maxHP);
+                Events.PlayerEvents.UpdateHPBar(HP.Value, maxHP);
             }
         }
 
@@ -178,7 +179,6 @@ namespace Actor
 
             IsDie.Value = !IsDie.Value;
         }
-            
 
         private void OnDie(bool previous, bool current)
         {

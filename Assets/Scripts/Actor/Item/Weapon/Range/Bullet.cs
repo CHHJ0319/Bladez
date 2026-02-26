@@ -14,7 +14,7 @@ namespace Actor.Item.Weapon
             }
             else if (collision.collider.gameObject.tag == "Enemy")
             {
-                Events.PlayerEvents.OnAttackHit(damage, transform.position);
+                //Events.PlayerEvents.OnAttackHit(damage, transform.position);
                 Destroy(gameObject);
             }
         }

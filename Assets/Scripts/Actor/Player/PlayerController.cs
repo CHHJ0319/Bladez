@@ -153,7 +153,7 @@ namespace Actor.Player
 
                 if (IsOwner)
                 {
-                    UIManager.Instance.UpdatePlayerHPBar(HP.Value, maxHP);
+                    Events.PlayerEvents.UpdateHPBar(HP.Value, maxHP);
 
                     tpsCamera.gameObject.SetActive(true);
                 }

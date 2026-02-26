@@ -43,7 +43,6 @@ namespace Actor.Enemy
 
         private void Start()
         {
-            Events.PlayerEvents.OnBulletHit += TakeDamage;
             Events.EnemyEvents.OnFireHit += OnFireHit;
         }
 

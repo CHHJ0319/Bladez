@@ -44,7 +44,7 @@ namespace UI.DuelLobbyScene
             if (isDuelHost)
             {
                 buttonTitle.text = "Start";
-                duelStartButton.interactable = false;
+                //duelStartButton.interactable = false;
 
                 joinCode.gameObject.SetActive(true);
             }
@@ -82,7 +82,7 @@ namespace UI.DuelLobbyScene
                 }
                 else
                 {
-                    duelStartButton.interactable = false;
+                    //duelStartButton.interactable = false;
                 }
             }
 

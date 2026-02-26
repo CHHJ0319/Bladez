@@ -17,22 +17,22 @@ namespace UI
             UIManager.Instance.SetPlayerUI(this);
         }
 
-        public void Initialize()
+        private void OnEnable()
         {
-   
+            Events.PlayerEvents.OnHPChaneged += UpdateHPBar;
         }
 
-        public void UpdateHPBar(float hp, float maxHP)
+        private void OnDisable()
+        {
+            Events.PlayerEvents.OnHPChaneged -= UpdateHPBar;
+        }
+
+        private void UpdateHPBar(float hp, float maxHP)
         {
             if (hpBar != null)
             {
                 hpBar.UpdateGaugeBar(hp, maxHP);
             }
-        }
-
-        public void UpdateUI()
-        {
-
         }
 
         public void ShowWinUI()

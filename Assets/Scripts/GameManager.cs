@@ -142,7 +142,7 @@ public class GameManager : NetworkBehaviour
             throw;
         }
 
-        UIManager.Instance.SetStatusText(createJoinCode);
+        UIManager.Instance.SetJoinCode(createJoinCode);
 
         return new RelayServerData(allocation, "dtls");
     }

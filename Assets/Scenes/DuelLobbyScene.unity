@@ -396,17 +396,6 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 7310822677345286818, guid: 587b397c329ef4a41992c71e77fb01be, type: 3}
   m_PrefabInstance: {fileID: 112663258}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &112663260 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 4250525221682475024, guid: 587b397c329ef4a41992c71e77fb01be, type: 3}
-  m_PrefabInstance: {fileID: 112663258}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &113966450
 GameObject:
   m_ObjectHideFlags: 0
@@ -440,7 +429,6 @@ RectTransform:
   - {fileID: 1359713957}
   - {fileID: 1836428296}
   - {fileID: 112663259}
-  - {fileID: 766195904}
   m_Father: {fileID: 1619756988}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -1227,7 +1215,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &516846120
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1480,10 +1468,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  hostButton: {fileID: 1359713958}
-  joinCodeInputfiled: {fileID: 1836428297}
-  clientButton: {fileID: 112663260}
-  serverButton: {fileID: 0}
   statusText: {fileID: 1838333337}
 --- !u!1 &766195903
 GameObject:
@@ -1502,7 +1486,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &766195904
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1510,16 +1494,16 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 766195903}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 113966451}
+  m_Father: {fileID: 1092408916}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 108.8, y: 50.7}
+  m_AnchoredPosition: {x: 390, y: -471}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &766195905
@@ -1883,6 +1867,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 766195904}
   - {fileID: 516846120}
   m_Father: {fileID: 1619756988}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1904,6 +1889,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   duelStartButton: {fileID: 516846121}
+  joinCode: {fileID: 766195905}
   hpBar: {fileID: 0}
   staminaBar: {fileID: 0}
   gameDefeatImage: {fileID: 0}
@@ -2143,17 +2129,6 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 7310822677345286818, guid: 587b397c329ef4a41992c71e77fb01be, type: 3}
   m_PrefabInstance: {fileID: 712560126563900951}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1359713958 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 4250525221682475024, guid: 587b397c329ef4a41992c71e77fb01be, type: 3}
-  m_PrefabInstance: {fileID: 712560126563900951}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1556604155
 GameObject:
   m_ObjectHideFlags: 0
@@ -2271,6 +2246,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1619756988}
+  - component: {fileID: 1619756989}
   - component: {fileID: 1619756987}
   - component: {fileID: 1619756986}
   - component: {fileID: 1619756985}
@@ -2367,6 +2343,19 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!114 &1619756989
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1619756984}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c16782d6aa80b4941bb0fa3a39e162c8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  networkPanel: {fileID: 113966451}
 --- !u!1 &1719711426
 GameObject:
   m_ObjectHideFlags: 0

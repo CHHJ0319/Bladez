@@ -8,6 +8,7 @@ namespace UI
     {
         [Header("DualLobbyScene")]
         public Button duelStartButton;
+        public TMP_Text joinCode;
 
         [Header("DualScene")]
         public GaugeBar hpBar;
@@ -20,21 +21,17 @@ namespace UI
             UIManager.Instance.SetPlayerUI(this);
         }
 
-        public void Initialize(bool isDuelHost)
+        public void Initialize(bool isDuelHost, string sceneName)
         {
-            duelStartButton.onClick.AddListener(() => OnDuelStartButtonClicked(isDuelHost));
-
-            var buttonTitle = duelStartButton.GetComponentInChildren<TextMeshProUGUI>();
-            if (isDuelHost)
+            if(sceneName == "DuelLobbyScene")
             {
+                InitializeDuelLobbySceneUI(isDuelHost);
+            }
+        }
 
-                buttonTitle.text = "Start";
-                duelStartButton.interactable = false;
-            }
-            else
-            {
-                buttonTitle.text = "Ready";
-            }
+        public void SetJoinCode(string code)
+        {
+            if (joinCode != null) joinCode.text = code;
         }
 
         public void UpdateHPBar(float hp, float maxHP)
@@ -42,6 +39,14 @@ namespace UI
             if (hpBar != null)
             {
                 hpBar.UpdateGaugeBar(hp, maxHP);
+            }
+        }
+
+        public void UpdateUI(string sceneName)
+        {
+            if (sceneName == "DuelLobbyScene")
+            {
+                UpdateDuelLobbySceneUI();
             }
         }
 
@@ -53,6 +58,40 @@ namespace UI
         public void ShowDefeatUI()
         {
             gameDefeatImage.gameObject.SetActive(true);
+        }
+
+        private void InitializeDuelLobbySceneUI(bool isDuelHost)
+        {
+            duelStartButton.gameObject.SetActive(true);
+            duelStartButton.onClick.AddListener(() => OnDuelStartButtonClicked(isDuelHost));
+
+            var buttonTitle = duelStartButton.GetComponentInChildren<TextMeshProUGUI>();
+            if (isDuelHost)
+            {
+                buttonTitle.text = "Start";
+                duelStartButton.interactable = false;
+
+                joinCode.gameObject.SetActive(true);
+            }
+            else
+            {
+                buttonTitle.text = "Ready";
+            }
+        }
+
+        private void UpdateDuelLobbySceneUI()
+        {
+            if (duelStartButton.GetComponentInChildren<TextMeshProUGUI>().text == "Start")
+            {
+                if (GameManager.Instance.CanStartDuel)
+                {
+                    duelStartButton.interactable = true;
+                }
+                else
+                {
+                    duelStartButton.interactable = false;
+                }
+            }
         }
 
         private void OnDuelStartButtonClicked(bool isDuelHost)

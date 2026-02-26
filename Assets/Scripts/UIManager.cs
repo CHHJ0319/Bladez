@@ -2,23 +2,17 @@ using TMPro;
 using UI;
 using Unity.Netcode;
 using UnityEngine;
-using UnityEngine.SceneManagement;
-using UnityEngine.UI;
 
 public class UIManager : NetworkBehaviour
 {
     public static UIManager Instance { get; private set; }
 
-    [Header("Buttons")]
-    public Button hostButton;
-    public TMP_InputField joinCodeInputfiled;
-    public Button clientButton;
-
     [Header("Status")]
     public TMP_Text statusText;
 
     private PlayerUI playerUI;
-    
+    private UI.DuelLobbyScene.UIController duelLobbySceneUIController;
+
 
     void Awake()
     {
@@ -33,18 +27,13 @@ public class UIManager : NetworkBehaviour
         }
     }
 
-    void Start()
-    {
-        hostButton.onClick.AddListener(OnHostButtonClicked);
-        clientButton.onClick.AddListener(OnClientButtonClicked);
-    }
-
     void Update()
     {
         if (GameManager.Instance.CurrentScene == "DuelLobbyScene")
         {
-            UpdateUI();
+            UpdateDuelLobbySceneUI();
         }
+        playerUI.UpdateUI(GameManager.Instance.CurrentScene);
     }
 
     public void UpdatePlayerHPBar(float hp, float maxHP)
@@ -55,11 +44,16 @@ public class UIManager : NetworkBehaviour
         }
     }
 
-    public void InitializePlayerUI(bool isDuelHost)
+    public void SetDuelLobbySceneUIController(UI.DuelLobbyScene.UIController controller)
+    {
+        duelLobbySceneUIController = controller;
+    }
+
+    public void InitializePlayerUI(bool isDuelHost, string sceneName)
     {
         if (playerUI != null)
         {
-            playerUI.Initialize(isDuelHost);
+            playerUI.Initialize(isDuelHost, sceneName);
         }
     }
 
@@ -75,69 +69,35 @@ public class UIManager : NetworkBehaviour
         }
     }
 
-    private void OnHostButtonClicked()
-    {
-        StartCoroutine(GameManager.Instance.ConfigureTransportAndStartNgoAsHost());
-    }
-
-    private void OnClientButtonClicked()
-    {
-        if (joinCodeInputfiled.text == "")
-            return;
-
-        string joinCode = joinCodeInputfiled.text;
-        StartCoroutine(GameManager.Instance.ConfigureTransportAndStartNgoAsConnectingPlayer(joinCode));
-    }
-
-    private void UpdateUI()
+    private void UpdateDuelLobbySceneUI()
     {
         if (NetworkManager.Singleton == null)
         {
-            SetNetworkButtons(false);
+            duelLobbySceneUIController.UpdateUI(false);
             SetStatusText("NetworkManager not found");
             return;
         }
 
         if (!NetworkManager.Singleton.IsClient && !NetworkManager.Singleton.IsServer)
         {
-            SetNetworkButtons(true);
+            duelLobbySceneUIController.UpdateUI(true);
             SetStatusText("Not connected");
         }
         else
         {
-            SetNetworkButtons(false);
+            duelLobbySceneUIController.UpdateUI(false);
             UpdateStatusLabels();
         }
-
-        if (playerUI.duelStartButton != null)
-        {
-            if (playerUI.duelStartButton.GetComponentInChildren<TextMeshProUGUI>().text == "Start")
-            {
-                if (GameManager.Instance.CanStartDuel)
-                {
-                    playerUI.duelStartButton.interactable = true;
-                }
-                else
-                {
-                    playerUI.duelStartButton.interactable = false;
-                }
-            }
-        }
     }
 
-    private void SetNetworkButtons(bool state)
-    {
-        if (SceneManager.GetActiveScene().name != "DuelLobbyScene") return;
-        
-        hostButton.gameObject.SetActive(state);
-        clientButton.gameObject.SetActive(state);
-
-        joinCodeInputfiled.gameObject.SetActive(state);
-    }
-
-    public void SetStatusText(string text)
+    private void SetStatusText(string text)
     {
         if (statusText != null) statusText.text = text;
+    }
+
+    public void SetJoinCode(string code)
+    {
+        playerUI.SetJoinCode(code);
     }
 
     private void UpdateStatusLabels()
@@ -147,8 +107,6 @@ public class UIManager : NetworkBehaviour
         string modeText = "Mode: " + mode;
         SetStatusText($"{transport}\n{modeText}");
     }
-
-    
 
     public void SetPlayerUI(UI.PlayerUI playerUI)
     {

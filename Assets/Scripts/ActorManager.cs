@@ -70,7 +70,25 @@ public class ActorManager : NetworkBehaviour
     {
         for (int i = 0; i < droppedWeaponCount; i++)
         {
-            int randomIndex = Random.Range(0, weaponList.Length);
+            int randomIndex = 0;
+            int randomRange = Random.Range(0, 100);
+            if(randomRange <= 60)
+            {
+                randomIndex = 0;
+            }
+            else if(randomRange <= 75)
+            {
+                randomIndex = 1;
+            }
+            else if (randomRange <= 90)
+            {
+                randomIndex = 2;
+            }
+            else
+            {
+                randomIndex = 3;
+            }
+
             Vector3 randomPosition = GetRandomWeaponPosition();
             WeaponIndexList.Add(randomIndex);
             WeaponPositionList.Add(randomPosition);

@@ -24,18 +24,14 @@ public class GameManager : NetworkBehaviour
 
     const int m_MaxConnections = 4;
 
-    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
-    static void InitializeBeforeScene()
-    {
-        EventManager.Init();
-    }
-
     async void Awake()
     {
         if (Instance == null)
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
+
+            Initialize();
 
             CurrentScene = SceneManager.GetActiveScene().name;
 
@@ -89,6 +85,11 @@ public class GameManager : NetworkBehaviour
     public void SubmitUnReadyPlayerServerRpc(RpcParams rpcParams = default)
     {
         readyPlayerCount.Value--;
+    }
+
+    private void Initialize()
+    {
+        EventManager.Init();
     }
 
     private void OnReadyPlayerCountChanged(int previous, int current)

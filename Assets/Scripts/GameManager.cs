@@ -86,7 +86,7 @@ public class GameManager : NetworkBehaviour
 
     private void Initialize()
     {
-        EventManager.Init();
+        GameEvents.Init();
     }
 
     private void OnReadyPlayerCountChanged(int previous, int current)

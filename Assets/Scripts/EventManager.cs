@@ -1,4 +1,4 @@
-public static class EventManager
+public static class GameEvents
 {
     public static void  Init()
     {

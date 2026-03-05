@@ -172,11 +172,6 @@ namespace Actor
         [Rpc(SendTo.Server)]
         private void SubmitDieRequestServerRpc()
         {
-            if (IsOwner)
-            {
-                UIManager.Instance.ShowPlayerResultUI(false);
-            }
-
             IsDie.Value = !IsDie.Value;
         }
 
@@ -184,6 +179,10 @@ namespace Actor
         {
             if (IsDie.Value != previous)
             {
+                if (IsOwner)
+                {
+                    UIManager.Instance.ShowPlayerResultUI(false);
+                }
                 gameObject.SetActive(false);
             }
         }

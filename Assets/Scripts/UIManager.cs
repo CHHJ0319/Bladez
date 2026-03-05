@@ -25,7 +25,7 @@ public class UIManager : NetworkBehaviour
 
     void Update()
     {
-        if (GameManager.Instance.CurrentScene == "DuelLobbyScene")
+        if (Util.SceneChecker.CheckCurrnetScene(Util.SceneList.DuelLobbyScene))
         {
             duelLobbySceneUIController.UpdateUI();
         }

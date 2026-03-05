@@ -19,7 +19,7 @@ namespace UI {
             if (eventData.button == PointerEventData.InputButton.Left)
             {
                 startSound.Play();
-                StartCoroutine(Util.SceneLoader.LoadSceneByName("DuelLobbyScene"));
+                StartCoroutine(Util.SceneLoader.LoadSceneByName("FieldScene"));
             }
         }
     }

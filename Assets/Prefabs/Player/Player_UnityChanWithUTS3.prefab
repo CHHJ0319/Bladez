@@ -225,6 +225,18 @@ PrefabInstance:
       addedObject: {fileID: 3386290807216925629}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 100326, guid: 8f0565f23a2b58541a475bd3c1393052, type: 3}
+      insertIndex: 1
+      addedObject: {fileID: 6193327445032787303}
+    - targetCorrespondingSourceObject: {fileID: 100326, guid: 8f0565f23a2b58541a475bd3c1393052, type: 3}
+      insertIndex: 2
+      addedObject: {fileID: 2938373603916243693}
+    - targetCorrespondingSourceObject: {fileID: 100326, guid: 8f0565f23a2b58541a475bd3c1393052, type: 3}
+      insertIndex: 3
+      addedObject: {fileID: 3675513083738605775}
+    - targetCorrespondingSourceObject: {fileID: 100326, guid: 8f0565f23a2b58541a475bd3c1393052, type: 3}
+      insertIndex: 4
+      addedObject: {fileID: 1893179238309997907}
+    - targetCorrespondingSourceObject: {fileID: 100326, guid: 8f0565f23a2b58541a475bd3c1393052, type: 3}
       insertIndex: -1
       addedObject: {fileID: 673911709929229236}
     - targetCorrespondingSourceObject: {fileID: 100326, guid: 8f0565f23a2b58541a475bd3c1393052, type: 3}
@@ -232,25 +244,10 @@ PrefabInstance:
       addedObject: {fileID: 5536553784208401738}
     - targetCorrespondingSourceObject: {fileID: 100326, guid: 8f0565f23a2b58541a475bd3c1393052, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 5736858069202348744}
-    - targetCorrespondingSourceObject: {fileID: 100326, guid: 8f0565f23a2b58541a475bd3c1393052, type: 3}
-      insertIndex: -1
       addedObject: {fileID: -2389109992988116160}
     - targetCorrespondingSourceObject: {fileID: 100326, guid: 8f0565f23a2b58541a475bd3c1393052, type: 3}
       insertIndex: -1
       addedObject: {fileID: -8344656349350210775}
-    - targetCorrespondingSourceObject: {fileID: 100326, guid: 8f0565f23a2b58541a475bd3c1393052, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: -2710880212031533601}
-    - targetCorrespondingSourceObject: {fileID: 100326, guid: 8f0565f23a2b58541a475bd3c1393052, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: -1727386698250687990}
-    - targetCorrespondingSourceObject: {fileID: 100326, guid: 8f0565f23a2b58541a475bd3c1393052, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 7061884872998588291}
-    - targetCorrespondingSourceObject: {fileID: 100326, guid: 8f0565f23a2b58541a475bd3c1393052, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 843826319495166886}
   m_SourcePrefab: {fileID: 100100000, guid: 8f0565f23a2b58541a475bd3c1393052, type: 3}
 --- !u!95 &202232820506293495 stripped
 Animator:
@@ -262,6 +259,118 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 100326, guid: 8f0565f23a2b58541a475bd3c1393052, type: 3}
   m_PrefabInstance: {fileID: 202232820513571223}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &6193327445032787303
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 202232820513539697}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9adac3d0e437e8a4e94c684fde4cc624, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  forwardSpeed: 7
+  backwardSpeed: 2
+  rotateSpeed: 2
+  jumpPower: 3
+  slidingPower: 1
+  useCurves: 1
+  useCurvesHeight: 0.5
+  tpsCamera: {fileID: 0}
+--- !u!114 &2938373603916243693
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 202232820513539697}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3d656dd7f7dcb6d4a8f1e34b4f927422, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &3675513083738605775
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 202232820513539697}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 53851cdd1063b344bbb9a058de88493a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  weaponHolder: {fileID: 3386290807216925629}
+  slottedWeapons: []
+--- !u!114 &1893179238309997907
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 202232820513539697}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 80d9a59f0736706408b8135ce75e9d84, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
+  NetworkAnimatorExpanded: 0
+  AuthorityMode: 0
+  m_Animator: {fileID: 202232820506293495}
+  TransitionStateInfoList: []
+  AnimatorParameterEntries:
+    ParameterEntries:
+    - name: Speed
+      NameHash: -823668238
+      Synchronize: 1
+      ParameterType: 1
+    - name: Direction
+      NameHash: -1128574192
+      Synchronize: 1
+      ParameterType: 1
+    - name: Jump
+      NameHash: 125937960
+      Synchronize: 1
+      ParameterType: 4
+    - name: Rest
+      NameHash: 1562808046
+      Synchronize: 1
+      ParameterType: 4
+    - name: JumpHeight
+      NameHash: 881024350
+      Synchronize: 1
+      ParameterType: 1
+    - name: GravityControl
+      NameHash: 112175263
+      Synchronize: 1
+      ParameterType: 1
+    - name: Sliding
+      NameHash: -1078995872
+      Synchronize: 1
+      ParameterType: 4
+    - name: ComboCount
+      NameHash: 964842482
+      Synchronize: 1
+      ParameterType: 3
+    - name: Attack
+      NameHash: 1080829965
+      Synchronize: 1
+      ParameterType: 4
+    - name: TakeDamage
+      NameHash: -339413771
+      Synchronize: 1
+      ParameterType: 4
+  AnimatorParametersExpanded: 0
+  animSpeed: 1.5
+  smileSound: {fileID: 0}
+  startSound: {fileID: 0}
+  jumpSound: {fileID: 0}
+  slidingSound: {fileID: 0}
+  winSound: {fileID: 0}
 --- !u!54 &673911709929229236
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -312,20 +421,6 @@ CapsuleCollider:
   m_Height: 1.5
   m_Direction: 1
   m_Center: {x: 0, y: 0.75, z: 0}
---- !u!114 &5736858069202348744
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 202232820513539697}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 53851cdd1063b344bbb9a058de88493a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  weaponHolder: {fileID: 3386290807216925629}
-  slottedWeapons: []
 --- !u!114 &-2389109992988116160
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -369,143 +464,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   GlobalObjectIdHash: 3401591022
-  InScenePlacedSourceGlobalObjectIdHash: 0
+  InScenePlacedSourceGlobalObjectIdHash: 3401591022
   DeferredDespawnTick: 0
   Ownership: 1
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
   ActiveSceneSynchronization: 0
-  SceneMigrationSynchronization: 1
+  SceneMigrationSynchronization: 0
   SpawnWithObservers: 1
   DontDestroyWithOwner: 0
   AutoObjectParentSync: 1
   SyncOwnerTransformWhenParented: 1
   AllowOwnerToParent: 0
---- !u!114 &-2710880212031533601
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 202232820513539697}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9adac3d0e437e8a4e94c684fde4cc624, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ShowTopMostFoldoutHeaderGroup: 1
-  forwardSpeed: 7
-  backwardSpeed: 2
-  rotateSpeed: 2
-  jumpPower: 3
-  slidingPower: 1
-  useCurves: 1
-  useCurvesHeight: 0.5
-  Position:
-    m_InternalValue: {x: 0, y: 0, z: 0}
-  Rotation:
-    m_InternalValue: {x: 0, y: 0, z: 0, w: 0}
-  JumpTriggered:
-    m_InternalValue: 0
-  SlidingTriggered:
-    m_InternalValue: 0
-  AttackTriggered:
-    m_InternalValue: 0
-  PickUpTriggered:
-    m_InternalValue: 0
-  tpsCamera: {fileID: 7879378588841631257}
-  hpBarPrefab: {fileID: 6620614952732356700, guid: 3d5c996a743c28441aed8687c6c8af95, type: 3}
-  staminaBarPrefab: {fileID: 3800545974895629330, guid: 59dc203c87c0f7b41ae4e4c8d7c25fb0, type: 3}
---- !u!114 &-1727386698250687990
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 202232820513539697}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3d656dd7f7dcb6d4a8f1e34b4f927422, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &7061884872998588291
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 202232820513539697}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 80d9a59f0736706408b8135ce75e9d84, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ShowTopMostFoldoutHeaderGroup: 1
-  NetworkAnimatorExpanded: 0
-  AuthorityMode: 1
-  m_Animator: {fileID: 202232820506293495}
-  TransitionStateInfoList: []
-  AnimatorParameterEntries:
-    ParameterEntries:
-    - name: Speed
-      NameHash: -823668238
-      Synchronize: 1
-      ParameterType: 1
-    - name: Direction
-      NameHash: -1128574192
-      Synchronize: 1
-      ParameterType: 1
-    - name: Jump
-      NameHash: 125937960
-      Synchronize: 1
-      ParameterType: 4
-    - name: Rest
-      NameHash: 1562808046
-      Synchronize: 1
-      ParameterType: 4
-    - name: JumpHeight
-      NameHash: 881024350
-      Synchronize: 1
-      ParameterType: 1
-    - name: GravityControl
-      NameHash: 112175263
-      Synchronize: 1
-      ParameterType: 1
-    - name: Sliding
-      NameHash: -1078995872
-      Synchronize: 1
-      ParameterType: 4
-    - name: Attack
-      NameHash: 1080829965
-      Synchronize: 1
-      ParameterType: 9
-    - name: ComboCount
-      NameHash: 964842482
-      Synchronize: 1
-      ParameterType: 3
-    - name: TakeDamage
-      NameHash: -339413771
-      Synchronize: 1
-      ParameterType: 9
-  AnimatorParametersExpanded: 0
-  animSpeed: 1.5
-  smileSound: {fileID: 0}
-  startSound: {fileID: 0}
-  jumpSound: {fileID: 0}
-  slidingSound: {fileID: 0}
-  winSound: {fileID: 0}
---- !u!114 &843826319495166886
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 202232820513539697}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 427b8b5aaf4eeaf45932379244fefef4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!4 &202232820513708625 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 400326, guid: 8f0565f23a2b58541a475bd3c1393052, type: 3}
@@ -577,17 +547,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: fb960506073a03d46bc300c139f789c7, type: 3}
---- !u!114 &7879378588841631257 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 133437434955921424, guid: fb960506073a03d46bc300c139f789c7, type: 3}
-  m_PrefabInstance: {fileID: 7819161237202150921}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f9dfa5b682dcd46bda6128250e975f58, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!4 &8913653106223608497 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1671000327151932600, guid: fb960506073a03d46bc300c139f789c7, type: 3}

@@ -1,13 +1,10 @@
-using Actor.Player;
-using Unity.Netcode;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 namespace Actor
 {
-    public abstract class CharacterController : NetworkBehaviour
+    public abstract class CharacterController : MonoBehaviour
     {
-        [Header("Properties")]
+        [Header("Character Properties")]
         public float forwardSpeed = 7.0f;
         public float backwardSpeed = 2.0f;
         public float rotateSpeed = 2.0f;
@@ -33,27 +30,32 @@ namespace Actor
         protected Vector3 velocity;
 
         protected float maxHP = 100f;
-
-        public NetworkVariable<Vector3> Position = new NetworkVariable<Vector3>();
-        public NetworkVariable<Quaternion> Rotation = new NetworkVariable<Quaternion>();
-
-        public NetworkVariable<bool> PickUpTriggered = new NetworkVariable<bool>();
-        public NetworkVariable<bool> TakeDamageTriggered = new NetworkVariable<bool>();
-
-        protected NetworkVariable<float> HP = new NetworkVariable<float>();
-        public NetworkVariable<bool> IsDie = new NetworkVariable<bool>();
+        public float HP { get; private set; }
 
         public string OwnerID { get; private set; }
 
-        public override void OnNetworkSpawn()
+        void Awake()
         {
-            SubscribeNetworkVariables();
             Initialize();
         }
 
-        public override void OnNetworkDespawn()
+        protected virtual void Initialize()
         {
-            UnubscribeNetworkVariables();
+            SetComponents();
+
+            orgColHeight = col.height;
+            orgVectColCenter = col.center;
+        }
+
+        private void SetComponents()
+        {
+            col = GetComponent<CapsuleCollider>();
+            rb = GetComponent<Rigidbody>();
+
+            characterAnimator = GetComponent<CharacterAnimator>();
+
+            weaponHandler = GetComponent<WeaponHandler>();
+            itemPicker = GetComponent<ItemPicker>();
         }
 
         protected virtual void Update()
@@ -70,38 +72,28 @@ namespace Actor
 
         public void Jump()
         {
-            if (currentBaseState.fullPathHash == PlayerState.LocoState
+            if (currentBaseState.fullPathHash == CharacterAnimationState.LocoState
                 && !characterAnimator.IsTransitioning())
             {
                 rb.AddForce(Vector3.up * jumpPower, ForceMode.VelocityChange);
-
-                if (IsOwner)
-                {
-                    characterAnimator.SetJump(true);
-                    SubmitTransformRequestServerRpc(transform.localPosition, transform.localRotation);
-                }
+                characterAnimator.SetJump(true);
             }
         }
 
         public void Sliding()
         {
-            if (currentBaseState.fullPathHash == PlayerState.LocoState
+            if (currentBaseState.fullPathHash == CharacterAnimationState.LocoState
                 && !characterAnimator.IsTransitioning())
             {
                 rb.AddForce(velocity * slidingPower, ForceMode.VelocityChange);
-
-                if (IsOwner)
-                {
-                    characterAnimator.SetSliding(true);
-                    SubmitTransformRequestServerRpc(transform.localPosition, transform.localRotation);
-                }
+                characterAnimator.SetSliding(true);
             }
         }
 
         public void Attack()
         {
-            if (currentBaseState.fullPathHash == PlayerState.JumpState &&
-                currentBaseState.fullPathHash == PlayerState.SlidingState)
+            if (currentBaseState.fullPathHash == CharacterAnimationState.JumpState &&
+                currentBaseState.fullPathHash == CharacterAnimationState.SlidingState)
                 return;
 
             if (weaponHandler.EquippedWeapon == null)
@@ -109,10 +101,7 @@ namespace Actor
 
             if (weaponHandler.GetEquipWeaponType() == Item.Weapon.WeaponType.Melee)
             {
-                if (IsOwner)
-                {
-                    characterAnimator.PlayAttack();
-                }
+                characterAnimator.PlayAttack();
             }
 
             weaponHandler.Attack();
@@ -123,9 +112,6 @@ namespace Actor
             GameObject item = itemPicker.GetPickedUpItem();
 
             if (item == null) return;
-
-            if (IsOwner)
-                SubmitPickUpRequestServerRpc();
 
             if (item.tag == "Weapon")
             {
@@ -139,18 +125,15 @@ namespace Actor
 
         public void TakeDamage(float damage, Vector3 damageDirection, float knockbackForce)
         {
-            float hp = HP.Value;
-            hp -= damage;
-
-            SubmitHPRequestServerRpc(hp);
-
-            if (HP.Value < 0)
-            {
-                SubmitDieRequestServerRpc();
-            }
+            HP -= damage;
 
             characterAnimator.SetTakeDamage(true);
             ApplyKnockback(-damageDirection, knockbackForce);
+
+            if (HP < 0)
+            {
+                Die();
+            }
         }
 
         public void Rest()
@@ -161,30 +144,10 @@ namespace Actor
             }
         }
 
-        public void SetHP()
+        private void Die()
         {
-            if (IsOwner)
-            {
-                Events.PlayerEvents.UpdateHPBar(HP.Value, maxHP);
-            }
-        }
-
-        [Rpc(SendTo.Server)]
-        private void SubmitDieRequestServerRpc()
-        {
-            IsDie.Value = !IsDie.Value;
-        }
-
-        private void OnDie(bool previous, bool current)
-        {
-            if (IsDie.Value != previous)
-            {
-                if (IsOwner)
-                {
-                    UIManager.Instance.ShowPlayerResultUI(false);
-                }
-                gameObject.SetActive(false);
-            }
+            UIManager.Instance.ShowPlayerResultUI(false);
+            gameObject.SetActive(false);
         }
 
         public void AssignWeaponOwnerID()
@@ -192,51 +155,7 @@ namespace Actor
             weaponHandler.AssignOwnerId(OwnerID);
         }
 
-        protected virtual void Initialize()
-        {
-            SetupComponents();
-
-            orgColHeight = col.height;
-            orgVectColCenter = col.center;
-
-            OwnerID = OwnerClientId.ToString();
-
-            SubmitHPRequestServerRpc(maxHP);
-        }
-
-        protected virtual void SubscribeNetworkVariables()
-        {
-            Position.OnValueChanged += OnPositionChanged;
-            Rotation.OnValueChanged += OnRotationChanged;
-
-            PickUpTriggered.OnValueChanged += OnPickUpTriggeredChanged;
-            TakeDamageTriggered.OnValueChanged += OnTakeDamageTriggeredChanged;
-
-            HP.OnValueChanged += OnHPChanged;
-            IsDie.OnValueChanged += OnDie;
-        }
-
-        protected virtual void UnubscribeNetworkVariables()
-        {
-            Position.OnValueChanged -= OnPositionChanged;
-            Rotation.OnValueChanged -= OnRotationChanged;
-
-            PickUpTriggered.OnValueChanged -= OnPickUpTriggeredChanged;
-            TakeDamageTriggered.OnValueChanged -= OnTakeDamageTriggeredChanged;
-
-            HP.OnValueChanged -= OnHPChanged;
-            IsDie.OnValueChanged -= OnDie;
-        }
-
-        private void SetupComponents()
-        {
-            col = GetComponent<CapsuleCollider>();
-            rb = GetComponent<Rigidbody>();
-
-            weaponHandler = GetComponent<WeaponHandler>();
-            itemPicker = GetComponent<ItemPicker>();
-            characterAnimator = GetComponent<CharacterAnimator>();
-        }
+        
 
         private void UpdateAnimationState()
         {
@@ -251,7 +170,7 @@ namespace Actor
 
         private void UpdateStateBehavior()
         {
-            if (currentBaseState.fullPathHash == PlayerState.LocoState)
+            if (currentBaseState.fullPathHash == CharacterAnimationState.LocoState)
             {
                 if (useCurves)
                 {
@@ -259,7 +178,7 @@ namespace Actor
                 }
             }
 
-            else if (currentBaseState.fullPathHash == PlayerState.JumpState)
+            else if (currentBaseState.fullPathHash == CharacterAnimationState.JumpState)
             {
                 if (!characterAnimator.IsTransitioning())
                 {
@@ -290,7 +209,7 @@ namespace Actor
                 }
             }
 
-            else if (currentBaseState.fullPathHash == PlayerState.SlidingState)
+            else if (currentBaseState.fullPathHash == CharacterAnimationState.SlidingState)
             {
                 if (!characterAnimator.IsTransitioning())
                 {
@@ -298,21 +217,21 @@ namespace Actor
                 }
             }
 
-            else if (currentBaseState.fullPathHash == PlayerState.IdleState)
+            else if (currentBaseState.fullPathHash == CharacterAnimationState.IdleState)
             {
                 if (useCurves)
                 {
                     ResetCollider();
                 }
             }
-            else if (currentBaseState.fullPathHash == PlayerState.RestState)
+            else if (currentBaseState.fullPathHash == CharacterAnimationState.RestState)
             {
                 if (!characterAnimator.IsTransitioning())
                 {
                     characterAnimator.SetRest(false);
                 }
             }
-            else if (currentBaseState.fullPathHash == PlayerState.TakeDamageState)
+            else if (currentBaseState.fullPathHash == CharacterAnimationState.TakeDamageState)
             {
                 if (!characterAnimator.IsTransitioning())
                 {
@@ -320,8 +239,8 @@ namespace Actor
                 }
             }
 
-            if (currentUpperBodyState.fullPathHash == PlayerState.AttackState1 
-                || currentUpperBodyState.fullPathHash == PlayerState.AttackState2
+            if (currentUpperBodyState.fullPathHash == CharacterAnimationState.AttackState1 
+                || currentUpperBodyState.fullPathHash == CharacterAnimationState.AttackState2
                 )
             {
                 if (!characterAnimator.IsTransitioning())
@@ -331,89 +250,17 @@ namespace Actor
             }
         }
 
-        private void OnPositionChanged(Vector3 previous, Vector3 current)
-        {
-            if (Position.Value != previous)
-            {
-                if (!IsOwner)
-                {
-                    transform.position = Position.Value;
-                }
-            }
-        }
-
-        private void OnRotationChanged(Quaternion previous, Quaternion current)
-        {
-            if (Rotation.Value != previous)
-            {
-                if (!IsOwner)
-                {
-                    transform.rotation = Rotation.Value;
-                }
-            }
-        }
-
-        private void OnPickUpTriggeredChanged(bool previous, bool current)
-        {
-            if (PickUpTriggered.Value != previous && !IsOwner)
-            {
-                PickUp();
-            }
-        }
-
-        private void OnTakeDamageTriggeredChanged(bool previous, bool current)
-        {
-            if (TakeDamageTriggered.Value != previous)
-            {
-                characterAnimator.SetTakeDamage(true);
-            }
-        }
-
-        private void OnHPChanged(float previous, float current)
-        {
-            if (HP.Value != previous && IsOwner)
-            {
-                SetHP();
-            }
-        }
-
         private void ApplyKnockback(Vector3 knockbackDirection, float knockbackForce)
         {
             knockbackDirection.y = 0.1f;
 
             rb.AddForce(knockbackDirection * knockbackForce, ForceMode.VelocityChange);
-            SubmitTransformRequestServerRpc(transform.localPosition, transform.localRotation);
         }
 
         private void ResetCollider()
         {
             col.height = orgColHeight;
             col.center = orgVectColCenter;
-        }
-
-        [Rpc(SendTo.Server)]
-        protected void SubmitTransformRequestServerRpc(Vector3 position, Quaternion rotation = default, RpcParams rpcParams = default)
-        {
-            Position.Value = position;
-            Rotation.Value = rotation;
-        }
-
-        [Rpc(SendTo.Server)]
-        protected void SubmitPickUpRequestServerRpc(RpcParams rpcParams = default)
-        {
-            PickUpTriggered.Value = !PickUpTriggered.Value;
-        }
-
-        [Rpc(SendTo.Server)]
-        public void SubmitTakeDamageRequestServerRpc(RpcParams rpcParams = default)
-        {
-            TakeDamageTriggered.Value = !TakeDamageTriggered.Value;
-        }
-
-        [Rpc(SendTo.Server)]
-        protected void SubmitHPRequestServerRpc(float hp, RpcParams rpcParams = default)
-        {
-            this.HP.Value = hp;
         }
 
         protected void EquipWeapon(int weaponIdx)
@@ -431,7 +278,6 @@ namespace Actor
         {
             Vector3 pos = GetRandomPositionOnPlane();
             transform.position = pos;
-            SubmitTransformRequestServerRpc(pos);
         }
     }
 }

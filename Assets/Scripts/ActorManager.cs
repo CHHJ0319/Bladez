@@ -145,7 +145,7 @@ public class ActorManager : NetworkBehaviour
             }
         }
 
-        if (GameManager.Instance.CurrentScene == "DuelScene")
+        if (Util.SceneChecker.CheckCurrnetScene(Util.SceneList.DuelScene))
         {
             if (WeaponIndexList.Count == 0)
             {

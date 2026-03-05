@@ -19,8 +19,6 @@ public class GameManager : NetworkBehaviour
 
     public NetworkVariable<int> readyPlayerCount = new NetworkVariable<int>();
 
-    public string CurrentScene { get; private set; }
-
     private const int m_MaxConnections = 4;
 
     async void Awake()
@@ -31,8 +29,6 @@ public class GameManager : NetworkBehaviour
             DontDestroyOnLoad(gameObject);
 
             Initialize();
-
-            CurrentScene = SceneManager.GetActiveScene().name;
 
             try
             {
@@ -101,15 +97,8 @@ public class GameManager : NetworkBehaviour
         }
     }
 
-    public string GetCurrentScene()
-    {
-        return CurrentScene;
-    }
-
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        CurrentScene = SceneManager.GetActiveScene().name;
-
         ActorManager.Instance.OnSceneLoaded();
     }
 

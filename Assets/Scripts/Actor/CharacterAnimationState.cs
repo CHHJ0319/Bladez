@@ -1,8 +1,8 @@
 using UnityEngine;
 
-namespace Actor.Player
+namespace Actor
 {
-    public static class PlayerState
+    public static class CharacterAnimationState
     {
         public static int IdleState = Animator.StringToHash("Base Layer.Idle");
         public static int LocoState = Animator.StringToHash("Base Layer.Locomotion");

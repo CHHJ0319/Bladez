@@ -1,4 +1,3 @@
-using System;
 using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -7,11 +6,8 @@ namespace Actor.Player
 {
     public class PlayerController : CharacterController
     {
+        [Header("Player Properties")]
         public CinemachineCamera tpsCamera;
-
-        [Header("UI")]
-        public GameObject hpBarPrefab;
-        public GameObject staminaBarPrefab;
 
         private PlayerInput playerInput;
 
@@ -19,20 +15,9 @@ namespace Actor.Player
   
         public bool IsDuelHost { get; private set; } = false;
 
-		public override void OnNetworkSpawn()
+		void Start()
         {
             Initialize();
-            SubscribeNetworkVariables();
-
-            if (IsOwner)
-            {
-
-                playerInput.enabled = true;
-            }
-            else
-            {
-                playerInput.enabled = false;
-            }
 
             int currentPlayerCount = ActorManager.Instance.GetPlayerCount();
             ActorManager.Instance.AddPlayer(this);
@@ -63,30 +48,16 @@ namespace Actor.Player
             OnSceneLoaded();
         }
 
-        protected override void SubscribeNetworkVariables()
-        {
-            base.SubscribeNetworkVariables();
-        }
-
-        protected override void UnubscribeNetworkVariables()
-        {
-            base.UnubscribeNetworkVariables();
-        }
-
         private void MoveWithPlayerInput(float horizontal, float vertical)
         {
             CalculateVelocity(vertical);
-            if(GameManager.Instance.GetCurrentScene() != "DuelLobbyScene")
+            if(!Util.SceneChecker.CheckCurrnetScene(Util.SceneList.DuelLobbyScene))
             {
                 transform.localPosition += velocity * Time.fixedDeltaTime;
             }
             transform.Rotate(0, horizontal * rotateSpeed, 0);
 
-            if (IsOwner)
-            {
-                characterAnimator.UpdateMovementAnimation(horizontal, vertical);
-                SubmitTransformRequestServerRpc(transform.localPosition, transform.localRotation);
-            }
+            characterAnimator.UpdateMovementAnimation(horizontal, vertical);
         }
 
         private void JumpWithPlayerInput()
@@ -117,7 +88,7 @@ namespace Actor.Player
         {
             if (playerInputHandler.InteractTriggered)
             {
-                if (GameManager.Instance.GetCurrentScene() == "DuelLobbyScene")
+                if (Util.SceneChecker.CheckCurrnetScene(Util.SceneList.DuelLobbyScene))
                 {
                     Rest();
                 }
@@ -148,7 +119,7 @@ namespace Actor.Player
 
         public void OnSceneLoaded()
         {
-            if (GameManager.Instance.GetCurrentScene() == "DuelLobbyScene")
+            if (Util.SceneChecker.CheckCurrnetScene(Util.SceneList.DuelLobbyScene))
             {
                 tpsCamera.gameObject.SetActive(false);
 
@@ -161,21 +132,13 @@ namespace Actor.Player
                     IsDuelHost = true;
                 }
 
-                if (IsOwner)
-                {
-                    UIManager.Instance.InitializDuelLobbySceneUI(IsDuelHost);
-                }
+                UIManager.Instance.InitializDuelLobbySceneUI(IsDuelHost);
             }
-            else if(GameManager.Instance.GetCurrentScene() == "DuelScene")
+            else if(Util.SceneChecker.CheckCurrnetScene(Util.SceneList.DuelScene))
             {
                 MoveToRandomPosition();
 
-                if (IsOwner)
-                {
-                    Events.PlayerEvents.UpdateHPBar(HP.Value, maxHP);
-
-                    tpsCamera.gameObject.SetActive(true);
-                }
+                tpsCamera.gameObject.SetActive(true);
             }  
         }
 

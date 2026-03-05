@@ -19,7 +19,7 @@ namespace Actor
         private ItemPicker itemPicker;
 
         private CapsuleCollider col;
-        private Rigidbody rb;
+        protected Rigidbody rb;
 
         private float orgColHeight;
         private Vector3 orgVectColCenter;

@@ -106,6 +106,8 @@ namespace Actor.Player
             }
         }
 
+        public Vector2 LookInput { get; private set; }
+
         void OnMove(InputValue value)
         {
             Vector2 movement = value.Get<Vector2>();
@@ -166,6 +168,11 @@ namespace Actor.Player
             {
                 _quiick3Triggered = true;
             }
+        }
+
+        public void OnLook(InputValue value)
+        {
+            LookInput = value.Get<Vector2>();
         }
     }
 }

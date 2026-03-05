@@ -8,12 +8,17 @@ namespace Actor.Player
     {
         [Header("Player Properties")]
         public CinemachineCamera tpsCamera;
+        public float mouseSensitivity = 0.5f;
 
         private PlayerInput playerInput;
-
         private PlayerInputHandler playerInputHandler;
   
         public bool IsDuelHost { get; private set; } = false;
+
+        private Vector2 lookInput;
+        private float horizontal;
+        private float vertical;
+
 
         protected override void Awake()
         {
@@ -28,14 +33,21 @@ namespace Actor.Player
             //ActorManager.Instance.AddPlayer(this);
         }
 
+        protected override void Update()
+        {
+            lookInput = playerInputHandler.LookInput;
+
+            horizontal = playerInputHandler.Horizontal;
+            vertical = playerInputHandler.Vertical;
+
+            CalculateVelocity();
+        }
+
         protected override void FixedUpdate()
         {
             base.FixedUpdate();
 
-            float h = playerInputHandler.Horizontal;
-            float v = playerInputHandler.Vertical;
-
-            MoveWithPlayerInput(h, v);
+            MoveWithPlayerInput();
             JumpWithPlayerInput();
             SlidingWithPlayerInput();
             AttackWithPlayerInput();
@@ -43,16 +55,21 @@ namespace Actor.Player
             QuiclSlotWithPlayerInput();
         }
 
-        private void MoveWithPlayerInput(float horizontal, float vertical)
+        private void MoveWithPlayerInput()
         {
-            CalculateVelocity(vertical);
+            characterAnimator.UpdateMovementAnimation(horizontal, vertical);
+
             if(!Util.SceneChecker.CheckCurrnetScene(Util.SceneList.DuelLobbyScene))
             {
-                transform.localPosition += velocity * Time.fixedDeltaTime;
+                Vector3 currentVelocity = rb.linearVelocity;
+                Vector3 newVelocity = new Vector3(velocity.x, currentVelocity.y, velocity.z);
+                rb.linearVelocity = newVelocity;
             }
-            transform.Rotate(0, horizontal * rotateSpeed, 0);
 
-            characterAnimator.UpdateMovementAnimation(horizontal, vertical);
+            float yaw = lookInput.x * mouseSensitivity;
+            Quaternion deltaRotation = Quaternion.Euler(0, yaw, 0);
+            rb.MoveRotation(rb.rotation * deltaRotation);
+
         }
 
         private void JumpWithPlayerInput()
@@ -137,10 +154,14 @@ namespace Actor.Player
             }  
         }
 
-        private void CalculateVelocity(float vertical)
+        private void CalculateVelocity()
         {
-            velocity = new Vector3(0, 0, vertical);
-            velocity = transform.TransformDirection(velocity);
+            velocity = (transform.forward * vertical) + (transform.right * horizontal);
+
+            if (velocity.magnitude > 1f)
+            {
+                velocity.Normalize();
+            }
 
             if (vertical > 0.1f)
             {

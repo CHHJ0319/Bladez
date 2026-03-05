@@ -6,11 +6,12 @@ namespace Util
 {
     public static class SceneLoader
     {
-        public static IEnumerator LoadSceneByName(string name)
+        public static IEnumerator LoadSceneByName(SceneList scene)
         {
             yield return new WaitForSeconds(0.2f);
 
-            SceneManager.LoadScene(name);
+            string sceneName = scene.ToString();
+            SceneManager.LoadScene(sceneName);
         }
     }
 }

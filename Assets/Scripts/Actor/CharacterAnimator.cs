@@ -40,6 +40,16 @@ namespace Actor
             anim.SetFloat(m_AnimIDSpeed, vertical);
             anim.SetFloat(m_AnimIDDirection, horizontal);
 
+            if (horizontal != 0)
+            {
+                anim.SetBool("SideWalk", true);
+                anim.SetFloat("Horizontal", horizontal);
+            }
+            else
+            {
+                anim.SetBool("SideWalk", false);
+            }
+
             anim.speed = animSpeed;
         }
 

@@ -34,13 +34,11 @@ namespace Actor
 
         public void UpdateMovementAnimation(float horizontal, float vertical)
         {
-            var networkBehaviour = GetComponent<NetworkBehaviour>();
-            if (networkBehaviour != null && !networkBehaviour.IsOwner) return;
+            //var networkBehaviour = GetComponent<NetworkBehaviour>();
+            //if (networkBehaviour != null && !networkBehaviour.IsOwner) return;
 
             anim.SetFloat(m_AnimIDSpeed, vertical);
             anim.SetFloat(m_AnimIDDirection, horizontal);
-
-            //Debug.Log("h : " + horizontal + "v:" + vertical);
 
             anim.speed = animSpeed;
         }

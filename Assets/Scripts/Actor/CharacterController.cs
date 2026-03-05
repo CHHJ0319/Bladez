@@ -34,12 +34,12 @@ namespace Actor
 
         public string OwnerID { get; private set; }
 
-        void Awake()
+        protected virtual void Awake()
         {
             Initialize();
         }
 
-        protected virtual void Initialize()
+        protected void Initialize()
         {
             SetComponents();
 

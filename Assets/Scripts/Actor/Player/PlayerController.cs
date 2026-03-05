@@ -15,12 +15,17 @@ namespace Actor.Player
   
         public bool IsDuelHost { get; private set; } = false;
 
-		void Start()
+        protected override void Awake()
         {
             Initialize();
 
-            int currentPlayerCount = ActorManager.Instance.GetPlayerCount();
-            ActorManager.Instance.AddPlayer(this);
+            playerInput = GetComponent<PlayerInput>();
+            playerInputHandler = GetComponent<PlayerInputHandler>();
+
+            OnSceneLoaded();
+
+            //int currentPlayerCount = ActorManager.Instance.GetPlayerCount();
+            //ActorManager.Instance.AddPlayer(this);
         }
 
         protected override void FixedUpdate()
@@ -34,18 +39,8 @@ namespace Actor.Player
             JumpWithPlayerInput();
             SlidingWithPlayerInput();
             AttackWithPlayerInput();
-			InteractWithPlayerInput();
+            InteractWithPlayerInput();
             QuiclSlotWithPlayerInput();
-        }
-
-        protected override void Initialize()
-        {
-            base.Initialize();
-
-            playerInput = GetComponent<PlayerInput>();
-            playerInputHandler = GetComponent<PlayerInputHandler>();
-
-            OnSceneLoaded();
         }
 
         private void MoveWithPlayerInput(float horizontal, float vertical)

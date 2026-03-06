@@ -15,6 +15,7 @@ namespace Actor.Player
         private PlayerInputHandler playerInputHandler;
   
         public bool IsDuelHost { get; private set; } = false;
+        public bool IsReady { get; set; } = false;
 
         private Vector2 lookInput;
         private float horizontal;
@@ -28,9 +29,7 @@ namespace Actor.Player
             playerInput = GetComponent<PlayerInput>();
             playerInputHandler = GetComponent<PlayerInputHandler>();
 
-            ActorManager.Instance.SetOwnerPlayer(this);
-
-            DontDestroyOnLoad(gameObject);
+            //DontDestroyOnLoad(gameObject);
         }
 
         private void OnEnable()
@@ -54,12 +53,24 @@ namespace Actor.Player
             {
                 playerInput.enabled = true;
                 tpsCamera.gameObject.SetActive(true);
+
+                ActorManager.Instance.SetOwnerPlayer(this);
             }
             else
             {
                 playerInput.enabled = false;
                 tpsCamera.gameObject.SetActive(false);
             }
+
+            if (Util.SceneChecker.CheckCurrnetScene(Util.SceneList.DuelLobbyScene))
+            {
+                tpsCamera.gameObject.SetActive(false);
+
+                Transform lobbyTransform = ActorManager.Instance.GetDuelLobbyPlayerTransform();
+                transform.localPosition = lobbyTransform.localPosition;
+                transform.localRotation = lobbyTransform.rotation;
+            }
+            ActorManager.Instance.AddPlayer(this);
         }
 
         public override void OnNetworkDespawn()
@@ -93,7 +104,6 @@ namespace Actor.Player
         {
             if (Util.SceneChecker.CheckCurrnetScene(Util.SceneList.DuelLobbyScene))
             {
-                gameObject.SetActive(true);
                 tpsCamera.gameObject.SetActive(false);
 
                 Transform lobbyTransform = ActorManager.Instance.GetDuelLobbyPlayerTransform();

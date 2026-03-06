@@ -12,8 +12,9 @@ namespace UI {
             if (eventData.button == PointerEventData.InputButton.Left)
             {
                 UIManager.Instance.PlayStartSound();
-                UIManager.Instance.HideBlinkingPrompt();
-                UIManager.Instance.ShowNetworkPanel();
+                StartCoroutine(Util.SceneLoader.LoadSceneByName(Util.SceneList.DuelLobbyScene));
+                //UIManager.Instance.HideBlinkingPrompt();
+                //UIManager.Instance.ShowNetworkPanel();
             }
         }
     }

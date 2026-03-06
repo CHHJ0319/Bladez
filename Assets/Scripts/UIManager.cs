@@ -25,7 +25,7 @@ public class UIManager : NetworkBehaviour
     {
         if (Util.SceneChecker.CheckCurrnetScene(Util.SceneList.DuelLobbyScene))
         {
-            duelLobbySceneUIController.UpdateStatusText();
+            duelLobbySceneUIController.UpdateUI();
         }
         else
         {
@@ -80,6 +80,16 @@ public class UIManager : NetworkBehaviour
         {
             duelLobbySceneUIController.Initialize();
         }
+    }
+
+    public void SetDuelHostUI(string joinCode)
+    {
+        duelLobbySceneUIController.SetDuelHostUI(joinCode);
+    }
+
+    public void SetDuelClientUI()
+    {
+        duelLobbySceneUIController.SetDuelClientUI();
     }
     #endregion
 

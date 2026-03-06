@@ -1,5 +1,4 @@
 using TMPro;
-using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -17,7 +16,7 @@ namespace UI.TitleScene
 
         void Awake()
         {
-            accessButton.onClick.AddListener(OnAccessButtonClicked);
+           //accessButton.onClick.AddListener(OnAccessButtonClicked);
         }
 
         private void Start()

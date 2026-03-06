@@ -9,35 +9,69 @@ namespace UI.DuelLobbyScene
     {
         public Transform duelLobbyUI;
         public Button duelStartButton;
-        public TextMeshPro joinCode;
+        public TMP_Text joinCode;
 
         public TMP_Text statusText;
 
+        [Header("Network Panel")]
+        public Transform networkPanel;
+        public TMP_InputField joincodeInputField;
+        public Button accessButton;
+
+        private bool isDuelHost = false;
         private bool isDuelReady = false;
 
         void Awake()
         {
+            accessButton.onClick.AddListener(OnAccessButtonClicked);
+
             UIManager.Instance.SetDuelLobbySceneUIController(this);
         }
 
         public void Initialize()
         {
+            
+        }
 
-            //duelStartButton.gameObject.SetActive(true);
-            //duelStartButton.onClick.AddListener(() => OnDuelStartButtonClicked(isDuelHost));
+        public void SetDuelHostUI(string joinCode)
+        {
+            this.joinCode.gameObject.SetActive(true);
+            this.joinCode.text = joinCode;
 
-            //var buttonTitle = duelStartButton.GetComponentInChildren<TextMeshProUGUI>();
-            //if (isDuelHost)
-            //{
-            //    buttonTitle.text = "Start";
-            //    duelStartButton.interactable = false;
+            duelStartButton.gameObject.SetActive(true);
+            TextMeshProUGUI duelStartButtonText = duelStartButton.GetComponentInChildren<TextMeshProUGUI>();
+            duelStartButtonText.text = "Start";
+            duelStartButton.interactable = false;
 
-            //    joinCode.gameObject.SetActive(true);
-            //}
-            //else
-            //{
-            //    buttonTitle.text = "Ready";
-            //}
+            duelStartButton.onClick.AddListener(OnDuelStartButtonClicked);
+
+            isDuelHost = true;
+        }
+
+        public void SetDuelClientUI()
+        {
+            duelStartButton.gameObject.SetActive(true);
+            TextMeshProUGUI duelStartButtonText = duelStartButton.GetComponentInChildren<TextMeshProUGUI>();
+            duelStartButtonText.text = "Ready";
+
+            duelStartButton.onClick.AddListener(OnDuelReadyButtonClicked);
+        }
+
+        public void UpdateUI()
+        {
+            if (isDuelHost)
+            {
+                if (ActorManager.Instance.AreAllPlayersReady())
+                {
+                    duelStartButton.interactable = true;
+                }
+                else
+                {
+                    duelStartButton.interactable = false;
+                }
+            }
+
+            UpdateStatusText();
         }
 
         #region StatusText
@@ -75,31 +109,43 @@ namespace UI.DuelLobbyScene
             }
         }
 
-        private void OnClientButtonClicked()
+        private void OnDuelStartButtonClicked()
         {
-            //StartCoroutine(GameManager.Instance.ConfigureTransportAndStartNgoAsConnectingPlayer(joinCode));
+            GameManager.Instance.RequestStartDuelServerRpc("DuelScene");
         }
 
-        private void OnDuelStartButtonClicked(bool isDuelHost)
+        private void OnDuelReadyButtonClicked()
         {
-            if (isDuelHost)
+            TextMeshProUGUI duelStartButtonText = duelStartButton.GetComponentInChildren<TextMeshProUGUI>();
+            if(isDuelReady)
             {
-                GameManager.Instance.RequestStartDuelServerRpc("DuelScene");
+                ActorManager.Instance.RequestDuelReadyServerRpc(false);
+
+                duelStartButtonText.text = "Ready";
+                isDuelReady = false;
             }
             else
             {
-                if (isDuelReady)
-                {
-                    duelStartButton.GetComponentInChildren<TextMeshProUGUI>().text = "Ready";
-                    isDuelReady = false;
-                }
-                else
-                {
-                    duelStartButton.GetComponentInChildren<TextMeshProUGUI>().text = "Cancel";
-                    isDuelReady = true;
-                }
+                ActorManager.Instance.RequestDuelReadyServerRpc(true);
 
-                GameManager.Instance.SubmitReadyPlayerServerRpc(isDuelReady);
+                duelStartButtonText.text = "Cancel";
+                isDuelReady = true;
+            }
+        }
+
+        private void OnAccessButtonClicked()
+        {
+            string joinCode = joincodeInputField.text;
+
+            networkPanel.gameObject.SetActive(false);
+
+            if (string.IsNullOrWhiteSpace(joinCode))
+            {
+                StartCoroutine(GameManager.Instance.ConfigureTransportAndStartNgoAsHost());
+            }
+            else
+            {
+                StartCoroutine(GameManager.Instance.ConfigureTransportAndStartNgoAsConnectingPlayer(joinCode));
             }
         }
     }

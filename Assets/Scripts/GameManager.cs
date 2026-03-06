@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Threading;
 using Unity.Netcode;
 using Unity.Netcode.Transports.UTP;
 using UnityEngine;
@@ -114,13 +115,11 @@ public class GameManager : NetworkBehaviour
         }
 
         var relayServerData = serverRelayUtilityTask.Result;
-
         NetworkManager.Singleton.GetComponent<UnityTransport>().SetRelayServerData(relayServerData);
+
         NetworkManager.Singleton.StartHost();
 
-        yield return null;
-
-        StartCoroutine(Util.SceneLoader.LoadSceneByName(Util.SceneList.DuelLobbyScene));
+        yield return new WaitForSeconds(2.0f);
     }
 
     public IEnumerator ConfigureTransportAndStartNgoAsConnectingPlayer(string relayJoinCode)
@@ -139,12 +138,10 @@ public class GameManager : NetworkBehaviour
         }
 
         var relayServerData = clientRelayUtilityTask.Result;
-
         NetworkManager.Singleton.GetComponent<UnityTransport>().SetRelayServerData(relayServerData);
+
         NetworkManager.Singleton.StartClient();
 
-        yield return null;
-
-        StartCoroutine(Util.SceneLoader.LoadSceneByName(Util.SceneList.DuelLobbyScene));
+        yield return new WaitForSeconds(2.0f);
     }
 }

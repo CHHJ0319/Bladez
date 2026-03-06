@@ -11,7 +11,7 @@ namespace Util
 {
     public static class NetworkService
     {
-        public static string JoinCode;
+        public static string JoinCode { get; private set; }
 
         public static async void InitializeUnityServicesAsync()
         {
@@ -53,6 +53,8 @@ namespace Util
                 throw;
             }
 
+            UIManager.Instance.SetDuelHostUI(JoinCode);
+
             return new RelayServerData(allocation, "dtls");
         }
 
@@ -74,6 +76,8 @@ namespace Util
             Debug.Log($"client: {allocation.ConnectionData[0]} {allocation.ConnectionData[1]}");
             Debug.Log($"host: {allocation.HostConnectionData[0]} {allocation.HostConnectionData[1]}");
             Debug.Log($"client: {allocation.AllocationId}");
+
+            UIManager.Instance.SetDuelClientUI();
 
             return new RelayServerData(allocation, "dtls");
         }

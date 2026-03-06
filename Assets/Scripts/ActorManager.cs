@@ -2,6 +2,7 @@ using Actor;
 using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class ActorManager : NetworkBehaviour
 {
@@ -17,10 +18,11 @@ public class ActorManager : NetworkBehaviour
     public NetworkList<int> WeaponIndexList = new NetworkList<int>();
     public NetworkList<Vector3> WeaponPositionList = new NetworkList<Vector3>();
 
-    private Actor.Item.DroppedItemSpawner droppedItemSpawner;
 
     private List<Actor.Player.PlayerController> playerList = new List<Actor.Player.PlayerController>();
+    public NetworkVariable<int> playerReadyCount = new NetworkVariable<int>();
 
+    private Actor.Item.DroppedItemSpawner droppedItemSpawner;
     private int droppedWeaponCount = 10;
 
     void Awake()
@@ -36,6 +38,16 @@ public class ActorManager : NetworkBehaviour
         {
             Destroy(gameObject);
         }
+    }
+
+    public override void OnNetworkSpawn()
+    {
+        //playersReadyStates.OnValueChanged += 
+    }
+
+    public override void OnNetworkDespawn()
+    {
+
     }
 
     private void Initialize()
@@ -61,11 +73,6 @@ public class ActorManager : NetworkBehaviour
         ownerPlayer = player;
     }
 
-    public bool IsDuelHost()
-    {
-        return ownerPlayer.IsDuelHost;
-    }
-
     #region DuelLobbyScene
     public void SetDuelRoom(Actor.DuelRoom room)
     {
@@ -89,7 +96,27 @@ public class ActorManager : NetworkBehaviour
         playerList.Add(player);
         
     }
-    
+
+    [Rpc(SendTo.Server)]
+    public void RequestDuelReadyServerRpc(bool isReady, RpcParams rpcParams = default)
+    {
+        if(isReady)
+        {
+            playerReadyCount.Value++;
+        }
+        else
+        {
+            playerReadyCount.Value--;
+        }
+    }
+
+    public bool AreAllPlayersReady()
+    {
+        if (playerList.Count == 1) return false;
+        return playerList.Count - 1 == playerReadyCount.Value;
+    }
+
+    #region WeaponSpawner
     public void GenerateRandomWeaponList()
     {
         for (int i = 0; i < droppedWeaponCount; i++)
@@ -117,13 +144,6 @@ public class ActorManager : NetworkBehaviour
             WeaponIndexList.Add(randomIndex);
             WeaponPositionList.Add(randomPosition);
         }
-    }
-
-    private Vector3 GetRandomWeaponPosition(Vector3 center = default, float range = 30.0f, float fixedY = 0.3f)
-    {
-        Vector2 randomPoint = Random.insideUnitCircle * range;
-
-        return new Vector3(center.x + randomPoint.x, fixedY, center.z + randomPoint.y);
     }
 
     [Rpc(SendTo.Server)]
@@ -157,5 +177,13 @@ public class ActorManager : NetworkBehaviour
     public void SetDroppedItemSpawner(Actor.Item.DroppedItemSpawner spawner)
     {
         droppedItemSpawner = spawner;
+    }
+    #endregion
+
+    private Vector3 GetRandomWeaponPosition(Vector3 center = default, float range = 30.0f, float fixedY = 0.3f)
+    {
+        Vector2 randomPoint = Random.insideUnitCircle * range;
+
+        return new Vector3(center.x + randomPoint.x, fixedY, center.z + randomPoint.y);
     }
 }

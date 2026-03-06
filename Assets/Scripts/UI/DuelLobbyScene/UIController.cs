@@ -51,9 +51,10 @@ namespace UI.DuelLobbyScene
 
         private void OnHostButtonClicked()
         {
-            StartCoroutine(GameManager.Instance.ConfigureTransportAndStartNgoAsHost());
             SetActiveNetworkPanel(false);
-            ActorManager.Instance.ShowDuelLobbyPads();
+
+            ActorManager.Instance.CreateDuelRoom();
+            StartCoroutine(GameManager.Instance.ConfigureTransportAndStartNgoAsHost());
         }
 
         #region StatusText

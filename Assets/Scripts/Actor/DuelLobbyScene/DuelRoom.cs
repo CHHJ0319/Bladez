@@ -2,15 +2,10 @@ using UnityEngine;
 
 namespace Actor.DuelLobbyScene
 {
-    public class ActorController : MonoBehaviour
+    public class DuelRoom : MonoBehaviour
     {
         public Transform DuelLobbyPads;
         public Transform[] lobbyPlayers;
-
-        private void Awake()
-        {
-            ActorManager.Instance.SetDuelLobbySceneActorController(this);
-        }
 
         public void Initialize()
         {
@@ -22,9 +17,8 @@ namespace Actor.DuelLobbyScene
             DuelLobbyPads.gameObject.SetActive(true);
         }
 
-        public Transform GetDuelLobbyPlayerTransform()
+        public Transform GetDuelLobbyPlayerTransform(int index)
         {
-            int index = ActorManager.Instance.PlayerCount;
             return lobbyPlayers[index];
         }
     }

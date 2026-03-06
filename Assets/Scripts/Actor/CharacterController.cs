@@ -1,8 +1,9 @@
+using Unity.Netcode;
 using UnityEngine;
 
 namespace Actor
 {
-    public abstract class CharacterController : MonoBehaviour
+    public abstract class CharacterController : NetworkBehaviour
     {
         [Header("Character Properties")]
         public float forwardSpeed = 7.0f;

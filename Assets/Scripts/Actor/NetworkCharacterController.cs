@@ -27,7 +27,6 @@ namespace Actor.Player
 
             if (IsOwner)
             {
-
                 playerInput.enabled = true;
             }
             else
@@ -157,7 +156,7 @@ namespace Actor.Player
                 //transform.localPosition = lobbyTransform.localPosition;
                 //transform.localRotation = lobbyTransform.rotation;
 
-                if (ActorManager.Instance.GetCurrentPlayerCount() == 0)
+                if (ActorManager.Instance.GetPlayerCount() == 0)
                 {
                     IsDuelHost = true;
                 }

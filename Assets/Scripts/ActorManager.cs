@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -5,9 +6,9 @@ public class ActorManager : NetworkBehaviour
 {
     public static ActorManager Instance { get; private set; }
 
-    private Actor.DuelLobbyScene.ActorController duelLobbySceneActorController;
+    public GameObject duelRoomPrefab;
+    private GameObject currentDuelRoom;
     
-
     [Header("DuelScene")]
     public GameObject[] weaponList;
     public NetworkList<int> WeaponIndexList = new NetworkList<int>();
@@ -15,9 +16,7 @@ public class ActorManager : NetworkBehaviour
 
     private Actor.Item.DroppedItemSpawner droppedItemSpawner;
 
-    public int PlayerCount = 0;
-
-    private Actor.Player.PlayerController[] playerList = new Actor.Player.PlayerController[4];
+    private List<Actor.Player.PlayerController> playerList = new List<Actor.Player.PlayerController>();
 
     private int droppedWeaponCount = 10;
 
@@ -63,40 +62,27 @@ public class ActorManager : NetworkBehaviour
     }
 
     #region DuelLobbyScene
-    public void SetDuelLobbySceneActorController(Actor.DuelLobbyScene.ActorController controller)
+    public void CreateDuelRoom()
     {
-        duelLobbySceneActorController = controller;
+        currentDuelRoom = Instantiate(duelRoomPrefab); 
     }
 
-    public void InitializeDuelLobbySceneUI()
+    public Transform GetDuelLobbyPlayerTransform()
     {
-        if (duelLobbySceneActorController != null)
-        {
-            duelLobbySceneActorController.Initialize();
-        }
-    }
-
-    public void ShowDuelLobbyPads()
-    {
-        duelLobbySceneActorController.ShowDuelLobbyPads();
+        int index = GetPlayerCount();
+        return currentDuelRoom.GetComponent<Actor.DuelLobbyScene.DuelRoom>().GetDuelLobbyPlayerTransform(index);
     }
     #endregion
 
     public int GetPlayerCount()
     {
-        return PlayerCount;
+        return playerList.Count;
     }
 
     public void AddPlayer(Actor.Player.PlayerController player)
     {
-        playerList[PlayerCount] = player;
-        PlayerCount++;
+        playerList.Add(player);
         
-    }
-
-    public int GetCurrentPlayerCount()
-    {
-        return PlayerCount;
     }
     
     public void GenerateRandomWeaponList()

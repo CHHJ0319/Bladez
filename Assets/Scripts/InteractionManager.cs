@@ -5,8 +5,6 @@ public class InteractionManager : MonoBehaviour
 {
     public static InteractionManager Instance;
 
-    public CinemachineInputAxisController inputController;
-
     void Awake()
     {
         if (Instance == null)
@@ -35,9 +33,9 @@ public class InteractionManager : MonoBehaviour
 
     void SetCursorState(bool lockCursor)
     {
-        if (inputController != null)
-        {
-            inputController.enabled = lockCursor;
-        }
+        //if (inputController != null)
+        //{
+        //    inputController.enabled = lockCursor;
+        //}
     }
 }

@@ -33,6 +33,24 @@ namespace Actor.Player
             //ActorManager.Instance.AddPlayer(this);
         }
 
+        public override void OnNetworkSpawn()
+        {
+            if (IsOwner)
+            {
+                playerInput.enabled = true;
+                tpsCamera.gameObject.SetActive(true);
+            }
+            else
+            {
+                playerInput.enabled = false;
+                tpsCamera.gameObject.SetActive(false);
+            }
+        }
+
+        public override void OnNetworkDespawn()
+        {
+        }
+
         protected override void Update()
         {
             lookInput = playerInputHandler.LookInput;
@@ -54,6 +72,33 @@ namespace Actor.Player
             InteractWithPlayerInput();
             QuiclSlotWithPlayerInput();
         }
+
+        #region OnSceneLoaded
+        public void OnSceneLoaded()
+        {
+            if (Util.SceneChecker.CheckCurrnetScene(Util.SceneList.DuelLobbyScene))
+            {
+                tpsCamera.gameObject.SetActive(false);
+
+                Transform lobbyTransform = ActorManager.Instance.GetDuelLobbyPlayerTransform();
+                transform.localPosition = lobbyTransform.localPosition;
+                transform.localRotation = lobbyTransform.rotation;
+
+                //if (ActorManager.Instance.GetPlayerCount() == 0)
+                //{
+                //    IsDuelHost = true;
+                //}
+
+                //UIManager.Instance.InitializDuelLobbySceneUI(IsDuelHost);
+            }
+            else if (Util.SceneChecker.CheckCurrnetScene(Util.SceneList.DuelScene))
+            {
+                MoveToRandomPosition();
+
+                tpsCamera.gameObject.SetActive(true);
+            }
+        }
+        #endregion
 
         private void MoveWithPlayerInput()
         {
@@ -127,31 +172,6 @@ namespace Actor.Player
             {
                 EquipWeapon(2);
             }
-        }
-
-        public void OnSceneLoaded()
-        {
-            if (Util.SceneChecker.CheckCurrnetScene(Util.SceneList.DuelLobbyScene))
-            {
-                tpsCamera.gameObject.SetActive(false);
-
-                //Transform lobbyTransform = ActorManager.Instance.GetLobbyPlayerTransform();
-                //transform.localPosition = lobbyTransform.localPosition;
-                //transform.localRotation = lobbyTransform.rotation;
-
-                if (ActorManager.Instance.GetPlayerCount() == 0)
-                {
-                    IsDuelHost = true;
-                }
-
-                //UIManager.Instance.InitializDuelLobbySceneUI(IsDuelHost);
-            }
-            else if(Util.SceneChecker.CheckCurrnetScene(Util.SceneList.DuelScene))
-            {
-                MoveToRandomPosition();
-
-                tpsCamera.gameObject.SetActive(true);
-            }  
         }
 
         private void CalculateVelocity()

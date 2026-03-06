@@ -5,6 +5,7 @@ public class UIManager : NetworkBehaviour
     public static UIManager Instance { get; private set; }
 
     private UI.PlayerUI playerUI;
+    private UI.TitleScene.UIController titleSceneUIController;
     private UI.DuelLobbyScene.UIController duelLobbySceneUIController;
 
     public void Awake()
@@ -34,11 +35,38 @@ public class UIManager : NetworkBehaviour
 
     public void OnSceneLoaded()
     {
+        if (Util.SceneChecker.CheckCurrnetScene(Util.SceneList.TitleScene))
+        {
+            
+        }
+
         if (Util.SceneChecker.CheckCurrnetScene(Util.SceneList.DuelLobbyScene))
         {
             InitializeDuelLobbySceneUI();
         }
     }
+
+    #region TitleScene
+    public void SetTitleSceneUIController(UI.TitleScene.UIController controller)
+    {
+        titleSceneUIController = controller;
+    }
+
+    public void ShowNetworkPanel()
+    {
+        titleSceneUIController.SetActiveNetworkPanel(true);
+    }
+
+    public void HideBlinkingPrompt()
+    {
+        titleSceneUIController.HideBlinkingPrompt();
+    }
+
+    public void PlayStartSound() 
+    {
+        titleSceneUIController.PlayStartSound();
+    }
+    #endregion
 
     #region DuelLobbyScene
     public void SetDuelLobbySceneUIController(UI.DuelLobbyScene.UIController controller)

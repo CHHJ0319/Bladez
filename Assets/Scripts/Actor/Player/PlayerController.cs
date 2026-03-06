@@ -1,6 +1,7 @@
 using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 namespace Actor.Player
 {
@@ -27,14 +28,28 @@ namespace Actor.Player
             playerInput = GetComponent<PlayerInput>();
             playerInputHandler = GetComponent<PlayerInputHandler>();
 
-            OnSceneLoaded();
+            ActorManager.Instance.SetOwnerPlayer(this);
 
-            //int currentPlayerCount = ActorManager.Instance.GetPlayerCount();
-            //ActorManager.Instance.AddPlayer(this);
+            DontDestroyOnLoad(gameObject);
+        }
+
+        private void OnEnable()
+        {
+            SceneManager.sceneLoaded += OnSceneLoaded;
+        }
+
+        private void OnDisable()
+        {
+            SceneManager.sceneLoaded -= OnSceneLoaded;
         }
 
         public override void OnNetworkSpawn()
         {
+            if(IsHost)
+            {
+                IsDuelHost = true;
+            }
+
             if (IsOwner)
             {
                 playerInput.enabled = true;
@@ -74,22 +89,16 @@ namespace Actor.Player
         }
 
         #region OnSceneLoaded
-        public void OnSceneLoaded()
+        private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
             if (Util.SceneChecker.CheckCurrnetScene(Util.SceneList.DuelLobbyScene))
             {
+                gameObject.SetActive(true);
                 tpsCamera.gameObject.SetActive(false);
 
                 Transform lobbyTransform = ActorManager.Instance.GetDuelLobbyPlayerTransform();
                 transform.localPosition = lobbyTransform.localPosition;
                 transform.localRotation = lobbyTransform.rotation;
-
-                //if (ActorManager.Instance.GetPlayerCount() == 0)
-                //{
-                //    IsDuelHost = true;
-                //}
-
-                //UIManager.Instance.InitializDuelLobbySceneUI(IsDuelHost);
             }
             else if (Util.SceneChecker.CheckCurrnetScene(Util.SceneList.DuelScene))
             {
@@ -100,6 +109,7 @@ namespace Actor.Player
         }
         #endregion
 
+        #region Movement
         private void MoveWithPlayerInput()
         {
             characterAnimator.UpdateMovementAnimation(horizontal, vertical);
@@ -192,6 +202,7 @@ namespace Actor.Player
                 velocity *= backwardSpeed;
             }
         }
+        #endregion
     }
 }
 

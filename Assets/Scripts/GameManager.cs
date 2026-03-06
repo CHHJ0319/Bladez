@@ -119,6 +119,8 @@ public class GameManager : NetworkBehaviour
         NetworkManager.Singleton.StartHost();
 
         yield return null;
+
+        StartCoroutine(Util.SceneLoader.LoadSceneByName(Util.SceneList.DuelLobbyScene));
     }
 
     public IEnumerator ConfigureTransportAndStartNgoAsConnectingPlayer(string relayJoinCode)
@@ -142,5 +144,7 @@ public class GameManager : NetworkBehaviour
         NetworkManager.Singleton.StartClient();
 
         yield return null;
+
+        StartCoroutine(Util.SceneLoader.LoadSceneByName(Util.SceneList.DuelLobbyScene));
     }
 }

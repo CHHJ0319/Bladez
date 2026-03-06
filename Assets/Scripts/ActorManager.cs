@@ -1,3 +1,4 @@
+using Actor;
 using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
@@ -6,8 +7,10 @@ public class ActorManager : NetworkBehaviour
 {
     public static ActorManager Instance { get; private set; }
 
+    private Actor.Player.PlayerController ownerPlayer;
+
     public GameObject duelRoomPrefab;
-    private GameObject currentDuelRoom;
+    public Actor.DuelRoom currentDuelRoom;
     
     [Header("DuelScene")]
     public GameObject[] weaponList;
@@ -43,14 +46,6 @@ public class ActorManager : NetworkBehaviour
 
     public void OnSceneLoaded()
     {
-        foreach (var player in playerList)
-        {
-            if (player != null)
-            {
-                player.OnSceneLoaded();
-            }
-        }
-
         if (Util.SceneChecker.CheckCurrnetScene(Util.SceneList.DuelScene))
         {
             if (WeaponIndexList.Count == 0)
@@ -61,16 +56,26 @@ public class ActorManager : NetworkBehaviour
         }
     }
 
-    #region DuelLobbyScene
-    public void CreateDuelRoom()
+    public void SetOwnerPlayer(Actor.Player.PlayerController player)
     {
-        currentDuelRoom = Instantiate(duelRoomPrefab); 
+        ownerPlayer = player;
+    }
+
+    public bool IsDuelHost()
+    {
+        return ownerPlayer.IsDuelHost;
+    }
+
+    #region DuelLobbyScene
+    public void SetDuelRoom(Actor.DuelRoom room)
+    {
+        currentDuelRoom = room; 
     }
 
     public Transform GetDuelLobbyPlayerTransform()
     {
         int index = GetPlayerCount();
-        return currentDuelRoom.GetComponent<Actor.DuelLobbyScene.DuelRoom>().GetDuelLobbyPlayerTransform(index);
+        return currentDuelRoom.GetDuelLobbyPlayerTransform(index);
     }
     #endregion
 

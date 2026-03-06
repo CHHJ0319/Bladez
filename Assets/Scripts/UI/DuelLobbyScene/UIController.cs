@@ -7,14 +7,9 @@ namespace UI.DuelLobbyScene
 {
     public class UIController : MonoBehaviour
     {
-        [Header("Network Panel")]
-        public Transform networkPanel;
-        public Button hostButton;
-        public Button clientButton;
-
-        [Header("Duel Lobby")]
         public Transform duelLobbyUI;
         public Button duelStartButton;
+        public TextMeshPro joinCode;
 
         public TMP_Text statusText;
 
@@ -22,15 +17,11 @@ namespace UI.DuelLobbyScene
 
         void Awake()
         {
-            hostButton.onClick.AddListener(OnHostButtonClicked);
-            //clientButton.onClick.AddListener(OnClientButtonClicked);
-
             UIManager.Instance.SetDuelLobbySceneUIController(this);
         }
 
         public void Initialize()
         {
-            SetActiveNetworkPanel(true);
 
             //duelStartButton.gameObject.SetActive(true);
             //duelStartButton.onClick.AddListener(() => OnDuelStartButtonClicked(isDuelHost));
@@ -47,14 +38,6 @@ namespace UI.DuelLobbyScene
             //{
             //    buttonTitle.text = "Ready";
             //}
-        }
-
-        private void OnHostButtonClicked()
-        {
-            SetActiveNetworkPanel(false);
-
-            ActorManager.Instance.CreateDuelRoom();
-            StartCoroutine(GameManager.Instance.ConfigureTransportAndStartNgoAsHost());
         }
 
         #region StatusText
@@ -95,11 +78,6 @@ namespace UI.DuelLobbyScene
         private void OnClientButtonClicked()
         {
             //StartCoroutine(GameManager.Instance.ConfigureTransportAndStartNgoAsConnectingPlayer(joinCode));
-        }
-
-        private void SetActiveNetworkPanel(bool isActive)
-        {
-            networkPanel.gameObject.SetActive(isActive);
         }
 
         private void OnDuelStartButtonClicked(bool isDuelHost)

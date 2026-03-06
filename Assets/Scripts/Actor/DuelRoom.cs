@@ -1,15 +1,15 @@
 using UnityEngine;
 
-namespace Actor.DuelLobbyScene
+namespace Actor
 {
     public class DuelRoom : MonoBehaviour
     {
         public Transform DuelLobbyPads;
         public Transform[] lobbyPlayers;
 
-        public void Initialize()
+        void Awake()
         {
-
+            ActorManager.Instance.SetDuelRoom(this);
         }
 
         public void ShowDuelLobbyPads()

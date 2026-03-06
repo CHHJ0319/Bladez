@@ -7,19 +7,13 @@ using UnityEngine.UI;
 namespace UI {
     public class FullScreenClickHandler : MonoBehaviour, IPointerClickHandler
     {
-        private AudioSource startSound;
-
-        private void Start()
-        {
-            startSound = GetComponent<AudioSource>();
-        }
-
         public void OnPointerClick(PointerEventData eventData)
         {
             if (eventData.button == PointerEventData.InputButton.Left)
             {
-                startSound.Play();
-                StartCoroutine(Util.SceneLoader.LoadSceneByName(Util.SceneList.DuelLobbyScene));
+                UIManager.Instance.PlayStartSound();
+                UIManager.Instance.HideBlinkingPrompt();
+                UIManager.Instance.ShowNetworkPanel();
             }
         }
     }

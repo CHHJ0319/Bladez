@@ -135,16 +135,16 @@ namespace Actor.Player
             {
                 tpsCamera.gameObject.SetActive(false);
 
-                Transform lobbyTransform = ActorManager.Instance.GetLobbyPlayerTransform();
-                transform.localPosition = lobbyTransform.localPosition;
-                transform.localRotation = lobbyTransform.rotation;
+                //Transform lobbyTransform = ActorManager.Instance.GetLobbyPlayerTransform();
+                //transform.localPosition = lobbyTransform.localPosition;
+                //transform.localRotation = lobbyTransform.rotation;
 
-                if (ActorManager.Instance.GetCurrentPlayerCount() == 0)
+                if (ActorManager.Instance.GetPlayerCount() == 0)
                 {
                     IsDuelHost = true;
                 }
 
-                UIManager.Instance.InitializDuelLobbySceneUI(IsDuelHost);
+                //UIManager.Instance.InitializDuelLobbySceneUI(IsDuelHost);
             }
             else if(Util.SceneChecker.CheckCurrnetScene(Util.SceneList.DuelScene))
             {

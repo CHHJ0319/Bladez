@@ -1,16 +1,13 @@
-using TMPro;
-using UI;
 using Unity.Netcode;
-using UnityEngine;
 
 public class UIManager : NetworkBehaviour
 {
     public static UIManager Instance { get; private set; }
 
-    private PlayerUI playerUI;
+    private UI.PlayerUI playerUI;
     private UI.DuelLobbyScene.UIController duelLobbySceneUIController;
 
-    void Awake()
+    public void Awake()
     {
         if (Instance == null)
         {
@@ -27,7 +24,7 @@ public class UIManager : NetworkBehaviour
     {
         if (Util.SceneChecker.CheckCurrnetScene(Util.SceneList.DuelLobbyScene))
         {
-            duelLobbySceneUIController.UpdateUI();
+            duelLobbySceneUIController.UpdateStatusText();
         }
         else
         {
@@ -35,23 +32,28 @@ public class UIManager : NetworkBehaviour
         }
     }
 
+    public void OnSceneLoaded()
+    {
+        if (Util.SceneChecker.CheckCurrnetScene(Util.SceneList.DuelLobbyScene))
+        {
+            InitializeDuelLobbySceneUI();
+        }
+    }
+
+    #region DuelLobbyScene
     public void SetDuelLobbySceneUIController(UI.DuelLobbyScene.UIController controller)
     {
         duelLobbySceneUIController = controller;
     }
 
-    public void InitializDuelLobbySceneUI(bool isDuelHost)
+    public void InitializeDuelLobbySceneUI()
     {
         if (duelLobbySceneUIController != null)
         {
-            duelLobbySceneUIController.Initialize(isDuelHost);
+            duelLobbySceneUIController.Initialize();
         }
     }
-
-    public void SetJoinCode(string code)
-    {
-        duelLobbySceneUIController.SetJoinCode(code);
-    }
+    #endregion
 
     public void SetDuelStartButtonInteractable(bool state)
     {

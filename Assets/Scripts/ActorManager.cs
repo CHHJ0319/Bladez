@@ -5,8 +5,8 @@ public class ActorManager : NetworkBehaviour
 {
     public static ActorManager Instance { get; private set; }
 
-    [Header("DuelLobbyScene")]
-    public Transform[] lobbyPlayers;
+    private Actor.DuelLobbyScene.ActorController duelLobbySceneActorController;
+    
 
     [Header("DuelScene")]
     public GameObject[] weaponList;
@@ -15,7 +15,7 @@ public class ActorManager : NetworkBehaviour
 
     private Actor.Item.DroppedItemSpawner droppedItemSpawner;
 
-    private int playerCount = 0;
+    public int PlayerCount = 0;
 
     private Actor.Player.PlayerController[] playerList = new Actor.Player.PlayerController[4];
 
@@ -42,29 +42,62 @@ public class ActorManager : NetworkBehaviour
         WeaponPositionList = new NetworkList<Vector3>();
     }
 
-    public Transform GetLobbyPlayerTransform()
+    public void OnSceneLoaded()
     {
-        int index = playerCount;
-        return lobbyPlayers[index];
+        foreach (var player in playerList)
+        {
+            if (player != null)
+            {
+                player.OnSceneLoaded();
+            }
+        }
+
+        if (Util.SceneChecker.CheckCurrnetScene(Util.SceneList.DuelScene))
+        {
+            if (WeaponIndexList.Count == 0)
+            {
+                SubmitGenerateRandomWeaponListServerRpc();
+            }
+            SpawnWeapon();
+        }
     }
+
+    #region DuelLobbyScene
+    public void SetDuelLobbySceneActorController(Actor.DuelLobbyScene.ActorController controller)
+    {
+        duelLobbySceneActorController = controller;
+    }
+
+    public void InitializeDuelLobbySceneUI()
+    {
+        if (duelLobbySceneActorController != null)
+        {
+            duelLobbySceneActorController.Initialize();
+        }
+    }
+
+    public void ShowDuelLobbyPads()
+    {
+        duelLobbySceneActorController.ShowDuelLobbyPads();
+    }
+    #endregion
 
     public int GetPlayerCount()
     {
-        return playerCount;
+        return PlayerCount;
     }
 
     public void AddPlayer(Actor.Player.PlayerController player)
     {
-        playerList[playerCount] = player;
-        playerCount++;
+        playerList[PlayerCount] = player;
+        PlayerCount++;
         
     }
 
     public int GetCurrentPlayerCount()
     {
-        return playerCount;
+        return PlayerCount;
     }
-
     
     public void GenerateRandomWeaponList()
     {
@@ -133,25 +166,5 @@ public class ActorManager : NetworkBehaviour
     public void SetDroppedItemSpawner(Actor.Item.DroppedItemSpawner spawner)
     {
         droppedItemSpawner = spawner;
-    }
-
-    public void OnSceneLoaded()
-    {
-        foreach(var player in playerList)
-        {
-            if(player != null)
-            {
-                player.OnSceneLoaded();
-            }
-        }
-
-        if (Util.SceneChecker.CheckCurrnetScene(Util.SceneList.DuelScene))
-        {
-            if (WeaponIndexList.Count == 0)
-            {
-                SubmitGenerateRandomWeaponListServerRpc();
-            }
-            SpawnWeapon();
-        }
     }
 }

@@ -14,7 +14,7 @@ namespace UI
 
         void Awake()
         {
-            UIManager.Instance.SetPlayerUI(this);
+            //UIManager.Instance.SetPlayerUI(this);
         }
 
         private void OnEnable()

@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Threading;
 using Unity.Netcode;
 using Unity.Netcode.Transports.UTP;
 using UnityEngine;
@@ -43,7 +42,6 @@ public class GameManager : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
-
         //readyPlayerCount.OnValueChanged += OnReadyPlayerCountChanged;
     }
 

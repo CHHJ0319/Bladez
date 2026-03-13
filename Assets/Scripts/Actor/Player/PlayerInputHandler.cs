@@ -5,8 +5,7 @@ namespace Actor.Player
 {
     public class PlayerInputHandler : MonoBehaviour
     {
-        public float Horizontal { get; private set; }
-        public float Vertical { get; private set; }
+        public Vector2 MoveInput { get; private set; }
 
         private bool _jumpTriggered;
         public bool JumpTriggered
@@ -110,9 +109,7 @@ namespace Actor.Player
 
         void OnMove(InputValue value)
         {
-            Vector2 movement = value.Get<Vector2>();
-            Horizontal = movement.x;
-            Vertical = movement.y;
+            MoveInput = value.Get<Vector2>();
         }
 
         void OnJump(InputValue value)

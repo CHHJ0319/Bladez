@@ -22,7 +22,7 @@ namespace Actor.Item.Weapon
         public float rate;
         public float knockbackForce;
 
-        public string OwnerID { get; private set; }
+        public int OwnerID { get; private set; }
         public bool IsEquiped { get; set; }
 
         private Vector3 originalWeaponPosition;
@@ -39,7 +39,7 @@ namespace Actor.Item.Weapon
             StartCoroutine(AttackProcess());
         }
 
-        public void SetOwnerID(string id)
+        public void SetOwnerID(int id)
         {
             OwnerID = id;
 

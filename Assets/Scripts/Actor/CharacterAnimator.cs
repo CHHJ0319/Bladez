@@ -1,5 +1,4 @@
 using System.Collections;
-using Unity.Netcode;
 using Unity.Netcode.Components;
 using UnityEngine;
 
@@ -34,8 +33,7 @@ namespace Actor
 
         public void UpdateMovementAnimation(float horizontal, float vertical)
         {
-            //var networkBehaviour = GetComponent<NetworkBehaviour>();
-            //if (networkBehaviour != null && !networkBehaviour.IsOwner) return;
+            Debug.Log("h : " + horizontal + "v : " + vertical);
 
             anim.SetFloat(m_AnimIDSpeed, vertical);
             anim.SetFloat(m_AnimIDDirection, horizontal);

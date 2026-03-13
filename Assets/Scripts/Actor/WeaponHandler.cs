@@ -25,7 +25,7 @@ namespace Actor
             }
         }
 
-        public void AssignOwnerId(string id)
+        public void AssignOwnerId(int id)
         {
             foreach(var weapon in slottedWeapons)
             {
@@ -86,10 +86,6 @@ namespace Actor
             newWeapon.transform.SetParent(weaponHolder);
 
             slottedWeapons.Add(newWeapon);
-            if (TryGetComponent<Actor.CharacterController>(out var handler))
-            {
-                handler.AssignWeaponOwnerID();
-            }
 
             if (EquippedWeapon == null)
             {

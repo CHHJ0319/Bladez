@@ -1,4 +1,5 @@
 using Unity.Cinemachine;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
@@ -13,14 +14,12 @@ namespace Actor.Player
 
         private PlayerInput playerInput;
         private PlayerInputHandler playerInputHandler;
+        private PlayerTransform playerTransform;
   
         public bool IsDuelHost { get; private set; } = false;
         public bool IsReady { get; set; } = false;
 
         private Vector2 lookInput;
-        private float horizontal;
-        private float vertical;
-
 
         protected override void Awake()
         {
@@ -28,8 +27,7 @@ namespace Actor.Player
 
             playerInput = GetComponent<PlayerInput>();
             playerInputHandler = GetComponent<PlayerInputHandler>();
-
-            //DontDestroyOnLoad(gameObject);
+            playerTransform = GetComponent<PlayerTransform>();
         }
 
         private void OnEnable()
@@ -47,6 +45,11 @@ namespace Actor.Player
             if(IsHost)
             {
                 IsDuelHost = true;
+                playerID.Value = (int)NetworkObjectId;
+            }
+            else
+            {
+                RequestSetPlayerIDServerRpc();
             }
 
             if (IsOwner)
@@ -55,6 +58,7 @@ namespace Actor.Player
                 tpsCamera.gameObject.SetActive(true);
 
                 ActorManager.Instance.SetOwnerPlayer(this);
+                weaponHandler.AssignOwnerId(playerID.Value);
             }
             else
             {
@@ -79,11 +83,11 @@ namespace Actor.Player
 
         protected override void Update()
         {
+            base.Update();
+
             lookInput = playerInputHandler.LookInput;
 
-            horizontal = playerInputHandler.Horizontal;
-            vertical = playerInputHandler.Vertical;
-
+            SetMoveInput();
             CalculateVelocity();
         }
 
@@ -120,8 +124,26 @@ namespace Actor.Player
         #endregion
 
         #region Movement
+        private void SetMoveInput()
+        {
+            playerTransform.MoveInput = playerInputHandler.MoveInput;
+            //Debug.Log("mv : " + playerInputHandler.MoveInput);
+        }
+
         private void MoveWithPlayerInput()
         {
+            float horizontal = playerTransform.MoveInput.x;
+            float vertical = playerTransform.MoveInput.y;
+
+            if(IsOwner)
+            {
+
+            }
+            else
+            {
+                
+            }
+
             characterAnimator.UpdateMovementAnimation(horizontal, vertical);
 
             if(!Util.SceneChecker.CheckCurrnetScene(Util.SceneList.DuelLobbyScene))
@@ -196,6 +218,9 @@ namespace Actor.Player
 
         private void CalculateVelocity()
         {
+            float horizontal = playerTransform.MoveInput.x;
+            float vertical = playerTransform.MoveInput.y;
+
             velocity = (transform.forward * vertical) + (transform.right * horizontal);
 
             if (velocity.magnitude > 1f)
@@ -213,6 +238,14 @@ namespace Actor.Player
             }
         }
         #endregion
+
+        [Rpc(SendTo.Server)]
+        private void RequestSetPlayerIDServerRpc(RpcParams rpcParams = default)
+        {
+            playerID.Value = (int) NetworkObjectId;
+
+            weaponHandler.AssignOwnerId(playerID.Value);
+        }
     }
 }
 

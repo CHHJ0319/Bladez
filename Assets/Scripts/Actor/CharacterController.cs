@@ -16,7 +16,7 @@ namespace Actor
         public float useCurvesHeight = 0.5f;
 
         protected CharacterAnimator characterAnimator;
-        private WeaponHandler weaponHandler;
+        protected WeaponHandler weaponHandler;
         private ItemPicker itemPicker;
 
         private CapsuleCollider col;
@@ -33,7 +33,7 @@ namespace Actor
         protected float maxHP = 100f;
         public float HP { get; private set; }
 
-        public string OwnerID { get; private set; }
+        public NetworkVariable<int> playerID = new NetworkVariable<int>();
 
         protected virtual void Awake()
         {
@@ -150,13 +150,6 @@ namespace Actor
             UIManager.Instance.ShowPlayerResultUI(false);
             gameObject.SetActive(false);
         }
-
-        public void AssignWeaponOwnerID()
-        {
-            weaponHandler.AssignOwnerId(OwnerID);
-        }
-
-        
 
         private void UpdateAnimationState()
         {

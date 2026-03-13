@@ -10,7 +10,7 @@ namespace Actor.Item
 
         private void Awake()
         {
-            ActorManager.Instance.SetDroppedItemSpawner(this);
+            //ActorManager.Instance.SetDroppedItemSpawner(this);
         }
 
         public void SpawnDroppedWeapons(GameObject newWeapon, Vector3 pos )

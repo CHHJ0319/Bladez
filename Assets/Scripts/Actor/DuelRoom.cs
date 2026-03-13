@@ -7,7 +7,7 @@ namespace Actor
         public Transform DuelLobbyPads;
         public Transform[] lobbyPlayers;
 
-        void Awake()
+        void Start()
         {
             ActorManager.Instance.SetDuelRoom(this);
         }

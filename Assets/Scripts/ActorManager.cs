@@ -10,16 +10,13 @@ public class ActorManager : NetworkBehaviour
 
     private Actor.Player.PlayerController ownerPlayer;
 
-    public GameObject duelRoomPrefab;
     public Actor.DuelRoom currentDuelRoom;
-    
-    [Header("DuelScene")]
-    public GameObject[] weaponList;
+   
+    private Actor.Item.DroppedItemSpawner droppedItemSpawner;
+    private int droppedWeaponCount = 10;
     public NetworkList<int> WeaponIndexList = new NetworkList<int>();
     public NetworkList<Vector3> WeaponPositionList = new NetworkList<Vector3>();
 
-    private Actor.Item.DroppedItemSpawner droppedItemSpawner;
-    private int droppedWeaponCount = 10;
 
     void Awake()
     {
@@ -60,7 +57,6 @@ public class ActorManager : NetworkBehaviour
             {
                 SubmitGenerateRandomWeaponListServerRpc();
             }
-            SpawnWeapon();
         }
     }
 
@@ -135,14 +131,14 @@ public class ActorManager : NetworkBehaviour
             int index = WeaponIndexList[i];
             Vector3 position = WeaponPositionList[i];
 
-            GameObject newWeapon = weaponList[index];
-            droppedItemSpawner.SpawnDroppedWeapons(newWeapon, position);
+            droppedItemSpawner.SpawnDroppedWeapons(index, position);
         }
     }
 
     public void SetDroppedItemSpawner(Actor.Item.DroppedItemSpawner spawner)
     {
         droppedItemSpawner = spawner;
+        SpawnWeapon();
     }
     #endregion
 

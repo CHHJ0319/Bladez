@@ -21,6 +21,9 @@ namespace Actor.Player
 
         private Vector2 lookInput;
 
+        private float horizontal;
+        private float vertical;
+
         protected override void Awake()
         {
             Initialize();
@@ -85,9 +88,11 @@ namespace Actor.Player
         {
             base.Update();
 
+            horizontal = playerInputHandler.MoveInput.x;
+            vertical = playerInputHandler.MoveInput.y;
+
             lookInput = playerInputHandler.LookInput;
 
-            SetMoveInput();
             CalculateVelocity();
         }
 
@@ -116,41 +121,33 @@ namespace Actor.Player
             }
             else if (Util.SceneChecker.CheckCurrnetScene(Util.SceneList.DuelScene))
             {
-                MoveToRandomPosition();
-
-                tpsCamera.gameObject.SetActive(true);
+                if(IsOwner)
+                {
+                    tpsCamera.gameObject.SetActive(true);
+                    MoveToRandomPosition();
+                }
             }
         }
         #endregion
 
         #region Movement
-        private void SetMoveInput()
-        {
-            playerTransform.MoveInput = playerInputHandler.MoveInput;
-            //Debug.Log("mv : " + playerInputHandler.MoveInput);
-        }
-
         private void MoveWithPlayerInput()
         {
-            float horizontal = playerTransform.MoveInput.x;
-            float vertical = playerTransform.MoveInput.y;
-
             if (IsOwner)
             {
+                float yaw = lookInput.x * mouseSensitivity;
+                Quaternion deltaRotation = Quaternion.Euler(0, yaw, 0);
+                rb.MoveRotation(rb.rotation * deltaRotation);
+
                 characterAnimator.UpdateMovementAnimation(horizontal, vertical);
+
+                if (!Util.SceneChecker.CheckCurrnetScene(Util.SceneList.DuelLobbyScene))
+                {
+                    Vector3 currentVelocity = rb.linearVelocity;
+                    Vector3 newVelocity = new Vector3(velocity.x, currentVelocity.y, velocity.z);
+                    rb.linearVelocity = newVelocity;
+                }
             }
-
-            if (!Util.SceneChecker.CheckCurrnetScene(Util.SceneList.DuelLobbyScene))
-            {
-                Vector3 currentVelocity = rb.linearVelocity;
-                Vector3 newVelocity = new Vector3(velocity.x, currentVelocity.y, velocity.z);
-                rb.linearVelocity = newVelocity;
-            }
-
-            float yaw = lookInput.x * mouseSensitivity;
-            Quaternion deltaRotation = Quaternion.Euler(0, yaw, 0);
-            rb.MoveRotation(rb.rotation * deltaRotation);
-
         }
 
         private void JumpWithPlayerInput()
@@ -212,8 +209,8 @@ namespace Actor.Player
 
         private void CalculateVelocity()
         {
-            float horizontal = playerTransform.MoveInput.x;
-            float vertical = playerTransform.MoveInput.y;
+            horizontal = playerInputHandler.MoveInput.x;
+            vertical = playerInputHandler.MoveInput.y;
 
             velocity = (transform.forward * vertical) + (transform.right * horizontal);
 

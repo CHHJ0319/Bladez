@@ -58,11 +58,6 @@ public class UIManager : NetworkBehaviour
     }
     #endregion
 
-    public void SetDuelStartButtonInteractable(bool state)
-    {
-        duelLobbySceneUIController.SetDuelStartButtonInteractable(state);
-    }
-
     public void SetPlayerUI(UI.PlayerUI playerUI)
     {
         this.playerUI = playerUI;

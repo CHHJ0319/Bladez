@@ -10242,6 +10242,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   droppedWeaponPrefab: {fileID: 7851712920799854886, guid: f633f0d1c4632104fbe4acd8f2328983, type: 3}
+  weaponList:
+  - {fileID: 5215985135071176274, guid: ca7917bee06e7244c86f852c344d918a, type: 3}
+  - {fileID: 4392767893562137083, guid: c6241cd32f659234cb97c1e69b6e01df, type: 3}
+  - {fileID: 8156835464261828305, guid: 838d63a6c7b03aa44b2d487ad8ddc3e4, type: 3}
+  - {fileID: 6338061937014367016, guid: 76f34e051ab7be441997e3879654091e, type: 3}
 --- !u!1001 &629872995
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -18970,11 +18975,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  duelRoomPrefab: {fileID: 0}
   currentDuelRoom: {fileID: 0}
-  weaponList: []
-  playerReadyCount:
-    m_InternalValue: 0
 --- !u!114 &1245866814
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -28286,8 +28287,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  readyPlayerCount:
-    m_InternalValue: 0
 --- !u!1 &1944616230
 GameObject:
   m_ObjectHideFlags: 0

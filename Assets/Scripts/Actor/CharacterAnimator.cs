@@ -31,10 +31,13 @@ namespace Actor
             audioSource = GetComponent<AudioSource>();
         }
 
+        protected override bool OnIsServerAuthoritative()
+        {
+            return false;
+        }
+
         public void UpdateMovementAnimation(float horizontal, float vertical)
         {
-            Debug.Log("h : " + horizontal + "v : " + vertical);
-
             anim.SetFloat(m_AnimIDSpeed, vertical);
             anim.SetFloat(m_AnimIDDirection, horizontal);
 
@@ -48,7 +51,7 @@ namespace Actor
                 anim.SetBool("SideWalk", false);
             }
 
-            anim.speed = animSpeed;
+            //anim.speed = animSpeed;
         }
 
         public AnimatorStateInfo GetBaseLayerState()

@@ -135,18 +135,12 @@ namespace Actor.Player
             float horizontal = playerTransform.MoveInput.x;
             float vertical = playerTransform.MoveInput.y;
 
-            if(IsOwner)
+            if (IsOwner)
             {
-
-            }
-            else
-            {
-                
+                characterAnimator.UpdateMovementAnimation(horizontal, vertical);
             }
 
-            characterAnimator.UpdateMovementAnimation(horizontal, vertical);
-
-            if(!Util.SceneChecker.CheckCurrnetScene(Util.SceneList.DuelLobbyScene))
+            if (!Util.SceneChecker.CheckCurrnetScene(Util.SceneList.DuelLobbyScene))
             {
                 Vector3 currentVelocity = rb.linearVelocity;
                 Vector3 newVelocity = new Vector3(velocity.x, currentVelocity.y, velocity.z);

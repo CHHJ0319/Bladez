@@ -27,10 +27,6 @@ public class UIManager : NetworkBehaviour
         {
             duelLobbySceneUIController.UpdateUI();
         }
-        else
-        {
-
-        }
     }
 
     public void OnSceneLoaded()
@@ -39,8 +35,7 @@ public class UIManager : NetworkBehaviour
         {
             
         }
-
-        if (Util.SceneChecker.CheckCurrnetScene(Util.SceneList.DuelLobbyScene))
+        else if (Util.SceneChecker.CheckCurrnetScene(Util.SceneList.DuelLobbyScene))
         {
             InitializeDuelLobbySceneUI();
         }
@@ -50,21 +45,6 @@ public class UIManager : NetworkBehaviour
     public void SetTitleSceneUIController(UI.TitleScene.UIController controller)
     {
         titleSceneUIController = controller;
-    }
-
-    public void ShowNetworkPanel()
-    {
-        titleSceneUIController.SetActiveNetworkPanel(true);
-    }
-
-    public void HideBlinkingPrompt()
-    {
-        titleSceneUIController.HideBlinkingPrompt();
-    }
-
-    public void PlayStartSound() 
-    {
-        titleSceneUIController.PlayStartSound();
     }
     #endregion
 

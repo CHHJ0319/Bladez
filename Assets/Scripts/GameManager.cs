@@ -4,12 +4,9 @@ using Unity.Netcode.Transports.UTP;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-
 public class GameManager : NetworkBehaviour
 {
     public static GameManager Instance;
-
-    public NetworkVariable<int> readyPlayerCount = new NetworkVariable<int>();
 
     private const int m_MaxConnections = 4;
 
@@ -40,16 +37,6 @@ public class GameManager : NetworkBehaviour
         SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 
-    public override void OnNetworkSpawn()
-    {
-        //readyPlayerCount.OnValueChanged += OnReadyPlayerCountChanged;
-    }
-
-    public override void OnNetworkDespawn()
-    {
-        //readyPlayerCount.OnValueChanged -= OnReadyPlayerCountChanged;
-    }
-
     #region Initialize
     private void Initialize()
     {
@@ -62,36 +49,6 @@ public class GameManager : NetworkBehaviour
     }
     #endregion
 
-    [Rpc(SendTo.Server)]
-    public void RequestStartDuelServerRpc(string sceneName)
-    {
-        NetworkManager.Singleton.SceneManager.LoadScene(sceneName, LoadSceneMode.Single);
-    }
-
-    [Rpc(SendTo.Server)]
-    public void SubmitReadyPlayerServerRpc(bool isReady, RpcParams rpcParams = default)
-    {
-        if(isReady)
-        {
-            readyPlayerCount.Value++;
-        }
-        else
-        {
-            readyPlayerCount.Value--;
-        }
-    }
-
-    private void OnReadyPlayerCountChanged(int previous, int current)
-    {
-        if (readyPlayerCount.Value == ActorManager.Instance.GetPlayerCount() - 1)
-        {
-            UIManager.Instance.SetDuelStartButtonInteractable(true);
-        }
-        else
-        {
-            UIManager.Instance.SetDuelStartButtonInteractable(false);
-        }
-    }
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {

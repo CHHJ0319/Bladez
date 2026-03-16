@@ -111,7 +111,7 @@ namespace UI.DuelLobbyScene
 
         private void OnDuelStartButtonClicked()
         {
-            GameManager.Instance.RequestStartDuelServerRpc("DuelScene");
+            DuelManager.Instance.RequestStartDuelServerRpc("DuelScene");
         }
 
         private void OnDuelReadyButtonClicked()

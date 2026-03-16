@@ -19,6 +19,16 @@ namespace UI.TitleScene
            //accessButton.onClick.AddListener(OnAccessButtonClicked);
         }
 
+        private void OnEnable()
+        {
+            Events.GameEvents.OnGameStarted += PlayStartSound;
+        }
+
+        private void OnDisable()
+        {
+            Events.GameEvents.OnGameStarted -= PlayStartSound;
+        }
+
         private void Start()
         {
             UIManager.Instance.SetTitleSceneUIController(this);
@@ -31,7 +41,7 @@ namespace UI.TitleScene
 
         private void OnAccessButtonClicked()
         {
-            UIManager.Instance.PlayStartSound();
+            Events.GameEvents.StartGame();
             string joinCode = joincodeInputField.text;
 
             if (string.IsNullOrWhiteSpace(joinCode))

@@ -33,8 +33,6 @@ namespace Actor
         protected float maxHP = 100f;
         public float HP { get; private set; }
 
-        public NetworkVariable<int> playerID = new NetworkVariable<int>();
-
         protected virtual void Awake()
         {
             Initialize();

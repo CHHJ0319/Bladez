@@ -84,6 +84,7 @@ namespace Actor
             if (slottedWeapons.Contains(newWeapon)) return;
 
             newWeapon.transform.SetParent(weaponHolder);
+            newWeapon.GetComponent<Item.Weapon.Melee.SwordController>().SetOrginTransform();
 
             slottedWeapons.Add(newWeapon);
 

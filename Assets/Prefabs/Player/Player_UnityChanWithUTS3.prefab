@@ -249,6 +249,9 @@ PrefabInstance:
       addedObject: {fileID: 3675513083738605775}
     - targetCorrespondingSourceObject: {fileID: 100326, guid: 8f0565f23a2b58541a475bd3c1393052, type: 3}
       insertIndex: 6
+      addedObject: {fileID: -6845632640949861888}
+    - targetCorrespondingSourceObject: {fileID: 100326, guid: 8f0565f23a2b58541a475bd3c1393052, type: 3}
+      insertIndex: 7
       addedObject: {fileID: 1893179238309997907}
     - targetCorrespondingSourceObject: {fileID: 100326, guid: 8f0565f23a2b58541a475bd3c1393052, type: 3}
       insertIndex: -1
@@ -377,6 +380,87 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3d656dd7f7dcb6d4a8f1e34b4f927422, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  moveAction:
+    m_Name: Move
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: 9495d6a4-3dd1-4146-99a3-a4881bd1958c
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings: []
+    m_Flags: 0
+  lookAction:
+    m_Name: Look
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: 1efbed3d-10eb-4a60-aabb-bae006e3e14b
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings: []
+    m_Flags: 0
+  jumpAction:
+    m_Name: Jump
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: 51dbf989-e55e-4c6a-9af7-a23a2c1051a6
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings: []
+    m_Flags: 0
+  slidingAction:
+    m_Name: Sliding
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: cdeeccde-e07e-41f2-979f-8fe3bca1f668
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings: []
+    m_Flags: 0
+  attackAction:
+    m_Name: Attack
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: a5117b51-d67c-4179-aebb-595798180ac0
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings: []
+    m_Flags: 0
+  interactAction:
+    m_Name: Interact
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: a1936a23-6345-459e-86c1-042eceae6800
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings: []
+    m_Flags: 0
+  quickSlot1Action:
+    m_Name: Quick Slot 1
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: d6ebd0f6-b4e9-4056-8504-e45785ac2518
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings: []
+    m_Flags: 0
+  quickSlot2Action:
+    m_Name: Quick Slot 2
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: cd0907b6-d523-4b43-bec7-b6e64c4058db
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings: []
+    m_Flags: 0
+  quickSlot3Action:
+    m_Name: Quick Slot 3
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: 00ffa0bd-b963-4f80-b866-00250826cf37
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings: []
+    m_Flags: 0
 --- !u!114 &3675513083738605775
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -391,6 +475,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   weaponHolder: {fileID: 3386290807216925629}
   slottedWeapons: []
+--- !u!114 &-6845632640949861888
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 202232820513539697}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 427b8b5aaf4eeaf45932379244fefef4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetObject: {fileID: 0}
 --- !u!114 &1893179238309997907
 MonoBehaviour:
   m_ObjectHideFlags: 0

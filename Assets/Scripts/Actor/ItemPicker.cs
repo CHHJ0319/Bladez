@@ -4,7 +4,7 @@ namespace Actor
 {
     public class ItemPicker : MonoBehaviour
     {
-        GameObject targetObject;
+        public GameObject targetObject;
 
         public bool IsItemDetected { get; private set; }
 

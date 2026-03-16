@@ -12,25 +12,19 @@ namespace Actor.Player
         public CinemachineCamera tpsCamera;
         public float mouseSensitivity = 0.5f;
 
-        private PlayerInput playerInput;
         private PlayerInputHandler playerInputHandler;
         private PlayerTransform playerTransform;
-  
+
+        public NetworkVariable<int> playerID = new NetworkVariable<int>();
         public bool IsDuelHost { get; private set; } = false;
         public bool IsReady { get; set; } = false;
-
-        private Vector2 lookInput;
-
-        private float horizontal;
-        private float vertical;
 
         protected override void Awake()
         {
             Initialize();
 
-            playerInput = GetComponent<PlayerInput>();
             playerInputHandler = GetComponent<PlayerInputHandler>();
-            playerTransform = GetComponent<PlayerTransform>();
+            playerTransform = GetComponent<PlayerTransform>(); 
         }
 
         private void OnEnable()
@@ -57,7 +51,7 @@ namespace Actor.Player
 
             if (IsOwner)
             {
-                playerInput.enabled = true;
+                playerInputHandler.SetPlayerInputEnabled(true);
                 tpsCamera.gameObject.SetActive(true);
 
                 ActorManager.Instance.SetOwnerPlayer(this);
@@ -65,7 +59,7 @@ namespace Actor.Player
             }
             else
             {
-                playerInput.enabled = false;
+                playerInputHandler.SetPlayerInputEnabled(false);
                 tpsCamera.gameObject.SetActive(false);
             }
 
@@ -87,11 +81,6 @@ namespace Actor.Player
         protected override void Update()
         {
             base.Update();
-
-            horizontal = playerInputHandler.MoveInput.x;
-            vertical = playerInputHandler.MoveInput.y;
-
-            lookInput = playerInputHandler.LookInput;
 
             CalculateVelocity();
         }
@@ -135,11 +124,11 @@ namespace Actor.Player
         {
             if (IsOwner)
             {
-                float yaw = lookInput.x * mouseSensitivity;
+                float yaw = playerInputHandler.lookInput.x * mouseSensitivity;
                 Quaternion deltaRotation = Quaternion.Euler(0, yaw, 0);
                 rb.MoveRotation(rb.rotation * deltaRotation);
 
-                characterAnimator.UpdateMovementAnimation(horizontal, vertical);
+                characterAnimator.UpdateMovementAnimation(playerInputHandler.horizontal, playerInputHandler.vertical);
 
                 if (!Util.SceneChecker.CheckCurrnetScene(Util.SceneList.DuelLobbyScene))
                 {
@@ -152,7 +141,7 @@ namespace Actor.Player
 
         private void JumpWithPlayerInput()
         {
-            if (playerInputHandler.JumpTriggered)
+            if (playerInputHandler.jumpAction.triggered)
             {
                 Jump();
             }
@@ -160,7 +149,7 @@ namespace Actor.Player
 
         private void SlidingWithPlayerInput()
         {
-            if (playerInputHandler.SlidingTriggered)
+            if (playerInputHandler.slidingAction.triggered)
             {
                 Sliding();
             }
@@ -168,7 +157,7 @@ namespace Actor.Player
 
         private void AttackWithPlayerInput()
         {
-            if (playerInputHandler.AttackTriggered)
+            if (playerInputHandler.attackAction.triggered)
             {
                 Attack();
             }
@@ -176,7 +165,7 @@ namespace Actor.Player
 
         private void InteractWithPlayerInput()
         {
-            if (playerInputHandler.InteractTriggered)
+            if (playerInputHandler.interactAction.triggered)
             {
                 if (Util.SceneChecker.CheckCurrnetScene(Util.SceneList.DuelLobbyScene))
                 {
@@ -185,23 +174,24 @@ namespace Actor.Player
                 else
                 {
                     PickUp();
+                    //weaponHandler.AssignOwnerId(playerID.Value);
                 }
             }
         }
 
         private void QuiclSlotWithPlayerInput()
         {
-            if (playerInputHandler.Quiick1Triggered)
+            if (playerInputHandler.quickSlot1Action.triggered)
             {
                 EquipWeapon(0);
             }
             
-            if (playerInputHandler.Quiick2Triggered)
+            if (playerInputHandler.quickSlot2Action.triggered)
             {
                 EquipWeapon(1);
             }
             
-            if (playerInputHandler.Quiick3Triggered)
+            if (playerInputHandler.quickSlot3Action.triggered)
             {
                 EquipWeapon(2);
             }
@@ -209,21 +199,18 @@ namespace Actor.Player
 
         private void CalculateVelocity()
         {
-            horizontal = playerInputHandler.MoveInput.x;
-            vertical = playerInputHandler.MoveInput.y;
-
-            velocity = (transform.forward * vertical) + (transform.right * horizontal);
+            velocity = (transform.forward * playerInputHandler.vertical) + (transform.right * playerInputHandler.horizontal);
 
             if (velocity.magnitude > 1f)
             {
                 velocity.Normalize();
             }
 
-            if (vertical > 0.1f)
+            if (playerInputHandler.vertical > 0.1f)
             {
                 velocity *= forwardSpeed;
             }
-            else if (vertical < -0.1f)
+            else if (playerInputHandler.vertical < -0.1f)
             {
                 velocity *= backwardSpeed;
             }

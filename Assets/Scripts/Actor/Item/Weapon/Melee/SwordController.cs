@@ -14,6 +14,15 @@ namespace Actor.Item.Weapon.Melee
         public TrailRenderer trailEffect;
         public ParticleSystem particle;
 
+        private Vector3 oriPosition;
+        private Vector3 oriScale;
+
+        private void Awake()
+        {
+            oriPosition = transform.localPosition;
+            oriScale = transform.localScale;
+        }
+
         protected override IEnumerator AttackProcess()
         {
             yield return new WaitForSeconds(0.0f);
@@ -48,7 +57,6 @@ namespace Actor.Item.Weapon.Melee
             }
         }
 
-
         private void OnTriggerEnter(Collider other)
         {
             if (!IsEquiped) return;
@@ -57,7 +65,7 @@ namespace Actor.Item.Weapon.Melee
 
             if (rootGameObject.TryGetComponent(out NetworkObject netObj))
             {
-                if (OwnerID == rootGameObject.GetComponent<Actor.CharacterController>().playerID.Value)
+                if (OwnerID == rootGameObject.GetComponent<Actor.Player.PlayerController>().playerID.Value)
                 {
                     
                 }
@@ -69,6 +77,13 @@ namespace Actor.Item.Weapon.Melee
                     //targetPlayer.SubmitTakeDamageRequestServerRpc();
                 }
             }
+        }
+
+        public void SetOrginTransform()
+        {
+            transform.localPosition = oriPosition;
+            transform.localRotation = Quaternion.identity;
+            transform.localScale = oriScale;
         }
     }
 }

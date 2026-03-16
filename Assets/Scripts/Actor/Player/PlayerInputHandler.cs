@@ -5,171 +5,39 @@ namespace Actor.Player
 {
     public class PlayerInputHandler : MonoBehaviour
     {
-        public Vector2 MoveInput { get; private set; }
+        private PlayerInput playerInput;
 
-        private bool _jumpTriggered;
-        public bool JumpTriggered
+        public InputAction moveAction;
+        public InputAction lookAction;
+        public InputAction jumpAction;
+        public InputAction slidingAction;
+        public InputAction attackAction;
+        public InputAction interactAction;
+        public InputAction quickSlot1Action;
+        public InputAction quickSlot2Action;
+        public InputAction quickSlot3Action;
+        public float horizontal => moveAction.ReadValue<Vector2>().x;
+        public float vertical => moveAction.ReadValue<Vector2>().y;
+        public Vector2 lookInput => lookAction.ReadValue<Vector2>();
+
+        private void Awake()
         {
-            get
-            {
-                if (_jumpTriggered)
-                {
-                    _jumpTriggered = false;
-                    return true;
-                }
-                return false;
-            }
+            playerInput = GetComponent<PlayerInput>();
+
+            moveAction = playerInput.actions["Move"];
+            lookAction = playerInput.actions["Look"];
+            jumpAction = playerInput.actions["Jump"];
+            slidingAction = playerInput.actions["Sliding"];
+            attackAction = playerInput.actions["Attack"];
+            interactAction = playerInput.actions["Interact"];
+            quickSlot1Action = playerInput.actions["QuickSlot1"];
+            quickSlot2Action = playerInput.actions["QuickSlot2"];
+            quickSlot3Action = playerInput.actions["QuickSlot3"];
         }
 
-        private bool _slidingTriggered;
-        public bool SlidingTriggered
+        public void SetPlayerInputEnabled(bool isEnabled)
         {
-            get
-            {
-                if (_slidingTriggered)
-                {
-                    _slidingTriggered = false;
-                    return true;
-                }
-                return false;
-            }
-        }
-
-        private bool _attackTriggered;
-        public bool AttackTriggered
-        {
-            get
-            {
-                if (_attackTriggered)
-                {
-                    _attackTriggered = false;
-                    return true;
-                }
-                return false;
-            }
-        }
-
-        private bool _interactTriggered;
-        public bool InteractTriggered
-        {
-            get
-            {
-                if (_interactTriggered)
-                {
-                    _interactTriggered = false;
-                    return true;
-                }
-                return false;
-            }
-        }
-
-        private bool _quiick1Triggered;
-        public bool Quiick1Triggered
-        {
-            get
-            {
-                if (_quiick1Triggered)
-                {
-                    _quiick1Triggered = false;
-                    return true;
-                }
-                return false;
-            }
-        }
-
-        private bool _quiick2Triggered;
-        public bool Quiick2Triggered
-        {
-            get
-            {
-                if (_quiick2Triggered)
-                {
-                    _quiick2Triggered = false;
-                    return true;
-                }
-                return false;
-            }
-        }
-
-        private bool _quiick3Triggered;
-        public bool Quiick3Triggered
-        {
-            get
-            {
-                if (_quiick3Triggered)
-                {
-                    _quiick3Triggered = false;
-                    return true;
-                }
-                return false;
-            }
-        }
-
-        public Vector2 LookInput { get; private set; }
-
-        void OnMove(InputValue value)
-        {
-            MoveInput = value.Get<Vector2>();
-        }
-
-        void OnJump(InputValue value)
-        {
-            if (value.isPressed)
-            {
-                _jumpTriggered = true;
-            }
-        }
-
-        void OnSliding(InputValue value)
-        {
-            if (value.isPressed)
-            {
-                _slidingTriggered = true;
-            }
-        }
-
-        void OnAttack(InputValue value)
-        {
-            if (value.isPressed)
-            {
-                _attackTriggered = true;
-            }
-        }
-        void OnInteract(InputValue value)
-        {
-            if (value.isPressed)
-            {
-                _interactTriggered = true;
-            }
-        }
-
-        void OnQuickSlot1(InputValue value)
-        {
-            if (value.isPressed)
-            {
-                _quiick1Triggered = true;
-            }
-        }
-
-        void OnQuickSlot2(InputValue value)
-        {
-            if (value.isPressed)
-            {
-                _quiick2Triggered = true;
-            }
-        }
-
-        void OnQuickSlot3(InputValue value)
-        {
-            if (value.isPressed)
-            {
-                _quiick3Triggered = true;
-            }
-        }
-
-        public void OnLook(InputValue value)
-        {
-            LookInput = value.Get<Vector2>();
+            playerInput.enabled = isEnabled;
         }
     }
 }

@@ -31,14 +31,7 @@ public class UIManager : NetworkBehaviour
 
     public void OnSceneLoaded()
     {
-        if (Util.SceneChecker.CheckCurrnetScene(Util.SceneList.TitleScene))
-        {
-            
-        }
-        else if (Util.SceneChecker.CheckCurrnetScene(Util.SceneList.DuelLobbyScene))
-        {
-            InitializeDuelLobbySceneUI();
-        }
+
     }
 
     #region TitleScene
@@ -52,14 +45,6 @@ public class UIManager : NetworkBehaviour
     public void SetDuelLobbySceneUIController(UI.DuelLobbyScene.UIController controller)
     {
         duelLobbySceneUIController = controller;
-    }
-
-    public void InitializeDuelLobbySceneUI()
-    {
-        if (duelLobbySceneUIController != null)
-        {
-            duelLobbySceneUIController.Initialize();
-        }
     }
 
     public void SetDuelHostUI(string joinCode)

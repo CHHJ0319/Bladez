@@ -18,10 +18,6 @@ public class ActorManager : NetworkBehaviour
     public NetworkList<int> WeaponIndexList = new NetworkList<int>();
     public NetworkList<Vector3> WeaponPositionList = new NetworkList<Vector3>();
 
-
-    private List<Actor.Player.PlayerController> playerList = new List<Actor.Player.PlayerController>();
-    public NetworkVariable<int> playerReadyCount = new NetworkVariable<int>();
-
     private Actor.Item.DroppedItemSpawner droppedItemSpawner;
     private int droppedWeaponCount = 10;
 
@@ -42,7 +38,7 @@ public class ActorManager : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
-        //playersReadyStates.OnValueChanged += 
+
     }
 
     public override void OnNetworkDespawn()
@@ -81,40 +77,10 @@ public class ActorManager : NetworkBehaviour
 
     public Transform GetDuelLobbyPlayerTransform()
     {
-        int index = GetPlayerCount();
+        int index = DuelManager.Instance.GetPlayerCount();
         return currentDuelRoom.GetDuelLobbyPlayerTransform(index);
     }
     #endregion
-
-    public int GetPlayerCount()
-    {
-        return playerList.Count;
-    }
-
-    public void AddPlayer(Actor.Player.PlayerController player)
-    {
-        playerList.Add(player);
-        
-    }
-
-    [Rpc(SendTo.Server)]
-    public void RequestDuelReadyServerRpc(bool isReady, RpcParams rpcParams = default)
-    {
-        if(isReady)
-        {
-            playerReadyCount.Value++;
-        }
-        else
-        {
-            playerReadyCount.Value--;
-        }
-    }
-
-    public bool AreAllPlayersReady()
-    {
-        if (playerList.Count == 1) return false;
-        return playerList.Count - 1 == playerReadyCount.Value;
-    }
 
     #region WeaponSpawner
     public void GenerateRandomWeaponList()

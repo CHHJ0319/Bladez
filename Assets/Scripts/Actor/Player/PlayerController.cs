@@ -74,7 +74,7 @@ namespace Actor.Player
                 transform.localPosition = lobbyTransform.localPosition;
                 transform.localRotation = lobbyTransform.rotation;
             }
-            ActorManager.Instance.AddPlayer(this);
+            DuelManager.Instance.AddPlayer(this);
         }
 
         public override void OnNetworkDespawn()

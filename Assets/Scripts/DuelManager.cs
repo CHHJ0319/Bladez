@@ -1,12 +1,13 @@
+using System.Collections.Generic;
 using Unity.Netcode;
-using UnityEngine.SceneManagement;
 
 public class DuelManager : NetworkBehaviour
 {
     public static DuelManager Instance;
 
-    public NetworkVariable<int> readyPlayerCount = new NetworkVariable<int>();
-
+    public NetworkVariable<int> playerReadyCount = new NetworkVariable<int>();
+    
+    private List<Actor.Player.PlayerController> playerList = new List<Actor.Player.PlayerController>();
 
     void Awake()
     {
@@ -21,34 +22,33 @@ public class DuelManager : NetworkBehaviour
         }
     }
 
-    [Rpc(SendTo.Server)]
-    public void RequestStartDuelServerRpc(string sceneName)
+    public void AddPlayer(Actor.Player.PlayerController player)
     {
-        NetworkManager.Singleton.SceneManager.LoadScene(sceneName, LoadSceneMode.Single);
+        playerList.Add(player);
+
+    }
+
+    public int GetPlayerCount()
+    {
+        return playerList.Count;
+    }
+
+    public bool AreAllPlayersReady()
+    {
+        if (playerList.Count == 1) return false;
+        return playerList.Count - 1 == playerReadyCount.Value;
     }
 
     [Rpc(SendTo.Server)]
-    public void SubmitReadyPlayerServerRpc(bool isReady, RpcParams rpcParams = default)
+    public void RequestDuelReadyServerRpc(bool isReady, RpcParams rpcParams = default)
     {
         if (isReady)
         {
-            readyPlayerCount.Value++;
+            playerReadyCount.Value++;
         }
         else
         {
-            readyPlayerCount.Value--;
-        }
-    }
-
-    private void OnReadyPlayerCountChanged(int previous, int current)
-    {
-        if (readyPlayerCount.Value == ActorManager.Instance.GetPlayerCount() - 1)
-        {
-            UIManager.Instance.SetDuelStartButtonInteractable(true);
-        }
-        else
-        {
-            UIManager.Instance.SetDuelStartButtonInteractable(false);
+            playerReadyCount.Value--;
         }
     }
 }

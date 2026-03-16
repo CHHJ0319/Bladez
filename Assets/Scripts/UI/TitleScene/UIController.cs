@@ -46,11 +46,11 @@ namespace UI.TitleScene
 
             if (string.IsNullOrWhiteSpace(joinCode))
             {
-                StartCoroutine(GameManager.Instance.ConfigureTransportAndStartNgoAsHost());
+                GameManager.Instance.StartHost();
             }
             else
             {
-                StartCoroutine(GameManager.Instance.ConfigureTransportAndStartNgoAsConnectingPlayer(joinCode));
+                GameManager.Instance.StartClient(joinCode);
             }
         }
 

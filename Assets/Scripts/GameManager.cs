@@ -49,14 +49,30 @@ public class GameManager : NetworkBehaviour
     }
     #endregion
 
-
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         ActorManager.Instance.OnSceneLoaded();
         UIManager.Instance.OnSceneLoaded();
     }
 
-    public IEnumerator ConfigureTransportAndStartNgoAsHost()
+    [Rpc(SendTo.Server)]
+    public void RequestStartDuelServerRpc(string sceneName)
+    {
+        NetworkManager.Singleton.SceneManager.LoadScene(sceneName, LoadSceneMode.Single);
+    }
+
+    #region Network Service
+    public void StartHost()
+    {
+        StartCoroutine(GameManager.Instance.ConfigureTransportAndStartNgoAsHost());
+    }
+
+    public void StartClient(string joinCode)
+    {
+        StartCoroutine(GameManager.Instance.ConfigureTransportAndStartNgoAsConnectingPlayer(joinCode));
+    }
+
+    private IEnumerator ConfigureTransportAndStartNgoAsHost()
     {
         var serverRelayUtilityTask = Util.NetworkService.AllocateRelayServerAndGetJoinCode(m_MaxConnections);
         while (!serverRelayUtilityTask.IsCompleted)
@@ -77,7 +93,7 @@ public class GameManager : NetworkBehaviour
         yield return new WaitForSeconds(2.0f);
     }
 
-    public IEnumerator ConfigureTransportAndStartNgoAsConnectingPlayer(string relayJoinCode)
+    private IEnumerator ConfigureTransportAndStartNgoAsConnectingPlayer(string relayJoinCode)
     {
         var clientRelayUtilityTask = Util.NetworkService.JoinRelayServerFromJoinCode(relayJoinCode);
 
@@ -99,4 +115,5 @@ public class GameManager : NetworkBehaviour
 
         yield return new WaitForSeconds(2.0f);
     }
+    #endregion
 }

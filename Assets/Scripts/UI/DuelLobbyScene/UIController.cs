@@ -23,14 +23,17 @@ namespace UI.DuelLobbyScene
 
         void Awake()
         {
-            accessButton.onClick.AddListener(OnAccessButtonClicked);
+            Initialize();
+        }
 
+        private void Start()
+        {
             UIManager.Instance.SetDuelLobbySceneUIController(this);
         }
 
         public void Initialize()
         {
-            
+            accessButton.onClick.AddListener(OnAccessButtonClicked);
         }
 
         public void SetDuelHostUI(string joinCode)
@@ -61,7 +64,7 @@ namespace UI.DuelLobbyScene
         {
             if (isDuelHost)
             {
-                if (ActorManager.Instance.AreAllPlayersReady())
+                if (DuelManager.Instance.AreAllPlayersReady())
                 {
                     duelStartButton.interactable = true;
                 }
@@ -111,7 +114,7 @@ namespace UI.DuelLobbyScene
 
         private void OnDuelStartButtonClicked()
         {
-            DuelManager.Instance.RequestStartDuelServerRpc("DuelScene");
+            GameManager.Instance.RequestStartDuelServerRpc("DuelScene");
         }
 
         private void OnDuelReadyButtonClicked()
@@ -119,14 +122,14 @@ namespace UI.DuelLobbyScene
             TextMeshProUGUI duelStartButtonText = duelStartButton.GetComponentInChildren<TextMeshProUGUI>();
             if(isDuelReady)
             {
-                ActorManager.Instance.RequestDuelReadyServerRpc(false);
+                DuelManager.Instance.RequestDuelReadyServerRpc(false);
 
                 duelStartButtonText.text = "Ready";
                 isDuelReady = false;
             }
             else
             {
-                ActorManager.Instance.RequestDuelReadyServerRpc(true);
+                DuelManager.Instance.RequestDuelReadyServerRpc(true);
 
                 duelStartButtonText.text = "Cancel";
                 isDuelReady = true;
@@ -141,11 +144,11 @@ namespace UI.DuelLobbyScene
 
             if (string.IsNullOrWhiteSpace(joinCode))
             {
-                StartCoroutine(GameManager.Instance.ConfigureTransportAndStartNgoAsHost());
+                GameManager.Instance.StartHost();
             }
             else
             {
-                StartCoroutine(GameManager.Instance.ConfigureTransportAndStartNgoAsConnectingPlayer(joinCode));
+                GameManager.Instance.StartClient(joinCode);
             }
         }
     }

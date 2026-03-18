@@ -318,10 +318,10 @@ MonoBehaviour:
   slidingPower: 1
   useCurves: 1
   useCurvesHeight: 0.5
-  playerID:
-    m_InternalValue: 0
   tpsCamera: {fileID: 7879378588841631257}
   mouseSensitivity: 0.5
+  playerID:
+    m_InternalValue: 0
 --- !u!114 &1709249130011399503
 MonoBehaviour:
   m_ObjectHideFlags: 0

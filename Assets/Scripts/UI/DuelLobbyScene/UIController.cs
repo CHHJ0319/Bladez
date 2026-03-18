@@ -44,7 +44,7 @@ namespace UI.DuelLobbyScene
             duelStartButton.gameObject.SetActive(true);
             TextMeshProUGUI duelStartButtonText = duelStartButton.GetComponentInChildren<TextMeshProUGUI>();
             duelStartButtonText.text = "Start";
-            duelStartButton.interactable = false;
+            //duelStartButton.interactable = false;
 
             duelStartButton.onClick.AddListener(OnDuelStartButtonClicked);
 
@@ -70,7 +70,7 @@ namespace UI.DuelLobbyScene
                 }
                 else
                 {
-                    duelStartButton.interactable = false;
+                    //duelStartButton.interactable = false;
                 }
             }
 

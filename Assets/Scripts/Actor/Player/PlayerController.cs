@@ -29,7 +29,6 @@ namespace Actor.Player
 
         private void Start()
         {
-            weaponHandler.AddWeapons(playerID.Value);
         }
 
         private void OnEnable()
@@ -47,12 +46,14 @@ namespace Actor.Player
             if(IsHost)
             {
                 IsDuelHost = true;
-                playerID.Value = (int)NetworkObjectId;
+                playerID.Value = (int)OwnerClientId;
             }
             else
             {
                 RequestSetPlayerIDServerRpc();
             }
+
+            weaponHandler.AddWeapons(playerID.Value);
 
             if (IsOwner)
             {
@@ -87,12 +88,16 @@ namespace Actor.Player
             base.Update();
 
             CalculateVelocity();
-            MoveWithPlayerInput();
             JumpWithPlayerInput();
             SlidingWithPlayerInput();
             AttackWithPlayerInput();
             InteractWithPlayerInput();
             QuiclSlotWithPlayerInput();
+        }
+
+        private void FixedUpdate()
+        {
+            MoveWithPlayerInput();
         }
 
         #region OnSceneLoaded
@@ -172,7 +177,6 @@ namespace Actor.Player
                 else
                 {
                     PickUp(playerID.Value);
-                    //weaponHandler.AssignOwnerId(playerID.Value);
                 }
             }
         }
@@ -218,7 +222,7 @@ namespace Actor.Player
         [Rpc(SendTo.Server)]
         private void RequestSetPlayerIDServerRpc(RpcParams rpcParams = default)
         {
-            playerID.Value = (int) NetworkObjectId;
+            playerID.Value = (int)OwnerClientId;
         }
     }
 }

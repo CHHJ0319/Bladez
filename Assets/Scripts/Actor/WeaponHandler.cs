@@ -66,7 +66,7 @@ namespace Actor
 
             newWeapon.transform.SetParent(weaponHolder);
             newWeapon.GetComponent<Item.Weapon.Melee.SwordController>().SetOrginTransform();
-            //newWeapon.GetComponent<Item.Weapon.WeaponController>().SetOwnerID(playerID);
+            newWeapon.GetComponent<Item.Weapon.WeaponController>().SetOwnerID(playerID);
 
             slottedWeapons.Add(newWeapon);
 

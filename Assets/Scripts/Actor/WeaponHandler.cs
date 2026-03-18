@@ -14,25 +14,6 @@ namespace Actor
         private bool isAttackReady;
         private float attackReady;
 
-        private void Awake()
-        {
-            if (weaponHolder.transform.childCount > 0)
-            {
-                foreach (var weapon in weaponHolder.GetComponentsInChildren<Item.Weapon.WeaponController>())
-                {
-                    AddWeapon(weapon.gameObject);
-                }
-            }
-        }
-
-        public void AssignOwnerId(int id)
-        {
-            foreach(var weapon in slottedWeapons)
-            {
-                weapon.GetComponent<Item.Weapon.WeaponController>().SetOwnerID(id);
-            }
-        }
-
         public void UpdateAttackTimer()
         {
             attackReady += Time.deltaTime;
@@ -79,12 +60,13 @@ namespace Actor
             return slottedWeapons.Count < maxWeaponSlots;
         }
 
-        public void AddWeapon(GameObject newWeapon)
+        public void AddWeapon(GameObject newWeapon, int playerID)
         {
             if (slottedWeapons.Contains(newWeapon)) return;
 
             newWeapon.transform.SetParent(weaponHolder);
             newWeapon.GetComponent<Item.Weapon.Melee.SwordController>().SetOrginTransform();
+            //newWeapon.GetComponent<Item.Weapon.WeaponController>().SetOwnerID(playerID);
 
             slottedWeapons.Add(newWeapon);
 
@@ -97,6 +79,17 @@ namespace Actor
                 newWeapon.SetActive(false);
             }
         }
+        public void AddWeapons(int playerID)
+        {
+            if (weaponHolder.transform.childCount > 0)
+            {
+                foreach (var weapon in weaponHolder.GetComponentsInChildren<Item.Weapon.WeaponController>())
+                {
+                    AddWeapon(weapon.gameObject, playerID);
+                }
+            }
+        }
+
 
         public void RemoveWeapon(GameObject weaponToRemove)
         {

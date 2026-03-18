@@ -25,13 +25,9 @@ namespace Actor.Item.Weapon
         public int OwnerID { get; private set; }
         public bool IsEquiped { get; set; }
 
-        private Vector3 originalWeaponPosition;
-        private Vector3 originalWeaponScale;
-
         private void Awake()
         {
-            originalWeaponPosition = transform.localPosition;
-            originalWeaponScale = transform.localScale;
+         
         }
 
         public void Attack()
@@ -42,10 +38,6 @@ namespace Actor.Item.Weapon
         public void SetOwnerID(int id)
         {
             OwnerID = id;
-
-            transform.localPosition = originalWeaponPosition;
-            transform.localScale = originalWeaponScale;
-            transform.localRotation = Quaternion.identity;
         }
 
         protected abstract IEnumerator AttackProcess();

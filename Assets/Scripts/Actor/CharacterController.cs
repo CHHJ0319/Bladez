@@ -60,10 +60,7 @@ namespace Actor
         protected virtual void Update()
         {
             weaponHandler.UpdateAttackTimer();
-        }
 
-        protected virtual void FixedUpdate()
-        {
             UpdateAnimationState();
             SetGravity(true);
             UpdateStateBehavior();
@@ -106,7 +103,7 @@ namespace Actor
             weaponHandler.Attack();
         }
 
-        public void PickUp()
+        public void PickUp(int playerID)
         {
             GameObject item = itemPicker.GetPickedUpItem();
 
@@ -116,7 +113,7 @@ namespace Actor
             {
                 if (weaponHandler.CanAddWeapon())
                 {
-                    weaponHandler.AddWeapon(item);
+                    weaponHandler.AddWeapon(item, playerID);
                     itemPicker.Clear();
                 }
             }

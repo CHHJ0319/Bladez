@@ -27,6 +27,11 @@ namespace Actor.Player
             playerTransform = GetComponent<PlayerTransform>(); 
         }
 
+        private void Start()
+        {
+            weaponHandler.AddWeapons(playerID.Value);
+        }
+
         private void OnEnable()
         {
             SceneManager.sceneLoaded += OnSceneLoaded;
@@ -55,7 +60,6 @@ namespace Actor.Player
                 tpsCamera.gameObject.SetActive(true);
 
                 ActorManager.Instance.SetOwnerPlayer(this);
-                weaponHandler.AssignOwnerId(playerID.Value);
             }
             else
             {
@@ -83,12 +87,6 @@ namespace Actor.Player
             base.Update();
 
             CalculateVelocity();
-        }
-
-        protected override void FixedUpdate()
-        {
-            base.FixedUpdate();
-
             MoveWithPlayerInput();
             JumpWithPlayerInput();
             SlidingWithPlayerInput();
@@ -173,7 +171,7 @@ namespace Actor.Player
                 }
                 else
                 {
-                    PickUp();
+                    PickUp(playerID.Value);
                     //weaponHandler.AssignOwnerId(playerID.Value);
                 }
             }
@@ -221,8 +219,6 @@ namespace Actor.Player
         private void RequestSetPlayerIDServerRpc(RpcParams rpcParams = default)
         {
             playerID.Value = (int) NetworkObjectId;
-
-            weaponHandler.AssignOwnerId(playerID.Value);
         }
     }
 }

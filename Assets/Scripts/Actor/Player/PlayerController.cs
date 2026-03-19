@@ -13,7 +13,6 @@ namespace Actor.Player
         public float mouseSensitivity = 0.5f;
 
         private PlayerInputHandler playerInputHandler;
-        private PlayerTransform playerTransform;
 
         public NetworkVariable<int> playerID = new NetworkVariable<int>();
         public bool IsDuelHost { get; private set; } = false;
@@ -21,14 +20,9 @@ namespace Actor.Player
 
         protected override void Awake()
         {
-            Initialize();
+            base.Awake();
 
             playerInputHandler = GetComponent<PlayerInputHandler>();
-            playerTransform = GetComponent<PlayerTransform>(); 
-        }
-
-        private void Start()
-        {
         }
 
         private void OnEnable()
@@ -53,7 +47,7 @@ namespace Actor.Player
                 RequestSetPlayerIDServerRpc();
             }
 
-            weaponHandler.AddWeapons(playerID.Value);
+            //weaponHandler.AddWeapons(playerID.Value);
 
             if (IsOwner)
             {
@@ -68,14 +62,7 @@ namespace Actor.Player
                 tpsCamera.gameObject.SetActive(false);
             }
 
-            if (Util.SceneChecker.CheckCurrnetScene(Util.SceneList.DuelLobbyScene))
-            {
-                tpsCamera.gameObject.SetActive(false);
-
-                Transform lobbyTransform = ActorManager.Instance.GetDuelLobbyPlayerTransform();
-                transform.localPosition = lobbyTransform.localPosition;
-                transform.localRotation = lobbyTransform.rotation;
-            }
+            InitializeByScene();
             DuelManager.Instance.AddPlayer(this);
         }
 
@@ -103,6 +90,11 @@ namespace Actor.Player
         #region OnSceneLoaded
         private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
+            InitializeByScene();
+        }
+
+        private void InitializeByScene()
+        {
             if (Util.SceneChecker.CheckCurrnetScene(Util.SceneList.DuelLobbyScene))
             {
                 tpsCamera.gameObject.SetActive(false);
@@ -113,7 +105,7 @@ namespace Actor.Player
             }
             else if (Util.SceneChecker.CheckCurrnetScene(Util.SceneList.DuelScene))
             {
-                if(IsOwner)
+                if (IsOwner)
                 {
                     tpsCamera.gameObject.SetActive(true);
                     MoveToRandomPosition();

@@ -5164,7 +5164,7 @@ CapsuleCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 1
   m_ProvidesContacts: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 2
   m_Radius: 0.26157078
   m_Height: 2.4286368
@@ -5225,8 +5225,39 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 7851712920799854886, guid: f633f0d1c4632104fbe4acd8f2328983, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3980598966971142409}
   m_SourcePrefab: {fileID: 100100000, guid: f633f0d1c4632104fbe4acd8f2328983, type: 3}
+--- !u!1 &69650656812276545 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7851712920799854886, guid: f633f0d1c4632104fbe4acd8f2328983, type: 3}
+  m_PrefabInstance: {fileID: 7782661792067869287}
+  m_PrefabAsset: {fileID: 0}
+--- !u!136 &3980598966971142409
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 69650656812276545}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.5
+  m_Height: 2.4
+  m_Direction: 1
+  m_Center: {x: 0, y: 0.9, z: 0}
 --- !u!4 &5316698131801836126 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2722748553754431545, guid: f633f0d1c4632104fbe4acd8f2328983, type: 3}
@@ -5237,7 +5268,7 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 2056666293016844894, guid: f633f0d1c4632104fbe4acd8f2328983, type: 3}
   m_PrefabInstance: {fileID: 7782661792067869287}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 69650656812276545}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 52f14d2b0a90214459da3deedc46ffed, type: 3}

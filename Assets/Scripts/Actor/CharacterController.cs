@@ -66,86 +66,7 @@ namespace Actor
             UpdateStateBehavior();
         }
 
-        public void Jump()
-        {
-            if (currentBaseState.fullPathHash == CharacterAnimationState.LocoState
-                && !characterAnimator.IsTransitioning())
-            {
-                rb.AddForce(Vector3.up * jumpPower, ForceMode.VelocityChange);
-                characterAnimator.SetJump(true);
-            }
-        }
-
-        public void Sliding()
-        {
-            if (currentBaseState.fullPathHash == CharacterAnimationState.LocoState
-                && !characterAnimator.IsTransitioning())
-            {
-                rb.AddForce(velocity * slidingPower, ForceMode.VelocityChange);
-                characterAnimator.SetSliding(true);
-            }
-        }
-
-        public void Attack()
-        {
-            if (currentBaseState.fullPathHash == CharacterAnimationState.JumpState &&
-                currentBaseState.fullPathHash == CharacterAnimationState.SlidingState)
-                return;
-
-            if (weaponHandler.EquippedWeapon == null)
-                return;
-
-            if (weaponHandler.GetEquipWeaponType() == Item.Weapon.WeaponType.Melee)
-            {
-                characterAnimator.PlayAttack();
-            }
-
-            weaponHandler.Attack();
-        }
-
-        public void PickUp(int playerID)
-        {
-            GameObject item = itemPicker.GetPickedUpItem();
-
-            if (item == null) return;
-
-            if (item.tag == "Weapon")
-            {
-                if (weaponHandler.CanAddWeapon())
-                {
-                    weaponHandler.AddWeapon(item, playerID);
-                    itemPicker.Clear();
-                }
-            }
-        }
-
-        public void TakeDamage(float damage, Vector3 damageDirection, float knockbackForce)
-        {
-            HP -= damage;
-
-            characterAnimator.SetTakeDamage(true);
-            ApplyKnockback(-damageDirection, knockbackForce);
-
-            if (HP < 0)
-            {
-                Die();
-            }
-        }
-
-        public void Rest()
-        {
-            if (!characterAnimator.IsTransitioning())
-            {
-                characterAnimator.SetRest(true);
-            }
-        }
-
-        private void Die()
-        {
-            UIManager.Instance.ShowPlayerResultUI(false);
-            gameObject.SetActive(false);
-        }
-
+        #region Update
         private void UpdateAnimationState()
         {
             currentBaseState = characterAnimator.GetBaseLayerState();
@@ -228,7 +149,7 @@ namespace Actor
                 }
             }
 
-            if (currentUpperBodyState.fullPathHash == CharacterAnimationState.AttackState1 
+            if (currentUpperBodyState.fullPathHash == CharacterAnimationState.AttackState1
                 || currentUpperBodyState.fullPathHash == CharacterAnimationState.AttackState2
                 )
             {
@@ -238,6 +159,89 @@ namespace Actor
                 }
             }
         }
+        #endregion
+
+        #region Movement
+        public void Jump()
+        {
+            if (currentBaseState.fullPathHash == CharacterAnimationState.LocoState
+                && !characterAnimator.IsTransitioning())
+            {
+                rb.AddForce(Vector3.up * jumpPower, ForceMode.VelocityChange);
+                characterAnimator.SetJump(true);
+            }
+        }
+
+        public void Sliding()
+        {
+            if (currentBaseState.fullPathHash == CharacterAnimationState.LocoState
+                && !characterAnimator.IsTransitioning())
+            {
+                rb.AddForce(velocity * slidingPower, ForceMode.VelocityChange);
+                characterAnimator.SetSliding(true);
+            }
+        }
+
+        public void Attack()
+        {
+            if (currentBaseState.fullPathHash == CharacterAnimationState.JumpState &&
+                currentBaseState.fullPathHash == CharacterAnimationState.SlidingState)
+                return;
+
+            if (weaponHandler.EquippedWeapon == null)
+                return;
+
+            if (weaponHandler.GetEquipWeaponType() == Item.Weapon.WeaponType.Melee)
+            {
+                characterAnimator.PlayAttack();
+            }
+
+            weaponHandler.Attack();
+        }
+
+        public void PickUp(int playerID)
+        {
+            GameObject item = itemPicker.GetPickedUpItem();
+
+            if (item == null) return;
+
+            if (item.tag == "Weapon")
+            {
+                if (weaponHandler.CanAddWeapon())
+                {
+                    GameObject weapon = item.transform.root.gameObject;
+                    weaponHandler.AddWeapon(weapon, playerID);
+                    itemPicker.Clear();
+                }
+            }
+        }
+
+        public void TakeDamage(float damage, Vector3 damageDirection, float knockbackForce)
+        {
+            HP -= damage;
+
+            characterAnimator.SetTakeDamage(true);
+            ApplyKnockback(-damageDirection, knockbackForce);
+
+            if (HP < 0)
+            {
+                Die();
+            }
+        }
+
+        public void Rest()
+        {
+            if (!characterAnimator.IsTransitioning())
+            {
+                characterAnimator.SetRest(true);
+            }
+        }
+
+        private void Die()
+        {
+            UIManager.Instance.ShowPlayerResultUI(false);
+            gameObject.SetActive(false);
+        }
 
         private void ApplyKnockback(Vector3 knockbackDirection, float knockbackForce)
         {
@@ -245,16 +249,17 @@ namespace Actor
 
             rb.AddForce(knockbackDirection * knockbackForce, ForceMode.VelocityChange);
         }
+        #endregion
+
+        protected void EquipWeapon(int weaponIdx)
+        {
+            weaponHandler.EquipWeapon(weaponIdx);
+        }
 
         private void ResetCollider()
         {
             col.height = orgColHeight;
             col.center = orgVectColCenter;
-        }
-
-        protected void EquipWeapon(int weaponIdx)
-        {
-            weaponHandler.EquipWeapon(weaponIdx);
         }
 
         private static Vector3 GetRandomPositionOnPlane()

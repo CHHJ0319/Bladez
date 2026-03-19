@@ -1,9 +1,10 @@
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
 namespace Actor
 {
-    public class WeaponHandler : MonoBehaviour
+    public class WeaponHandler : NetworkBehaviour
     {
         public Transform weaponHolder;
         public Actor.Item.Weapon.WeaponController EquippedWeapon { get; private set; }
@@ -60,32 +61,34 @@ namespace Actor
             return slottedWeapons.Count < maxWeaponSlots;
         }
 
-        public void AddWeapon(GameObject newWeapon, int playerID)
+        [Rpc(SendTo.Server)]
+        public void RequestAddWeaponServerRpc(int playerID)
         {
-            if (slottedWeapons.Contains(newWeapon)) return;
+            //if (slottedWeapons.Contains(newWeapon)) return;
 
-            newWeapon.transform.SetParent(weaponHolder);
-            newWeapon.GetComponent<Item.Weapon.Melee.SwordController>().SetOrginTransform();
-            newWeapon.GetComponent<Item.Weapon.WeaponController>().SetOwnerID(playerID);
+            //newWeapon.transform.SetParent(weaponHolder);
+            //newWeapon.GetComponent<Item.Weapon.Melee.SwordController>().SetOrginTransform();
+            //newWeapon.GetComponent<Item.Weapon.WeaponController>().SetOwnerID(playerID);
 
-            slottedWeapons.Add(newWeapon);
+            //slottedWeapons.Add(newWeapon);
 
-            if (EquippedWeapon == null)
-            {
-                EquipWeapon(0);
-            }
-            else
-            {
-                newWeapon.SetActive(false);
-            }
+            //if (EquippedWeapon == null)
+            //{
+            //    EquipWeapon(0);
+            //}
+            //else
+            //{
+            //    newWeapon.SetActive(false);
+            //}
         }
+
         public void AddWeapons(int playerID)
         {
             if (weaponHolder.transform.childCount > 0)
             {
                 foreach (var weapon in weaponHolder.GetComponentsInChildren<Item.Weapon.WeaponController>())
                 {
-                    AddWeapon(weapon.gameObject, playerID);
+                    //RequestAddWeaponServerRpc(weapon.gameObject, playerID);
                 }
             }
         }

@@ -1,10 +1,5 @@
-using Actor;
-using Actor.Item;
-using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
-using UnityEngine.SceneManagement;
-using UnityEngine.UIElements;
 
 public class ActorManager : NetworkBehaviour
 {
@@ -73,6 +68,15 @@ public class ActorManager : NetworkBehaviour
     public void SetOwnerPlayer(Actor.Player.PlayerController player)
     {
         ownerPlayer = player;
+    }
+
+    [Rpc(SendTo.Server)]
+    public void RequestDespawnActorServerRpc(NetworkObjectReference actorRef)
+    {
+        if (actorRef.TryGet(out NetworkObject networkObject))
+        {
+            networkObject.Despawn();
+        }
     }
 
     #region DuelLobbyScene

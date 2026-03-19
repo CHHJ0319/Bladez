@@ -210,8 +210,9 @@ namespace Actor
                 if (weaponHandler.CanAddWeapon())
                 {
                     GameObject weapon = item.transform.root.gameObject;
-                    weaponHandler.AddWeapon(weapon, playerID);
+                    weaponHandler.RequestAddWeaponServerRpc(playerID);
                     itemPicker.Clear();
+                    ActorManager.Instance.RequestDespawnActorServerRpc(weapon.GetComponent<NetworkObject>());
                 }
             }
         }
@@ -237,6 +238,11 @@ namespace Actor
             }
         }
 
+        protected void EquipWeapon(int weaponIdx)
+        {
+            weaponHandler.EquipWeapon(weaponIdx);
+        }
+
         private void Die()
         {
             UIManager.Instance.ShowPlayerResultUI(false);
@@ -250,11 +256,6 @@ namespace Actor
             rb.AddForce(knockbackDirection * knockbackForce, ForceMode.VelocityChange);
         }
         #endregion
-
-        protected void EquipWeapon(int weaponIdx)
-        {
-            weaponHandler.EquipWeapon(weaponIdx);
-        }
 
         private void ResetCollider()
         {

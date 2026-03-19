@@ -7,9 +7,9 @@ namespace Actor.Item.Weapon
     public abstract class WeaponController : NetworkBehaviour
     {
         [Header("Type")]
-        public abstract WeaponType Type { get; protected set; }
-        [SerializeField] private ElementType elementType;
-        public ElementType ElementType
+        public abstract Data.WeaponType Type { get; protected set; }
+        [SerializeField] private Data.ElementType elementType;
+        public Data.ElementType ElementType
         {
             get => elementType;
             set => elementType = value;

@@ -6,7 +6,7 @@ namespace Actor.Item.Weapon.Range
     public class GunController : WeaponController
     {
         [Header("Type")]
-        public override WeaponType Type { get; protected set; } = WeaponType.Range;
+        public override Data.WeaponType Type { get; protected set; } = Data.WeaponType.Range;
 
         public int maxAmmo;
         public int curAmmo;

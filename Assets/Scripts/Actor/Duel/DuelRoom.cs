@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Actor
+namespace Actor.Duel
 {
     public class DuelRoom : MonoBehaviour
     {

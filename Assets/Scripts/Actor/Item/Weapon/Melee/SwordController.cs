@@ -8,7 +8,7 @@ namespace Actor.Item.Weapon.Melee
     public class SwordController : WeaponController
     {
         [Header("Type")]
-        public override WeaponType Type { get; protected set; } = WeaponType.Melee;
+        public override Data.WeaponType Type { get; protected set; } = Data.WeaponType.Melee;
 
         [Header("Sword Effects")]
         public TrailRenderer trailEffect;

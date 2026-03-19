@@ -7,8 +7,6 @@ namespace Actor.Item
 {
     public class DroppedItemSpawner : NetworkBehaviour
     {
-        public GameObject droppedWeaponPrefab;
-
         private int droppedWeaponCount = 10;
 
         public NetworkList<int> WeaponIndexList = new NetworkList<int>();

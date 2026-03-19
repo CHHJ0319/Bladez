@@ -15,9 +15,9 @@ namespace Actor.Item.Weapon
             new Color(244f / 255f, 255f / 255f, 86f / 255f)
         };
 
-        public void Show(ElementType type)
+        public void Show(Data.ElementType type)
         {
-            if (type != ElementType.Neutral)
+            if (type != Data.ElementType.Neutral)
             {
                 dropZoneLight.color = dropZoneLightColors[(int)type];
                 GameObject particle = Instantiate(particles[(int)type], transform);

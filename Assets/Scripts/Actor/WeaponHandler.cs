@@ -33,7 +33,7 @@ namespace Actor
             if (!isAttackReady)
                 return;
 
-            if (EquippedWeapon.Type == Item.Weapon.WeaponType.Range && EquippedWeapon.GetComponent<Item.Weapon.Range.GunController>().curAmmo <= 0)
+            if (EquippedWeapon.Type == Data.WeaponType.Range && EquippedWeapon.GetComponent<Item.Weapon.Range.GunController>().curAmmo <= 0)
                 return;
 
             EquippedWeapon.Attack();
@@ -62,10 +62,8 @@ namespace Actor
         }
 
         [Rpc(SendTo.Server)]
-        public void RequestAddWeaponServerRpc(int playerID)
+        public void RequestAddWeaponServerRpc(Data.ElementType type, int playerID)
         {
-            //if (slottedWeapons.Contains(newWeapon)) return;
-
             //newWeapon.transform.SetParent(weaponHolder);
             //newWeapon.GetComponent<Item.Weapon.Melee.SwordController>().SetOrginTransform();
             //newWeapon.GetComponent<Item.Weapon.WeaponController>().SetOwnerID(playerID);
@@ -102,7 +100,7 @@ namespace Actor
             }
         }
 
-        public Actor.Item.Weapon.WeaponType GetEquipWeaponType()
+        public Data.WeaponType GetEquipWeaponType()
         {
             return EquippedWeapon.Type;
         }

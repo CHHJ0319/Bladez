@@ -7,7 +7,7 @@ public class ActorManager : NetworkBehaviour
 
     private Actor.Player.PlayerController ownerPlayer;
 
-    public Actor.DuelRoom currentDuelRoom;
+    public Actor.Duel.DuelRoom currentDuelRoom;
 
     [Header("DuelScene")]
     public GameObject droppedItemSpawnerPrefab;
@@ -80,7 +80,7 @@ public class ActorManager : NetworkBehaviour
     }
 
     #region DuelLobbyScene
-    public void SetDuelRoom(Actor.DuelRoom room)
+    public void SetDuelRoom(Actor.Duel.DuelRoom room)
     {
         currentDuelRoom = room; 
     }

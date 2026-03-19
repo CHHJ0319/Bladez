@@ -1,3 +1,4 @@
+using Actor.Item.Weapon;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -191,7 +192,7 @@ namespace Actor
             if (weaponHandler.EquippedWeapon == null)
                 return;
 
-            if (weaponHandler.GetEquipWeaponType() == Item.Weapon.WeaponType.Melee)
+            if (weaponHandler.GetEquipWeaponType() == Data.WeaponType.Melee)
             {
                 characterAnimator.PlayAttack();
             }
@@ -210,8 +211,11 @@ namespace Actor
                 if (weaponHandler.CanAddWeapon())
                 {
                     GameObject weapon = item.transform.root.gameObject;
-                    weaponHandler.RequestAddWeaponServerRpc(playerID);
+                    WeaponController weaponController = weapon.GetComponent<WeaponController>();
+
+                    weaponHandler.RequestAddWeaponServerRpc(weaponController.ElementType, playerID);
                     itemPicker.Clear();
+
                     ActorManager.Instance.RequestDespawnActorServerRpc(weapon.GetComponent<NetworkObject>());
                 }
             }

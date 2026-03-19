@@ -1,6 +1,4 @@
-using UnityEngine;
-
-namespace Actor.Item.Weapon 
+namespace Data
 {
     [System.Serializable]
     public enum ElementType { Fire, Ice, Lightning, Neutral }

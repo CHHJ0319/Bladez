@@ -135,7 +135,7 @@ GameObject:
   - component: {fileID: 4965685281437286813}
   - component: {fileID: 6777770479477390019}
   m_Layer: 0
-  m_Name: DroppedWeapon
+  m_Name: DroppedEffects
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

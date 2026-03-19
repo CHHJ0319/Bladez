@@ -1,9 +1,10 @@
 using System.Collections;
+using Unity.Netcode;
 using UnityEngine;
 
 namespace Actor.Item.Weapon 
 {
-    public abstract class WeaponController : MonoBehaviour
+    public abstract class WeaponController : NetworkBehaviour
     {
         [Header("Type")]
         public abstract WeaponType Type { get; protected set; }
@@ -24,11 +25,6 @@ namespace Actor.Item.Weapon
 
         public int OwnerID { get; private set; }
         public bool IsEquiped { get; set; }
-
-        private void Awake()
-        {
-         
-        }
 
         public void Attack()
         {

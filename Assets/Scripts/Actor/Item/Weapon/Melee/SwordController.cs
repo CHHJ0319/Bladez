@@ -1,7 +1,7 @@
 using System.Collections;
 using Unity.Netcode;
+using Unity.VisualScripting;
 using UnityEngine;
-using static UnityEngine.ParticleSystem;
 
 namespace Actor.Item.Weapon.Melee
 {
@@ -14,6 +14,9 @@ namespace Actor.Item.Weapon.Melee
         public TrailRenderer trailEffect;
         public ParticleSystem particle;
 
+        [Header("Dropped Effects")]
+        public DroppedEffects droppedEffects;
+
         private Vector3 oriPosition;
         private Vector3 oriScale;
 
@@ -21,6 +24,13 @@ namespace Actor.Item.Weapon.Melee
         {
             oriPosition = transform.localPosition;
             oriScale = transform.localScale;
+        }
+
+        [Rpc(SendTo.Everyone)]
+        public void SubmitItemDroppedServerRpc()
+        {
+            Embed();
+            droppedEffects.Show(ElementType);
         }
 
         protected override IEnumerator AttackProcess()
@@ -84,6 +94,12 @@ namespace Actor.Item.Weapon.Melee
             transform.localPosition = oriPosition;
             transform.localRotation = Quaternion.identity;
             transform.localScale = oriScale;
+        }
+
+        private void Embed()
+        {
+            transform.localPosition = new Vector3(transform.localPosition.x, 0.8f, transform.localPosition.z);
+            transform.localRotation = Quaternion.Euler(180f, 0f, 0f);
         }
     }
 }

@@ -10197,56 +10197,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 610689086}
   m_Mesh: {fileID: 4300000, guid: 3646a0c5f438c6f458c0e176c02676cb, type: 3}
---- !u!1 &619409904
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 619409905}
-  - component: {fileID: 619409906}
-  m_Layer: 0
-  m_Name: DroppedItemSpawner
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &619409905
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 619409904}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &619409906
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 619409904}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8f40c778c038c664caf27f9d793d60c3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  droppedWeaponPrefab: {fileID: 7851712920799854886, guid: f633f0d1c4632104fbe4acd8f2328983, type: 3}
-  weaponList:
-  - {fileID: 5215985135071176274, guid: ca7917bee06e7244c86f852c344d918a, type: 3}
-  - {fileID: 4392767893562137083, guid: c6241cd32f659234cb97c1e69b6e01df, type: 3}
-  - {fileID: 8156835464261828305, guid: 838d63a6c7b03aa44b2d487ad8ddc3e4, type: 3}
-  - {fileID: 6338061937014367016, guid: 76f34e051ab7be441997e3879654091e, type: 3}
 --- !u!1001 &629872995
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -18976,6 +18926,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   currentDuelRoom: {fileID: 0}
+  weaponList: []
 --- !u!114 &1245866814
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -31475,5 +31426,4 @@ SceneRoots:
   - {fileID: 1915228822}
   - {fileID: 1109888344}
   - {fileID: 543771104}
-  - {fileID: 619409905}
   - {fileID: 2092046303}

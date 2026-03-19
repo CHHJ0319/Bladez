@@ -2,10 +2,8 @@ using UnityEngine;
 
 namespace Actor.Item.Weapon
 {
-    public class DroppedWeapon : MonoBehaviour
+    public class DroppedEffects : MonoBehaviour
     {
-        public GameObject weaponPrefab;
-
         [Header("Effects")]
         public Light dropZoneLight;
         public GameObject[] particles;
@@ -17,60 +15,18 @@ namespace Actor.Item.Weapon
             new Color(244f / 255f, 255f / 255f, 86f / 255f)
         };
 
-        private WeaponController weapon;
-        private ElementType elementType;
-
-        private void Start()
+        public void Show(ElementType type)
         {
-            //Initialize();
-        }
-
-        private void Update()
-        {
-            CheckForDroppedWeapons();
-        }
-
-        public  void Initialize()
-        {
-            weapon = weaponPrefab.GetComponent<WeaponController>();
-            elementType = weapon.ElementType;
-
-            ApplyItemEffects();
-            CreateWeapon();
-        }
-
-        private void ApplyItemEffects()
-        {
-            if (elementType != ElementType.Neutral)
+            if (type != ElementType.Neutral)
             {
-                dropZoneLight.color = dropZoneLightColors[(int)elementType];
-                GameObject particle = Instantiate(particles[(int)elementType], transform);
+                dropZoneLight.color = dropZoneLightColors[(int)type];
+                GameObject particle = Instantiate(particles[(int)type], transform);
             }
         }
 
-        private void CreateWeapon()
+        private void Hide()
         {
-            GameObject newWeapon = Instantiate(weaponPrefab, transform);
-
-            newWeapon.transform.localPosition = new Vector3(0, -1.0f, 0);
-            newWeapon.transform.localRotation = Quaternion.identity;
-            newWeapon.transform.localScale = Vector3.one;
-        }
-
-        private void CheckForDroppedWeapons()
-        {
-            if (transform.childCount < 3)
-            {
-                if(elementType != ElementType.Neutral)
-                {
-                    Destroy(gameObject);
-                }
-            }
-
-            if (transform.childCount < 2)
-            {
-                Destroy(gameObject);
-            }
+            gameObject.SetActive(false);
         }
     }
 }

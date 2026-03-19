@@ -1,8 +1,10 @@
 using Actor;
+using Actor.Item;
 using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UIElements;
 
 public class ActorManager : NetworkBehaviour
 {
@@ -11,12 +13,10 @@ public class ActorManager : NetworkBehaviour
     private Actor.Player.PlayerController ownerPlayer;
 
     public Actor.DuelRoom currentDuelRoom;
-   
-    private Actor.Item.DroppedItemSpawner droppedItemSpawner;
-    private int droppedWeaponCount = 10;
-    public NetworkList<int> WeaponIndexList = new NetworkList<int>();
-    public NetworkList<Vector3> WeaponPositionList = new NetworkList<Vector3>();
 
+    [Header("DuelScene")]
+    public GameObject droppedItemSpawnerPrefab;
+    private Actor.Item.DroppedItemSpawner droppedItemSpawner;
 
     void Awake()
     {
@@ -45,17 +45,27 @@ public class ActorManager : NetworkBehaviour
 
     private void Initialize()
     {
-        WeaponIndexList = new NetworkList<int>();
-        WeaponPositionList = new NetworkList<Vector3>();
+        
     }
 
     public void OnSceneLoaded()
     {
         if (Util.SceneChecker.CheckCurrnetScene(Util.SceneList.DuelScene))
         {
-            if (WeaponIndexList.Count == 0)
+            if (IsServer)
             {
-                SubmitGenerateRandomWeaponListServerRpc();
+                GameObject spawner = Instantiate(droppedItemSpawnerPrefab, Vector3.zero, Quaternion.identity);
+                
+                NetworkObject netObj = spawner.GetComponent<NetworkObject>();
+                netObj.Spawn();
+
+                droppedItemSpawner = spawner.GetComponent<Actor.Item.DroppedItemSpawner>();
+
+                if (droppedItemSpawner != null)
+                {
+                    droppedItemSpawner.SubmitGenerateRandomWeaponListServerRpc();
+                    droppedItemSpawner.SpawnWeapons();
+                }
             }
         }
     }
@@ -77,75 +87,4 @@ public class ActorManager : NetworkBehaviour
         return currentDuelRoom.GetDuelLobbyPlayerTransform(index);
     }
     #endregion
-
-    #region WeaponSpawner
-    public void GenerateRandomWeaponList()
-    {
-        for (int i = 0; i < droppedWeaponCount; i++)
-        {
-            int randomIndex = 0;
-            int randomRange = Random.Range(0, 100);
-            if(randomRange <= 60)
-            {
-                randomIndex = 0;
-            }
-            else if(randomRange <= 75)
-            {
-                randomIndex = 1;
-            }
-            else if (randomRange <= 90)
-            {
-                randomIndex = 2;
-            }
-            else
-            {
-                randomIndex = 3;
-            }
-
-            Vector3 randomPosition = GetRandomWeaponPosition();
-            WeaponIndexList.Add(randomIndex);
-            WeaponPositionList.Add(randomPosition);
-        }
-    }
-
-    [Rpc(SendTo.Server)]
-    private void SubmitGenerateRandomWeaponListServerRpc(RpcParams rpcParams = default)
-    {
-        GenerateRandomWeaponList();
-    }
-
-    private void SpawnWeapon()
-    {
-        if (WeaponIndexList == null || WeaponIndexList.Count == 0)
-        {
-            return;
-        }
-
-        if (WeaponPositionList == null || WeaponPositionList.Count == 0)
-        {
-            return;
-        }
-
-        for (int i = 0; i < droppedWeaponCount; i++)
-        {
-            int index = WeaponIndexList[i];
-            Vector3 position = WeaponPositionList[i];
-
-            droppedItemSpawner.SpawnDroppedWeapons(index, position);
-        }
-    }
-
-    public void SetDroppedItemSpawner(Actor.Item.DroppedItemSpawner spawner)
-    {
-        droppedItemSpawner = spawner;
-        SpawnWeapon();
-    }
-    #endregion
-
-    private Vector3 GetRandomWeaponPosition(Vector3 center = default, float range = 30.0f, float fixedY = 0.3f)
-    {
-        Vector2 randomPoint = Random.insideUnitCircle * range;
-
-        return new Vector3(center.x + randomPoint.x, fixedY, center.z + randomPoint.y);
-    }
 }

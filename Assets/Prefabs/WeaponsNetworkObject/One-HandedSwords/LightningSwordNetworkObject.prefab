@@ -4997,7 +4997,7 @@ GameObject:
   - component: {fileID: 719396641001575100}
   - component: {fileID: 2149135815733460449}
   m_Layer: 0
-  m_Name: LightningSword
+  m_Name: LightningSwordNetworkObject
   m_TagString: Weapon
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
